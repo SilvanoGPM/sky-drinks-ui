@@ -1,0 +1,101 @@
+$headerHeight: 68px;
+$menuWidth: 300px;
+$break: 700px;
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.drinksContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (max-width: $break) {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.menu {
+  width: 100%;
+
+  &Wrapper {
+    position: relative;
+    overflow-y: auto;
+    width: 0;
+    transition: 0.15s ease-in-out width;
+    background-color: #ffffff;
+
+    &.active {
+      width: 300px;
+    }
+
+    @media screen and (max-width: $break) {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+    }
+  }
+
+  &Header {
+    text-align: center;
+    line-height: $headerHeight;
+    height: $headerHeight;
+  }
+}
+
+.menuToggle {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  cursor: pointer;
+  border-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  transition: 0.15s ease-in-out left;
+
+  &.active {
+    left: $menuWidth - 25px;
+    right: 0;
+  }
+}
+
+.subMenu {
+  font-size: 18x;
+}
+
+.spacer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: $headerHeight;
+  transition: 0.15s ease-in-out height;
+
+  &.active {
+    height: 0;
+  }
+}
+
+.drinksInfo {
+  width: 100%;
+  height: $headerHeight;
+  background-color: cornflowerblue;
+  color: white;
+}
+
+.latest {
+  flex: 1;
+  background-color: orange;
+  color: white;
+}
+
+.icon {
+  font-size: 30px;
+}
