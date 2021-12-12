@@ -1,0 +1,33 @@
+@import '../../scss/variables';
+
+.menu {
+  width: 100%;
+
+  &Wrapper {
+    position: relative;
+    overflow-y: auto;
+    width: 0;
+    transition: 0.15s ease-in-out width;
+    background-color: var(--header-height);
+
+    &.active {
+      width: $menuWidth;
+    }
+
+    @media screen and (max-width: $break1) {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+    }
+  }
+
+  &Header {
+    text-align: center;
+    line-height: var(--header-height);
+    height: var(--header-height);
+  }
+}
+
+.subMenu {
+  font-size: 18x;
+}

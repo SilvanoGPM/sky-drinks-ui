@@ -1,6 +1,4 @@
-$headerHeight: 68px;
-$menuWidth: 300px;
-$break: 700px;
+@import '../../scss/variables';
 
 .container {
   display: flex;
@@ -12,39 +10,12 @@ $break: 700px;
   display: flex;
   flex-direction: column;
 
-  @media screen and (max-width: $break) {
+  @media screen and (max-width: $break1) {
     flex: none;
     width: 100%;
   }
 }
 
-.menu {
-  width: 100%;
-
-  &Wrapper {
-    position: relative;
-    overflow-y: auto;
-    width: 0;
-    transition: 0.15s ease-in-out width;
-    background-color: #ffffff;
-
-    &.active {
-      width: 300px;
-    }
-
-    @media screen and (max-width: $break) {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-    }
-  }
-
-  &Header {
-    text-align: center;
-    line-height: $headerHeight;
-    height: $headerHeight;
-  }
-}
 
 .menuToggle {
   width: 40px;
@@ -67,15 +38,11 @@ $break: 700px;
   }
 }
 
-.subMenu {
-  font-size: 18x;
-}
-
 .spacer {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: $headerHeight;
+  height: var(--header-height);
   transition: 0.15s ease-in-out height;
 
   &.active {
@@ -85,7 +52,7 @@ $break: 700px;
 
 .drinksInfo {
   width: 100%;
-  height: $headerHeight;
+  height: var(--header-height);
   background-color: cornflowerblue;
   color: white;
 }
