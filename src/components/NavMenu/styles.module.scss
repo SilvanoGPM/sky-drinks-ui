@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+@import "../../scss/variables";
 
 .menu {
   width: 100%;
@@ -8,23 +8,25 @@
     overflow-y: auto;
     width: 0;
     transition: 0.15s ease-in-out width;
-    background-color: var(--header-height);
+    background-color: $headerHeight;
 
     &.active {
       width: $menuWidth;
     }
 
     @media screen and (max-width: $break1) {
-      position: absolute;
+      position: fixed;
       top: 0;
       bottom: 0;
+      z-index: 100;
+      background-color: var(--header-color);
     }
   }
 
   &Header {
     text-align: center;
-    line-height: var(--header-height);
-    height: var(--header-height);
+    line-height: $headerHeight;
+    height: $headerHeight;
   }
 }
 

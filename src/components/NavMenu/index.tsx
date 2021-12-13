@@ -27,11 +27,15 @@ type NavMenuProps = {
 const { SubMenu } = Menu;
 
 export function NavMenu({ menuShow }: NavMenuProps) {
+  
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
       <h2 className={styles.menuHeader}>SkyDrinks</h2>
 
       <Menu
+        onClick={(event) => {
+          console.log(event);
+        }}
         defaultSelectedKeys={["home"]}
         className={styles.menu}
         mode="inline"
