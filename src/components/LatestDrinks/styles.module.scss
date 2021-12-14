@@ -1,0 +1,36 @@
+@import "../../scss/variables";
+
+.latest {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  &Title {
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  &Drinks {
+    display: flex;
+    gap: 0.8rem;
+    max-width: 700px;
+    overflow-x: auto;
+    padding: 1rem;
+    background-color: #eeeeee;
+    border-radius: 0.5rem;
+    transition: 0.15s ease-in-out;
+    
+    @media screen and (max-width: $break1) {
+      flex-direction: column;
+    }
+
+  }
+
+  &DrinkCard {
+    width: 260px;
+    min-width: 260px;
+  }
+
+}
