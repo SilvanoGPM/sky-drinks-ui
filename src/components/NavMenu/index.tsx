@@ -80,7 +80,7 @@ export function NavMenu({ menuShow }: NavMenuProps) {
             icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
             key="perform-request"
           >
-            Realizar Pedidos
+            Realizar Pedido
           </Menu.Item>
         </SubMenu>
 
