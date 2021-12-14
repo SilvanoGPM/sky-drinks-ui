@@ -1,0 +1,38 @@
+@import '../../scss/variables'; 
+
+.container {
+  padding: 2rem;
+  display: flex;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media screen and (max-width: $break1) {
+    flex-direction: column;
+  }
+}
+
+.image {
+  width: 60%;
+  min-height: 0vh;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; 
+
+  @media screen and (max-width: $break1) {
+    width: 100%;
+    min-height: 300px;
+  }
+}
+
+.info {
+  flex: 1;
+}
+
+.additional {
+  margin-bottom: 1rem;
+}
+
+.bold {
+  font-weight: bold;
+}

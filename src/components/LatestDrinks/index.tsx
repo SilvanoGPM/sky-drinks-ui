@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import useDraggableScroll from 'use-draggable-scroll';
+import useDraggableScroll from "use-draggable-scroll";
+import { Link } from "react-router-dom";
 import { EyeOutlined } from "@ant-design/icons";
 import { Card, Image, Empty, Tooltip, notification } from "antd";
+import routes from "src/routes";
 
 import api from "src/api/api";
 
@@ -67,7 +69,9 @@ export function LatestDrinks() {
         setLatestDrinks(drinks);
       } catch (e: any) {
         notification.warn({
-          message: e.message,
+          message: 'Últimos Drinks',
+          description: e.message,
+          duration: 2
         });
 
         setLatestDrinks([]);
@@ -88,7 +92,11 @@ export function LatestDrinks() {
       <h2 className={styles.latestTitle}>Últimos Drinks Adicionados:</h2>
 
       {Boolean(latestDrinks.length) ? (
-        <ul ref={drinksRef} onMouseDown={onMouseDown} className={styles.latestDrinks}>
+        <ul
+          ref={drinksRef}
+          onMouseDown={onMouseDown}
+          className={styles.latestDrinks}
+        >
           {latestDrinks.map(({ uuid, name, picture, price }) => (
             <Tooltip
               key={uuid}
@@ -100,7 +108,13 @@ export function LatestDrinks() {
               <Card
                 hoverable
                 className={styles.latestDrinkCard}
-                actions={[<EyeOutlined key="view-drink" />]}
+                actions={[
+                  <Tooltip title="Abrir Página" key="view-drink">
+                    <Link to={`${routes.SOME_DRINK}`.replace(":uuid", uuid)}>
+                      <EyeOutlined />
+                    </Link>
+                  </Tooltip>,
+                ]}
                 cover={renderCover({ name, picture })}
                 loading={loading}
               >

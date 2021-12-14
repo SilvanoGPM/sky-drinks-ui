@@ -1,0 +1,17 @@
+export function chooseRandomColor() {
+  const colors = [
+    '#eccc68',
+    '#7bed9f',
+    '#ff6b81',
+    '#ff6348',
+    '#5352ed',
+    '#ced6e0',
+    '#40407a',
+    '#218c74',
+    '#7158e2',
+  ];
+
+  const randomIndex = Math.floor(Math.random() * (colors.length - 1));
+
+  return colors[randomIndex];
+}

@@ -1,4 +1,5 @@
 import { Menu } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import {
   AppstoreOutlined,
@@ -27,16 +28,18 @@ type NavMenuProps = {
 const { SubMenu } = Menu;
 
 export function NavMenu({ menuShow }: NavMenuProps) {
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
       <h2 className={styles.menuHeader}>SkyDrinks</h2>
 
       <Menu
         onClick={(event) => {
-          console.log(event);
+          navigate(event.key);
         }}
-        defaultSelectedKeys={["home"]}
+        defaultSelectedKeys={[location.pathname.replace('/', '')]}
         className={styles.menu}
         mode="inline"
       >
