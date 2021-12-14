@@ -17,28 +17,6 @@
   }
 }
 
-.menuToggle {
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  z-index: 101;
-  cursor: pointer;
-  border-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  transition: 0.15s ease-in-out left;
-
-  &.active {
-    left: $menuWidth - 25px;
-    right: 0;
-  }
-}
-
 .drinksInfo {
   width: 100%;
   min-height: $headerHeight;

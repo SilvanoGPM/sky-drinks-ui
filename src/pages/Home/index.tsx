@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
 
 import { NavMenu } from "src/components/NavMenu";
+import { NavMenuButton } from "src/components/NavMenuButton";
 import { LatestDrinks } from "src/components/LatestDrinks";
 
 import styles from "./styles.module.scss";
@@ -9,24 +9,11 @@ import styles from "./styles.module.scss";
 export function Home() {
   const [menuShow, setMenuShow] = useState(false);
 
-  function switchMenu() {
-    setMenuShow(!menuShow);
-  }
-
   return (
     <div className={styles.container}>
       <NavMenu menuShow={menuShow} />
 
-      <button
-        onClick={switchMenu}
-        className={`${styles.menuToggle} ${menuShow ? styles.active : ""}`}
-      >
-        {menuShow ? (
-          <CloseOutlined style={{ fontSize: 20, color: "#e74c3c" }} />
-        ) : (
-          <MenuOutlined style={{ fontSize: 20 }} />
-        )}
-      </button>
+      <NavMenuButton menuShow={menuShow} setMenuShow={setMenuShow} />
 
       <div className={styles.drinksContainer}>
         <div className={`${styles.spacer} ${menuShow ? styles.active : ""}`} />
