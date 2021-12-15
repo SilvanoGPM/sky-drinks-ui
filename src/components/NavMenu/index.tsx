@@ -33,13 +33,16 @@ export function NavMenu({ menuShow }: NavMenuProps) {
 
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
-      <h2 className={styles.menuHeader}>SkyDrinks</h2>
+      <div className={styles.menuHeader}>
+        <h2>SkyDrinks</h2>
+      </div>
 
       <Menu
+        theme="dark"
         onClick={(event) => {
           navigate(event.key);
         }}
-        defaultSelectedKeys={[location.pathname.replace('/', '')]}
+        defaultSelectedKeys={[location.pathname.replace("/", "")]}
         className={styles.menu}
         mode="inline"
       >
@@ -55,7 +58,7 @@ export function NavMenu({ menuShow }: NavMenuProps) {
         >
           <Menu.Item
             icon={<SearchOutlined style={{ fontSize: 25 }} />}
-            key="search-drinks"
+            key="drinks/search"
           >
             Pesquisar Drinks
           </Menu.Item>

@@ -5,9 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import api from "src/api/api";
 import routes from "src/routes";
-import { chooseRandomColor } from "src/utils/chooseRandomColor";
 import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 import { formatDrinkVolume } from "src/utils/formatDrinkVolume";
+import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
 
 import styles from "./styles.module.scss";
 
@@ -25,24 +25,6 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-const additionals = new Map<string, string>(
-  Object.entries({
-    gelo: "cyan",
-    limao: "green",
-    limão: "green",
-    amora: "red",
-    "amora vermelha": "red",
-    "amora roxa": "purple",
-    canela: "orange",
-    blueberry: "geekblue",
-  })
-);
-
-function getTagColor(additional: string) {
-  return additionals.has(additional)
-    ? additionals.get(additional)
-    : chooseRandomColor();
-}
 
 export function DrinkView() {
   const params = useParams();
@@ -114,7 +96,7 @@ export function DrinkView() {
             <div className={styles.additional}>
               {drink.additionalList.map((additional) => (
                 <Tag
-                  color={getTagColor(additional)}
+                  color={getAdditionalTagColor(additional)}
                   key={`Adicional - ${additional}`}
                 >
                   {additional}

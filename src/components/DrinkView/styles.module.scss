@@ -13,14 +13,16 @@
 }
 
 .image {
-  width: 60%;
-  min-height: 0vh;
+  width: 600px;
+  max-width: 60%;
+  min-height: 50vh;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover; 
 
   @media screen and (max-width: $break1) {
     width: 100%;
+    max-width: 100%;
     min-height: 300px;
   }
 }

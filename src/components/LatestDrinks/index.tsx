@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import useDraggableScroll from "use-draggable-scroll";
-import { Link } from "react-router-dom";
-import { EyeOutlined } from "@ant-design/icons";
-import { Card, Image, Empty, Tooltip, notification } from "antd";
-import routes from "src/routes";
+import { Empty, notification } from "antd";
 
 import api from "src/api/api";
 
 import styles from "./styles.module.scss";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import { DrinkCard } from "../DrinkCard";
 
 type LatestDrinkType = {
   uuid: string;
@@ -17,15 +15,6 @@ type LatestDrinkType = {
   picture: string;
   price: number;
 };
-
-type RenderCoverProps = {
-  name: string;
-  picture: string;
-};
-
-const { Meta } = Card;
-
-const CARD_WIDTH = 260;
 
 const drinkFake = {
   name: "Carregando...",
@@ -36,17 +25,6 @@ const drinkFake = {
 const latestDrinksFake = Array(5)
   .fill(drinkFake)
   .map((drink, uuid) => ({ ...drink, uuid }));
-
-function renderCover({ name, picture }: RenderCoverProps) {
-  return (
-    <Image
-      height={300}
-      width={CARD_WIDTH}
-      alt={`Drink - ${name}`}
-      src={picture}
-    />
-  );
-}
 
 export function LatestDrinks() {
   const drinksRef = useRef<HTMLUListElement>(null);
@@ -69,9 +47,9 @@ export function LatestDrinks() {
         setLatestDrinks(drinks);
       } catch (e: any) {
         notification.warn({
-          message: 'Últimos Drinks',
+          message: "Últimos Drinks",
           description: e.message,
-          duration: 2
+          duration: 2,
         });
 
         setLatestDrinks([]);
@@ -97,30 +75,8 @@ export function LatestDrinks() {
           onMouseDown={onMouseDown}
           className={styles.latestDrinks}
         >
-          {latestDrinks.map(({ uuid, name, picture, price }) => (
-            <Tooltip
-              key={uuid}
-              mouseEnterDelay={1}
-              placement="rightTop"
-              arrowPointAtCenter
-              title={name}
-            >
-              <Card
-                hoverable
-                className={styles.latestDrinkCard}
-                actions={[
-                  <Tooltip title="Abrir Página" key="view-drink">
-                    <Link to={`${routes.SOME_DRINK}`.replace(":uuid", uuid)}>
-                      <EyeOutlined />
-                    </Link>
-                  </Tooltip>,
-                ]}
-                cover={renderCover({ name, picture })}
-                loading={loading}
-              >
-                <Meta title={name} description={`Preço: R$ ${price}`} />
-              </Card>
-            </Tooltip>
+          {latestDrinks.map((props) => (
+            <DrinkCard {...props} width={260} height={300} loading={loading} />
           ))}
         </ul>
       ) : (

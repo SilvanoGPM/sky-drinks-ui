@@ -8,7 +8,7 @@
     overflow-y: auto;
     width: 0;
     transition: 0.15s ease-in-out width;
-    background-color: $headerHeight;
+    background-color: var(--navmenu-background);
 
     &.active {
       width: $menuWidth;
@@ -20,14 +20,23 @@
       top: 0;
       bottom: 0;
       z-index: 100;
-      background-color: var(--header-color);
     }
   }
 
   &Header {
-    text-align: center;
-    line-height: $headerHeight;
     height: $headerHeight;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    h2 {
+      color: var(--navmenu-color);
+      background-color: var(--navmenu-header-background);
+      margin: 0;
+      padding: 0.5rem 2rem;
+      width: 80%;
+      text-align: center;
+    }
   }
 }
 

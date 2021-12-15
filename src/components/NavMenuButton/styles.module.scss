@@ -1,4 +1,4 @@
-@import '../../scss/variables';
+@import "../../scss/variables";
 
 .menuToggle {
   width: 40px;
@@ -15,9 +15,11 @@
   border: none;
   border-radius: 50%;
   transition: 0.15s ease-in-out left;
+  background: var(--navmenu-button-background);
 
   &.active {
     left: $menuWidth - 25px;
     right: 0;
+    background: var(--navmenu-button-background-active);
   }
 }

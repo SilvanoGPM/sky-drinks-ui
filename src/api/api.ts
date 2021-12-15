@@ -53,6 +53,15 @@ const api = {
       const details = exception?.response?.data?.details || 'Aconteceu um erro ao tentar conectar no servidor.';
       throw new Error(details);
     }
+  },
+
+  async searchDrink(params: string, size = 6) {
+    const { data } = await fetch.get(`/drinks/search?size=${size}&${params}`);
+
+    return {
+      totalElements: data.totalElements,
+      content: data.content.map(toFullPictureURI),
+    };
   }
 };
 
