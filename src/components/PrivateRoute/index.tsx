@@ -8,11 +8,7 @@ type CustomRouteProps = {
 };
 
 export function PrivateRoute({ children }: CustomRouteProps): JSX.Element {
-  const { authLoading, authenticated } = useContext(AuthContext);
-
-  if (authLoading) {
-    return <h1>Loading...</h1>;
-  }
+  const { authenticated } = useContext(AuthContext);
 
   if (!authenticated) {
     return <Navigate to={routes.LOGIN} />;

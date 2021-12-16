@@ -21,7 +21,7 @@ export function Login() {
 
   async function handleFormLogin(values: LoginValues) {
     try {
-      await handleLogin(values.email, values.password);
+      await handleLogin(values);
       notification.success({
         message: "Login efetuado com sucesso!",
         duration: 3,

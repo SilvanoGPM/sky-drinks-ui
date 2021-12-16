@@ -1,54 +1,54 @@
-import { HeadersDefaults } from "axios";
 import { useState, useEffect } from "react";
 
 import endpoints, { api } from "src/api/api";
 
-type FakeHeaders = {
-  Authorization: string | undefined;
-} & HeadersDefaults;
+type LoginProps = { email: string; password: string; remember: boolean };
 
-const LOCAL_STORAGE_KEY = 'userInfo';
+export const USER_INFO_KEY = "userInfo";
 
 export function useAuth() {
   const [authenticated, setAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const userInfo = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const userInfo = localStorage.getItem(USER_INFO_KEY);
 
     if (userInfo) {
-      const headers = api.defaults.headers as FakeHeaders;
-      headers.Authorization = JSON.parse(userInfo).token;
+      api.defaults.headers.common["Authorization"] = JSON.parse(userInfo).token;
       setAuthenticated(true);
     }
 
     setAuthLoading(false);
   }, []);
 
-  async function handleLogin(email: string, password: string) {
-    const token = await endpoints.login(email, password);
+  async function handleLogin({ email, password, remember }: LoginProps) {
+    setAuthLoading(true);
 
-    // EU SEI EU SEI
-    // mas é temporário, colocar a senha ali parece uma pessíma ideia
-    // porém a única que tenho no momento.
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
-      email,
-      password,
-      token,
-    }));
+    try {
+      const token = await endpoints.login(email, password);
 
-    const headers = api.defaults.headers as FakeHeaders;
-    headers.Authorization = token;
-    setAuthenticated(true);
+      // EU SEI EU SEI
+      // mas é temporário, colocar a senha ali parece uma pessíma ideia
+      // porém a única que tenho no momento.
+
+      const userInfo = { token, ...(remember ? { email, password } : {}) };
+
+      localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+
+      setAuthenticated(true);
+      api.defaults.headers.common["Authorization"] = token;
+    } catch (e) {
+      throw e;
+    } finally {
+      setAuthLoading(false);
+    }
   }
 
   function handleLogout() {
     setAuthenticated(false);
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    const headers = api.defaults.headers as FakeHeaders;
-    headers.Authorization = undefined;
+    localStorage.removeItem(USER_INFO_KEY);
+    api.defaults.headers.common["Authorization"] = "";
   }
-  
-  return { authenticated, authLoading, handleLogin, handleLogout };
 
+  return { authenticated, authLoading, handleLogin, handleLogout };
 }

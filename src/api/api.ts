@@ -1,4 +1,5 @@
 import axios from "axios";
+import { USER_INFO_KEY } from "src/contexts/hooks/useAuth";
 
 type DrinkType = {
   uuid: string;
@@ -20,6 +21,36 @@ export const api = axios.create({
   baseURL,
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const tokenExpired = error?.response?.data?.expired || false;
+    const status = error?.response.data?.status || 0;
+
+    if (tokenExpired && status === 401) {
+      const userInfo = localStorage.getItem(USER_INFO_KEY);
+
+      if (userInfo) {
+        const userInfoObject = JSON.parse(userInfo);
+
+        if (userInfoObject.email && userInfoObject.password) {
+          const token = await endpoints.login(
+            userInfoObject.email,
+            userInfoObject.password
+          );
+          userInfoObject.token = token;
+          api.defaults.headers.common["Authorization"] = token;
+          error.config.headers.Authorization = token;
+          localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfoObject));
+          return axios.request(error.config);
+        }
+      }
+    } else {
+      return error;
+    }
+  }
+);
+
 function toFullPictureURI(drink: DrinkType) {
   return {
     ...drink,
@@ -28,13 +59,22 @@ function toFullPictureURI(drink: DrinkType) {
 }
 
 const endpoints = {
+  async getTables() {
+    try {
+      const response = await api.get("/tables/waiter");
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   async login(email: string, password: string) {
     try {
-      const response = await api.post('/login', {
+      const response = await api.post("/login", {
         email,
         password,
       });
-  
+
       return response.headers.authorization;
     } catch (exception: any) {
       const status = exception?.response?.data?.status || 0;
