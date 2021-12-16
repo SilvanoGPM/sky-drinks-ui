@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { LoginOutlined } from "@ant-design/icons";
 import { Input, Form, Button, Checkbox, notification } from "antd";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 import { AuthContext } from "src/contexts/AuthContext";
 
@@ -17,6 +17,8 @@ type LoginValues = {
 };
 
 export function Login() {
+  const location = useLocation();
+
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);
 
   async function handleFormLogin(values: LoginValues) {
@@ -36,7 +38,8 @@ export function Login() {
   }
 
   if (authenticated) {
-    return <Navigate to={routes.HOME} />;
+    const path = location?.state?.path || routes.HOME;
+    return <Navigate to={path} />;
   }
 
   return (
