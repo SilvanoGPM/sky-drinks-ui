@@ -1,5 +1,5 @@
 import { Menu } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import {
   AppstoreOutlined,
@@ -28,7 +28,6 @@ type NavMenuProps = {
 const { SubMenu } = Menu;
 
 export function NavMenu({ menuShow }: NavMenuProps) {
-  const navigate = useNavigate();
   const location = useLocation();
 
   return (
@@ -39,15 +38,12 @@ export function NavMenu({ menuShow }: NavMenuProps) {
 
       <Menu
         theme="dark"
-        onClick={(event) => {
-          navigate(event.key);
-        }}
-        defaultSelectedKeys={[location.pathname.replace("/", "")]}
+        defaultSelectedKeys={[location.pathname]}
         className={styles.menu}
         mode="inline"
       >
-        <Menu.Item icon={<HomeOutlined style={{ fontSize: 25 }} />} key="home">
-          Início
+        <Menu.Item icon={<HomeOutlined style={{ fontSize: 25 }} />} key="/">
+          <Link to="/">Início</Link>
         </Menu.Item>
 
         <SubMenu
@@ -60,13 +56,13 @@ export function NavMenu({ menuShow }: NavMenuProps) {
             icon={<SearchOutlined style={{ fontSize: 25 }} />}
             key="drinks/search"
           >
-            Pesquisar Drinks
+            <Link to="drinks/search">Pesquisar Drinks</Link>
           </Menu.Item>
           <Menu.Item
             icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
             key="manage-drinks"
           >
-            Gerenciar Drinks
+            <Link to="manage-drinks">Gerenciar Drinks</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -80,13 +76,13 @@ export function NavMenu({ menuShow }: NavMenuProps) {
             icon={<MyRequestsIcon style={{ fontSize: 25 }} />}
             key="my-requests"
           >
-            Meus Pedidos
+            <Link to="my-requests">Meus Pedidos</Link>
           </Menu.Item>
           <Menu.Item
             icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
             key="perform-request"
           >
-            Realizar Pedido
+            <Link to="perform-request">Realizar Pedido</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -100,7 +96,7 @@ export function NavMenu({ menuShow }: NavMenuProps) {
             icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
             key="manage-tables"
           >
-            Gerenciar Mesas
+            <Link to="manage-tables">Gerenciar Mesas</Link>
           </Menu.Item>
         </SubMenu>
 
@@ -114,26 +110,26 @@ export function NavMenu({ menuShow }: NavMenuProps) {
             icon={<LoginOutlined style={{ fontSize: 25 }} />}
             key="login"
           >
-            Entrar
+            <Link to="/login">Entrar</Link>
           </Menu.Item>
           <Menu.Item
             icon={<RocketOutlined style={{ fontSize: 25 }} />}
             key="my-account"
           >
-            Minha Conta
+            <Link to="/my-account">Minha Conta</Link>
           </Menu.Item>
           <Menu.Item
             icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
             key="manage-users"
           >
-            Gerenciar Usuários
+            <Link to="/manage-users">Gerenciar Usuários</Link>
           </Menu.Item>
           <Menu.Item
             icon={<LogoutOutlined style={{ fontSize: 25 }} />}
             key="logout"
             danger
           >
-            Sair
+            <Link to="/logout">Sair</Link>
           </Menu.Item>
         </SubMenu>
       </Menu>

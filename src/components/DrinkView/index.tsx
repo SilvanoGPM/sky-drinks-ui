@@ -3,7 +3,7 @@ import { Skeleton, Tag, Divider, Button, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import api from "src/api/api";
+import endpoints from "src/api/api";
 import routes from "src/routes";
 import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 import { formatDrinkVolume } from "src/utils/formatDrinkVolume";
@@ -36,15 +36,15 @@ export function DrinkView() {
   useEffect(() => {
     async function findDrink() {
       try {
-        const drinkFound = await api.findDrinkByUUID(params.uuid);
+        const drinkFound = await endpoints.findDrinkByUUID(params.uuid);
         setDrink(drinkFound);
       } catch (exception: any) {
         navigation(routes.HOME);
 
         notification.warn({
-          message: 'Visualização de Drink',
+          message: "Visualização de Bebida",
           description: exception.message,
-          duration: 2
+          duration: 2,
         });
 
         return;

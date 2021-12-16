@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import useDraggableScroll from "use-draggable-scroll";
 import { Empty, notification } from "antd";
 
-import api from "src/api/api";
+import endpoints from "src/api/api";
 
 import styles from "./styles.module.scss";
 
@@ -36,7 +36,7 @@ export function LatestDrinks() {
   useEffect(() => {
     async function loadLatestDrinks() {
       try {
-        const drinks = await api.getLatestDrinks(5);
+        const drinks = await endpoints.getLatestDrinks(5);
 
         if (drinks.length === 0) {
           notification.warn({
@@ -47,7 +47,7 @@ export function LatestDrinks() {
         setLatestDrinks(drinks);
       } catch (e: any) {
         notification.warn({
-          message: "Últimos Drinks",
+          message: "Últimas Bebidas",
           description: e.message,
           duration: 2,
         });
@@ -76,7 +76,7 @@ export function LatestDrinks() {
           className={styles.latestDrinks}
         >
           {latestDrinks.map((props) => (
-            <DrinkCard {...props} width={260} height={300} loading={loading} />
+            <DrinkCard {...props} key={props.uuid} width={260} height={300} loading={loading} />
           ))}
         </ul>
       ) : (

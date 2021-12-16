@@ -12,9 +12,10 @@ import {
   Drawer,
   Empty,
   Pagination,
+  notification,
 } from "antd";
 
-import api from "src/api/api";
+import endpoints from "src/api/api";
 
 import styles from "./styles.module.scss";
 import { useSearchParams } from "react-router-dom";
@@ -114,8 +115,18 @@ export function SearchDrinks() {
 
   async function searchDrinks(params: string) {
     setLoading(true);
-    const drinks = await api.searchDrink(params);
-    setData(drinks);
+    
+    try {
+      const drinks = await endpoints.searchDrink(params);
+      setData(drinks);
+    } catch (e: any) {
+      notification.warn({
+        message: "Pesquisar Bebidas",
+        description: e.message,
+        duration: 2,
+      });
+    }
+
     setLoading(false);
   }
 
