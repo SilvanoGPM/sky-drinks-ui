@@ -15,7 +15,7 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-const baseURL = "http://localhost:8080/api/v1";
+const baseURL = process.env.REACT_APP_API_URL;
 
 export const api = axios.create({
   baseURL,
@@ -27,7 +27,7 @@ api.interceptors.response.use(
     const tokenExpired = error?.response?.data?.expired || false;
     const status = error?.response.data?.status || 0;
 
-    if (tokenExpired && status === 401) {
+    if (tokenExpired && status === 401 && error.config) {
       const userInfo = localStorage.getItem(USER_INFO_KEY);
 
       if (userInfo) {
@@ -43,6 +43,11 @@ api.interceptors.response.use(
           error.config.headers.Authorization = token;
           localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfoObject));
           return axios.request(error.config);
+        } else {
+          localStorage.removeItem(USER_INFO_KEY);
+          error.config.headers.Authorization = undefined;
+          api.defaults.headers.common["Authorization"] = '';
+          throw new Error('Por favor, faça login novamente!'); 
         }
       }
     } else {
@@ -64,7 +69,7 @@ const endpoints = {
       const response = await api.get("/tables/waiter");
       console.log(response);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   },
 

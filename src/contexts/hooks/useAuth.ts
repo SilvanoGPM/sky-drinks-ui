@@ -50,5 +50,11 @@ export function useAuth() {
     api.defaults.headers.common["Authorization"] = "";
   }
 
-  return { authenticated, authLoading, handleLogin, handleLogout };
+  return {
+    authenticated,
+    authLoading,
+    setAuthenticated,
+    handleLogin,
+    handleLogout,
+  };
 }

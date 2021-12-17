@@ -7,6 +7,7 @@ type LoginProps = { email: string; password: string; remember: boolean };
 type AuthContextProps = {
   authenticated: boolean;
   authLoading: boolean;
+  setAuthenticated: (authenticated: boolean) => void;
   handleLogin: (values: LoginProps) => Promise<void>;
   handleLogout: () => void;
 };
