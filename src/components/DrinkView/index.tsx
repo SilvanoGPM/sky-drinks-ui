@@ -45,10 +45,11 @@ export function DrinkView() {
           message: "Visualização de Bebida",
           description: exception.message,
           duration: 2,
+          placement: "bottomRight",
         });
 
         return;
-      } 
+      }
 
       setLoading(false);
     }

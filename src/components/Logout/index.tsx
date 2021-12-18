@@ -24,6 +24,7 @@ export function Logout() {
     notification.success({
       message: "Deslogado com sucesso.",
       duration: 3,
+      placement: "bottomRight",
     });
   }
 

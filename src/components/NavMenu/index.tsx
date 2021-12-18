@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { Menu } from "antd";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "src/contexts/AuthContext";
 
 import {
   AppstoreOutlined,
@@ -20,6 +22,7 @@ import {
 } from "src/components/CustomIcons";
 
 import styles from "./styles.module.scss";
+import { getUserPermissions } from "src/utils/getUserPermissions";
 
 type NavMenuProps = {
   menuShow: boolean;
@@ -28,7 +31,11 @@ type NavMenuProps = {
 const { SubMenu } = Menu;
 
 export function NavMenu({ menuShow }: NavMenuProps) {
+  const { userInfo, authenticated } = useContext(AuthContext);
+
   const location = useLocation();
+
+  const permissions = getUserPermissions(userInfo.role);
 
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
@@ -58,47 +65,68 @@ export function NavMenu({ menuShow }: NavMenuProps) {
           >
             <Link to="drinks/search">Pesquisar Drinks</Link>
           </Menu.Item>
-          <Menu.Item
-            icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-            key="manage-drinks"
-          >
-            <Link to="manage-drinks">Gerenciar Drinks</Link>
-          </Menu.Item>
+
+          {permissions.isBarmen && (
+            <Menu.Item
+              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              key="manage-drinks"
+            >
+              <Link to="manage-drinks">Gerenciar Drinks</Link>
+            </Menu.Item>
+          )}
         </SubMenu>
 
-        <SubMenu
-          className={styles.subMenu}
-          key="subRequests"
-          icon={<ShoppingCartOutlined style={{ fontSize: 25 }} />}
-          title="Pedidos"
-        >
-          <Menu.Item
-            icon={<MyRequestsIcon style={{ fontSize: 25 }} />}
-            key="my-requests"
+        {(permissions.isUser || permissions.isWaiter) && (
+          <SubMenu
+            className={styles.subMenu}
+            key="subRequests"
+            icon={<ShoppingCartOutlined style={{ fontSize: 25 }} />}
+            title="Pedidos"
           >
-            <Link to="my-requests">Meus Pedidos</Link>
-          </Menu.Item>
-          <Menu.Item
-            icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
-            key="perform-request"
-          >
-            <Link to="perform-request">Realizar Pedido</Link>
-          </Menu.Item>
-        </SubMenu>
+            {permissions.isUser && (
+              <>
+                <Menu.Item
+                  icon={<MyRequestsIcon style={{ fontSize: 25 }} />}
+                  key="my-requests"
+                >
+                  <Link to="my-requests">Meus Pedidos</Link>
+                </Menu.Item>
 
-        <SubMenu
-          className={styles.subMenu}
-          key="subTables"
-          icon={<TableIcon style={{ fontSize: 25 }} />}
-          title="Mesas"
-        >
-          <Menu.Item
-            icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-            key="manage-tables"
+                <Menu.Item
+                  icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
+                  key="perform-request"
+                >
+                  <Link to="perform-request">Realizar Pedido</Link>
+                </Menu.Item>
+              </>
+            )}
+
+            {permissions.isWaiter && (
+              <Menu.Item
+                icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+                key="manage-requests"
+              >
+                <Link to="manage-requests">Gerenciar Pedidos</Link>
+              </Menu.Item>
+            )}
+          </SubMenu>
+        )}
+
+        {permissions.isWaiter && (
+          <SubMenu
+            className={styles.subMenu}
+            key="subTables"
+            icon={<TableIcon style={{ fontSize: 25 }} />}
+            title="Mesas"
           >
-            <Link to="manage-tables">Gerenciar Mesas</Link>
-          </Menu.Item>
-        </SubMenu>
+            <Menu.Item
+              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              key="manage-tables"
+            >
+              <Link to="manage-tables">Gerenciar Mesas</Link>
+            </Menu.Item>
+          </SubMenu>
+        )}
 
         <SubMenu
           className={styles.subMenu}
@@ -106,31 +134,42 @@ export function NavMenu({ menuShow }: NavMenuProps) {
           icon={<UserOutlined style={{ fontSize: 25 }} />}
           title="Conta"
         >
-          <Menu.Item
-            icon={<LoginOutlined style={{ fontSize: 25 }} />}
-            key="login"
-          >
-            <Link to="/login">Entrar</Link>
-          </Menu.Item>
-          <Menu.Item
-            icon={<RocketOutlined style={{ fontSize: 25 }} />}
-            key="my-account"
-          >
-            <Link to="/my-account">Minha Conta</Link>
-          </Menu.Item>
-          <Menu.Item
-            icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-            key="manage-users"
-          >
-            <Link to="/manage-users">Gerenciar Usuários</Link>
-          </Menu.Item>
-          <Menu.Item
-            icon={<LogoutOutlined style={{ fontSize: 25 }} />}
-            key="logout"
-            danger
-          >
-            <Link to="/logout">Sair</Link>
-          </Menu.Item>
+          {permissions.isGuest && (
+            <Menu.Item
+              icon={<LoginOutlined style={{ fontSize: 25 }} />}
+              key="login"
+            >
+              <Link to="/login">Entrar</Link>
+            </Menu.Item>
+          )}
+
+          {authenticated && (
+            <Menu.Item
+              icon={<RocketOutlined style={{ fontSize: 25 }} />}
+              key="my-account"
+            >
+              <Link to="/my-account">Minha Conta</Link>
+            </Menu.Item>
+          )}
+
+          {permissions.isAdmin && (
+            <Menu.Item
+              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              key="manage-users"
+            >
+              <Link to="/manage-users">Gerenciar Usuários</Link>
+            </Menu.Item>
+          )}
+
+          {authenticated && (
+            <Menu.Item
+              icon={<LogoutOutlined style={{ fontSize: 25 }} />}
+              key="logout"
+              danger
+            >
+              <Link to="/logout">Sair</Link>
+            </Menu.Item>
+          )}
         </SubMenu>
       </Menu>
     </div>

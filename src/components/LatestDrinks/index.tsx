@@ -41,6 +41,7 @@ export function LatestDrinks() {
         if (drinks.length === 0) {
           notification.warn({
             message: "Não existem drinks cadastrados!",
+            placement: "bottomRight",
           });
         }
 
@@ -50,6 +51,7 @@ export function LatestDrinks() {
           message: "Últimas Bebidas",
           description: e.message,
           duration: 2,
+          placement: "bottomRight",
         });
 
         setLatestDrinks([]);

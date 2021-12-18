@@ -24,14 +24,17 @@ export function Login() {
   async function handleFormLogin(values: LoginValues) {
     try {
       await handleLogin(values);
+
       notification.success({
         message: "Login efetuado com sucesso!",
         duration: 3,
+        placement: "bottomRight",
       });
     } catch (e: any) {
       notification.error({
         message: e.message,
         duration: 4,
+        placement: "bottomRight",
       });
     }
 

@@ -115,7 +115,7 @@ export function SearchDrinks() {
 
   async function searchDrinks(params: string) {
     setLoading(true);
-    
+
     try {
       const drinks = await endpoints.searchDrink(params);
       setData(drinks);
@@ -124,6 +124,7 @@ export function SearchDrinks() {
         message: "Pesquisar Bebidas",
         description: e.message,
         duration: 2,
+        placement: "bottomRight",
       });
     }
 

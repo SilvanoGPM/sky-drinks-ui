@@ -1,5 +1,9 @@
 import axios from "axios";
-import { USER_INFO_KEY } from "src/contexts/hooks/useAuth";
+
+import {
+  USER_CREDENTIALS_KEY,
+  USER_INFO_KEY,
+} from "src/contexts/hooks/useAuth";
 
 type DrinkType = {
   uuid: string;
@@ -28,30 +32,43 @@ api.interceptors.response.use(
     const status = error?.response.data?.status || 0;
 
     if (tokenExpired && status === 401 && error.config) {
-      const userInfo = localStorage.getItem(USER_INFO_KEY);
+      const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
 
-      if (userInfo) {
-        const userInfoObject = JSON.parse(userInfo);
+      if (userCredentials) {
+        const { email, password } = JSON.parse(userCredentials);
 
-        if (userInfoObject.email && userInfoObject.password) {
-          const token = await endpoints.login(
-            userInfoObject.email,
-            userInfoObject.password
-          );
-          userInfoObject.token = token;
+        if (email && password) {
+          const token = await endpoints.login(email, password);
+
           api.defaults.headers.common["Authorization"] = token;
           error.config.headers.Authorization = token;
-          localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfoObject));
+
+          localStorage.setItem(
+            USER_CREDENTIALS_KEY,
+            JSON.stringify({
+              email,
+              password,
+              token,
+            })
+          );
+
+          const userInfo = await endpoints.getUserInfo();
+
+          localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+
           return axios.request(error.config);
         } else {
+          localStorage.removeItem(USER_CREDENTIALS_KEY);
           localStorage.removeItem(USER_INFO_KEY);
+
           error.config.headers.Authorization = undefined;
-          api.defaults.headers.common["Authorization"] = '';
-          throw new Error('Por favor, faça login novamente!'); 
+          api.defaults.headers.common["Authorization"] = "";
+
+          throw new Error("Por favor, faça login novamente!");
         }
       }
     } else {
-      return error;
+      throw error;
     }
   }
 );
@@ -73,12 +90,19 @@ const endpoints = {
     }
   },
 
+  async getUserInfo() {
+    const response = await api.get("/users/all/user-info");
+    return response.data;
+  },
+
   async login(email: string, password: string) {
     try {
       const response = await api.post("/login", {
         email,
         password,
       });
+
+      console.log("response", response);
 
       return response.headers.authorization;
     } catch (exception: any) {
