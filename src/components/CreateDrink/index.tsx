@@ -113,8 +113,8 @@ export function CreateDrink() {
             tooltip="Produtos para complementar a bebida, você pode adicionar mais do que os que estão listados"
           >
             <Select mode="tags">
-              <Select.Option value="gelo">Gelo</Select.Option>
-              <Select.Option value="limão">Limão</Select.Option>
+              <Select.Option value="gelo">gelo</Select.Option>
+              <Select.Option value="limão">limão</Select.Option>
             </Select>
           </Form.Item>
 

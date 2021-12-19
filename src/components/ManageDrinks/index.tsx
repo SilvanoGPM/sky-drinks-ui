@@ -172,7 +172,7 @@ export function ManageDrinks() {
                           </Link>
                         </Tooltip>,
 
-                        <Tooltip title="Remover Bebida" placement="leftBottom" key="remove-drink">
+                        <Tooltip title="Remover Bebida" placement="bottom" key="remove-drink">
                           <Popconfirm
                             title="Remover Bebida"
                             placement="top"

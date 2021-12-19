@@ -29,6 +29,17 @@ type DrinkToCreate = {
   alcoholic: boolean;
 };
 
+type DrinkToUpdate = {
+  uuid: string;
+  volume: number;
+  name: string;
+  picture?: File | string;
+  description: string;
+  price: number;
+  additional: string;
+  alcoholic: boolean;
+};
+
 const baseURL = process.env.REACT_APP_API_URL;
 
 export const api = axios.create({
@@ -132,20 +143,38 @@ const endpoints = {
     }
   },
 
+  async uploadImage(picture: File) {
+    const formData = new FormData();
+    formData.append("file", picture);
+
+    return api.post("/files/barmen/images", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
+  async replaceDrink(drink: DrinkToUpdate) {
+    try {
+      const { picture } = drink;
+
+      if (picture && picture instanceof File) {
+        const image = await this.uploadImage(picture);
+        drink.picture = image.data.fileName;
+      }
+
+      await api.put("/drinks/barmen", drink);
+    } catch (e: any) {
+      throw e;
+    }
+  },
+
   async createDrink(drink: DrinkToCreate) {
     try {
       const { picture } = drink;
 
-      if (picture) {
-        const formData = new FormData();
-        formData.append("file", picture);
-
-        const image = await api.post("/files/barmen/images", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
+      if (picture && picture instanceof File) {
+        const image = await this.uploadImage(picture);
         drink.picture = image.data.fileName;
       }
 
