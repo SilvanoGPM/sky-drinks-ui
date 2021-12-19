@@ -22,7 +22,7 @@ type DrinkType = {
 type DrinkToCreate = {
   volume: number;
   name: string;
-  picture: any;
+  picture?: File | string;
   description: string;
   price: number;
   additional: string;
@@ -124,25 +124,33 @@ const endpoints = {
     }
   },
 
+  async deleteDrink(uuid: string) {
+    try {
+      await api.delete(`/drinks/barmen/${uuid}`);
+    } catch (e: any) {
+      throw e;
+    }
+  },
+
   async createDrink(drink: DrinkToCreate) {
     try {
       const { picture } = drink;
 
-    if (picture) {
-      const formData = new FormData();
-      formData.append("file", picture);
+      if (picture) {
+        const formData = new FormData();
+        formData.append("file", picture);
 
-      const image = await api.post("/files/barmen/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+        const image = await api.post("/files/barmen/images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
-      drink.picture = image.data.fileName;
-    }
+        drink.picture = image.data.fileName;
+      }
 
-    const response = await api.post('/drinks/barmen', drink);
-    return response.data;
+      const response = await api.post("/drinks/barmen", drink);
+      return response.data;
     } catch (e: any) {
       throw e;
     }

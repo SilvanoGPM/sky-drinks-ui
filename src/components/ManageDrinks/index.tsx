@@ -1,5 +1,14 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Empty, Input, Pagination, Tooltip } from "antd";
+import {
+  Button,
+  Empty,
+  Input,
+  notification,
+  Pagination,
+  Popconfirm,
+  Spin,
+  Tooltip,
+} from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import endpoints from "src/api/api";
@@ -38,14 +47,22 @@ export function ManageDrinks() {
 
   useEffect(() => {
     async function loadDrinks() {
-      const data = await endpoints.searchDrink(
-        `page=${pagination.page}${
-          pagination.searchName ? `&name=${pagination.searchName}` : ""
-        }`
-      );
-      setData(data);
-
-      setLoading(false);
+      try {
+        const data = await endpoints.searchDrink(
+          `page=${pagination.page}${
+            pagination.searchName ? `&name=${pagination.searchName}` : ""
+          }`
+        );
+        setData(data);
+      } catch (e: any) {
+        notification.warn({
+          message: e.message,
+          duration: 3,
+          placement: "bottomRight",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
 
     if (loading) {
@@ -71,6 +88,48 @@ export function ManageDrinks() {
     });
   }
 
+  function removeDrink(uuid: string) {
+    return async () =>  {
+      try {
+        await endpoints.deleteDrink(uuid);
+
+        setData({
+          ...data,
+          content: data.content.filter((item) => item.uuid !== uuid),
+        });
+
+        console.log(data);
+        console.log(pagination);
+
+        const isLastElementOfPage =
+          data.content.length === 1 && pagination.page > 0;
+
+        console.log(isLastElementOfPage);
+
+        if (isLastElementOfPage) {
+          setPagination({
+            ...pagination,
+            page: pagination.page - 1,
+          });
+
+          setLoading(true);
+        }
+
+        notification.success({
+          message: "Bebida foi removida com sucesso!",
+          duration: 3,
+          placement: "bottomRight",
+        });
+      } catch (e: any) {
+        notification.error({
+          message: "Aconteceu um erro ao tentar deletar a bebida",
+          duration: 3,
+          placement: "bottomRight",
+        });
+      }
+    };
+  }
+
   const cardWidth = window.innerWidth <= 400 ? 280 : 200;
 
   return (
@@ -87,52 +146,62 @@ export function ManageDrinks() {
       </div>
 
       <div className={styles.drinksWrapper}>
-        {data.content.length !== 0 ? (
-          <>
-            <ul className={styles.drinksList}>
-              {data.content.map((drink) => (
-                <DrinkCard
-                  key={drink.uuid}
-                  {...drink}
-                  width={cardWidth}
-                  height={cardWidth + 50}
-                  loading={loading}
-                  moreActions={[
-                    <Tooltip title="Editar Bebida" key="edit-drink">
-                      <Link
-                        to={`${routes.EDIT_DRINK}`.replace(":uuid", drink.uuid)}
-                      >
-                        <EditOutlined />
-                      </Link>
-                    </Tooltip>,
-
-                    <Tooltip title="Remover Bebida" key="remove-drink">
-                      <Link
-                        to={`${routes.REMOVE_DRINK}`.replace(
-                          ":uuid",
-                          drink.uuid
-                        )}
-                      >
-                        <DeleteOutlined />
-                      </Link>
-                    </Tooltip>,
-                  ]}
-                />
-              ))}
-            </ul>
-
-            <div className={styles.paginationContainer}>
-              <Pagination
-                defaultPageSize={pagination.size}
-                defaultCurrent={pagination.page + 1}
-                current={pagination.page + 1}
-                total={data.totalElements}
-                onChange={handlePaginationChange}
-              />
-            </div>
-          </>
+        {loading ? (
+          <Spin />
         ) : (
-          <Empty description="Nenhum drink foi encontrado!" />
+          <>
+            {data.content.length !== 0 ? (
+              <>
+                <ul className={styles.drinksList}>
+                  {data.content.map((drink) => (
+                    <DrinkCard
+                      key={drink.uuid}
+                      {...drink}
+                      width={cardWidth}
+                      height={cardWidth + 50}
+                      loading={loading}
+                      moreActions={[
+                        <Tooltip title="Editar Bebida" key="edit-drink">
+                          <Link
+                            to={`${routes.EDIT_DRINK}`.replace(
+                              ":uuid",
+                              drink.uuid
+                            )}
+                          >
+                            <EditOutlined />
+                          </Link>
+                        </Tooltip>,
+
+                        <Tooltip title="Remover Bebida" placement="leftBottom" key="remove-drink">
+                          <Popconfirm
+                            title="Remover Bebida"
+                            placement="top"
+                            onConfirm={removeDrink(drink.uuid)}
+                            okText="Remover"
+                            cancelText="Cancelar"
+                          >
+                            <DeleteOutlined />
+                          </Popconfirm>
+                        </Tooltip>,
+                      ]}
+                    />
+                  ))}
+                </ul>
+
+                <div className={styles.paginationContainer}>
+                  <Pagination
+                    defaultPageSize={pagination.size}
+                    defaultCurrent={pagination.page + 1}
+                    current={pagination.page + 1}
+                    total={data.totalElements}
+                    onChange={handlePaginationChange}
+                  />
+                </div>
+              </>
+            ) : (
+              <Empty description="Nenhum drink foi encontrado!" />
+            )}
+          </>
         )}
       </div>
 

@@ -11,6 +11,7 @@ import { formatDrinkVolume } from "src/utils/formatDrinkVolume";
 import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
 
 import styles from "./styles.module.scss";
+import drinkPlaceholder from "src/assets/drink-placeholder.png";
 
 type DrinkType = {
   uuid: string;
@@ -63,6 +64,10 @@ export function DrinkView() {
     }
   }, [loading, params, navigation]);
 
+  const picture = drink.picture && !drink.picture.endsWith('null')
+    ? drink.picture
+    : drinkPlaceholder;
+
   return (
     <section className={styles.container}>
       {loading ? (
@@ -76,7 +81,7 @@ export function DrinkView() {
         <>
           <div
             className={styles.image}
-            style={{ backgroundImage: `url(${drink.picture})` }}
+            style={{ backgroundImage: `url(${picture})` }}
           />
 
           <div ref={infoRef} onMouseDown={onMouseDown} className={styles.info}>

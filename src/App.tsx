@@ -13,7 +13,6 @@ import { Logout } from "./components/Logout";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { ManageDrinks } from "./components/ManageDrinks";
 import { EditDrink } from "./components/EditDrink";
-import { RemoveDrink } from "./components/RemoveDrink";
 import { CreateDrink } from "./components/CreateDrink";
 
 function App() {
@@ -57,15 +56,6 @@ function App() {
             element={
               <PrivateRoute requiredPerms={["isBarmen"]}>
                 <EditDrink />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path={routes.REMOVE_DRINK}
-            element={
-              <PrivateRoute requiredPerms={["isBarmen"]}>
-                <RemoveDrink />
               </PrivateRoute>
             }
           />
