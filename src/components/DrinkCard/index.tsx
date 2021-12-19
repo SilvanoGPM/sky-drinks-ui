@@ -3,6 +3,7 @@ import { Card, Image, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import routes from "src/routes";
+import drinkPlaceholder from "src/assets/drink-placeholder.png";
 
 type DrinkCardProps = {
   uuid: string;
@@ -33,7 +34,7 @@ export function DrinkCard({
         height={height}
         width={width}
         alt={`Drink - ${name}`}
-        src={picture}
+        src={picture && !picture.endsWith('null') ? picture : drinkPlaceholder}
       />
     );
   }

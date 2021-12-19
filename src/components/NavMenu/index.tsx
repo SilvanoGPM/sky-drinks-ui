@@ -53,7 +53,7 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
       <Menu
         theme="dark"
-        defaultSelectedKeys={[location.pathname]}
+        defaultSelectedKeys={[location.pathname, location.pathname.replace('/', '')]}
         className={styles.menu}
         mode="inline"
         onClick={closeMenu}

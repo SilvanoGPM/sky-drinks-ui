@@ -1,6 +1,7 @@
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { Input, Form, Select, Button, Switch, InputNumber, Upload, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import endpoints from "src/api/api";
 import routes from "src/routes";
@@ -22,10 +23,13 @@ export function CreateDrink() {
 
   const navigate = useNavigate();
 
+  const [image, setImage] = useState<File>();
+
   async function handleFormFinish(values: DrinkToCreate) {
     try {
       const drink = await endpoints.createDrink({
         ...values,
+        picture: image,
         additional: values.additional ? values.additional.join(";").toLowerCase() : '',
       });
 
@@ -49,7 +53,12 @@ export function CreateDrink() {
   }
 
   function dummyRequest({ file, onSuccess }: any) {
+    setImage(file);
     return new Promise(() => onSuccess(file));
+  }
+
+  function clearImage() {
+    setImage(undefined);
   }
 
   return (
@@ -66,10 +75,11 @@ export function CreateDrink() {
           layout="horizontal"
           name="create-drink"
         >
-          <Form.Item name="picture" label="Imagem">
+          <Form.Item name="picture" label="Imagem" valuePropName="fileLists">
             <Upload
               maxCount={1}
               accept="image/png, image/jpeg"
+              onRemove={clearImage}
               name="picture"
               listType="picture"
               customRequest={dummyRequest}

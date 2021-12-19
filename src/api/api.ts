@@ -128,21 +128,21 @@ const endpoints = {
     try {
       const { picture } = drink;
 
-      if (picture) {
-        const formData = new FormData();
-        formData.append("file", picture.file.response);
+    if (picture) {
+      const formData = new FormData();
+      formData.append("file", picture);
 
-        const image = await api.post("/files/barmen/images", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+      const image = await api.post("/files/barmen/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-        drink.picture = image.data.fileName;
-      }
+      drink.picture = image.data.fileName;
+    }
 
-      const response = await api.post("/drinks/barmen", drink);
-      return response.data;
+    const response = await api.post('/drinks/barmen', drink);
+    return response.data;
     } catch (e: any) {
       throw e;
     }

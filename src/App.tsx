@@ -37,7 +37,7 @@ function App() {
           <Route
             path={routes.MANAGE_DRINKS}
             element={
-              <PrivateRoute>
+              <PrivateRoute requiredPerms={["isBarmen"]}>
                 <ManageDrinks />
               </PrivateRoute>
             }
@@ -46,7 +46,7 @@ function App() {
           <Route
             path={routes.CREATE_DRINK}
             element={
-              <PrivateRoute>
+              <PrivateRoute requiredPerms={["isBarmen"]}>
                 <CreateDrink />
               </PrivateRoute>
             }
@@ -55,7 +55,7 @@ function App() {
           <Route
             path={routes.EDIT_DRINK}
             element={
-              <PrivateRoute>
+              <PrivateRoute requiredPerms={["isBarmen"]}>
                 <EditDrink />
               </PrivateRoute>
             }
@@ -64,7 +64,7 @@ function App() {
           <Route
             path={routes.REMOVE_DRINK}
             element={
-              <PrivateRoute>
+              <PrivateRoute requiredPerms={["isBarmen"]}>
                 <RemoveDrink />
               </PrivateRoute>
             }
