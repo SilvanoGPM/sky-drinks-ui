@@ -173,6 +173,7 @@ export function SearchDrinks() {
   }
 
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
+  const cardWidth = window.innerWidth <= 400 ? 280 : 200;
 
   return (
     <div className={styles.container}>
@@ -199,8 +200,8 @@ export function SearchDrinks() {
                 <DrinkCard
                   key={drink.uuid}
                   {...drink}
-                  width={200}
-                  height={250}
+                  width={cardWidth}
+                  height={cardWidth + 50}
                   loading={loading}
                 />
               ))}

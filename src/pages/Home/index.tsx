@@ -12,7 +12,7 @@ export function Home() {
 
   return (
     <div className={styles.container}>
-      <NavMenu menuShow={menuShow} />
+      <NavMenu menuShow={menuShow} setMenuShow={setMenuShow} />
 
       <NavMenuButton menuShow={menuShow} setMenuShow={setMenuShow} />
 

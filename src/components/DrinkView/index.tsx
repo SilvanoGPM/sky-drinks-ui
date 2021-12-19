@@ -1,7 +1,8 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Skeleton, Tag, Divider, Button, notification } from "antd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import useDraggableScroll from "use-draggable-scroll";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
@@ -25,8 +26,11 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-
 export function DrinkView() {
+  const infoRef = useRef<HTMLDivElement>(null);
+
+  const { onMouseDown } = useDraggableScroll(infoRef);
+
   const params = useParams();
   const navigation = useNavigate();
 
@@ -75,21 +79,33 @@ export function DrinkView() {
             style={{ backgroundImage: `url(${drink.picture})` }}
           />
 
-          <div className={styles.info}>
+          <div ref={infoRef} onMouseDown={onMouseDown} className={styles.info}>
             <h2>{drink.name}</h2>
             <p>
-              A bebida foi adicionada em <span className={styles.bold}>{formatDatabaseDate(drink.createdAt)}.</span>
+              A bebida foi adicionada em{" "}
+              <span className={styles.bold}>
+                {formatDatabaseDate(drink.createdAt)}.
+              </span>
             </p>
             <p>{drink.description}</p>
             <p>
-              Está bebida <span className={styles.bold}>{drink.alcoholic ? "contém" : "não contém"}</span>{" "}
+              Está bebida{" "}
+              <span className={styles.bold}>
+                {drink.alcoholic ? "contém" : "não contém"}
+              </span>{" "}
               alcóol.
             </p>
             <p>
-              A bebida contém <span className={styles.bold}>{formatDrinkVolume(drink.volume)}</span>
+              A bebida contém{" "}
+              <span className={styles.bold}>
+                {formatDrinkVolume(drink.volume)}
+              </span>
             </p>
             <p>
-              Preço: <span className={styles.bold}>R$ {drink.price.toLocaleString("pt-BR")}</span>
+              Preço:{" "}
+              <span className={styles.bold}>
+                R$ {drink.price.toLocaleString("pt-BR")}
+              </span>
             </p>
 
             <Divider orientation="left">Adicionais</Divider>
@@ -105,7 +121,9 @@ export function DrinkView() {
               ))}
             </div>
 
-            <Button icon={<PlusOutlined />} type="primary">Adicionar ao Pedido</Button>
+            <Button icon={<PlusOutlined />} type="primary">
+              Adicionar ao Pedido
+            </Button>
           </div>
         </>
       )}

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+
 import { AuthContext } from "src/contexts/AuthContext";
 import routes from "src/routes";
 
@@ -18,4 +19,3 @@ export function PrivateRoute({ children }: CustomRouteProps): JSX.Element {
 
   return children;
 }
-

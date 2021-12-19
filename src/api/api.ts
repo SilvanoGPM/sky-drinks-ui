@@ -19,6 +19,16 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
+type DrinkToCreate = {
+  volume: number;
+  name: string;
+  picture: any;
+  description: string;
+  price: number;
+  additional: string;
+  alcoholic: boolean;
+};
+
 const baseURL = process.env.REACT_APP_API_URL;
 
 export const api = axios.create({
@@ -102,8 +112,6 @@ const endpoints = {
         password,
       });
 
-      console.log("response", response);
-
       return response.headers.authorization;
     } catch (exception: any) {
       const status = exception?.response?.data?.status || 0;
@@ -113,6 +121,30 @@ const endpoints = {
       }
 
       throw new Error("Aconteceu um erro ao tentar conectar no servidor.");
+    }
+  },
+
+  async createDrink(drink: DrinkToCreate) {
+    try {
+      const { picture } = drink;
+
+      if (picture) {
+        const formData = new FormData();
+        formData.append("file", picture.file.response);
+
+        const image = await api.post("/files/barmen/images", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        drink.picture = image.data.fileName;
+      }
+
+      const response = await api.post("/drinks/barmen", drink);
+      return response.data;
+    } catch (e: any) {
+      throw e;
     }
   },
 

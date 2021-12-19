@@ -11,6 +11,10 @@ import { SearchDrinks } from "src/components/SearchDrinks";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Logout } from "./components/Logout";
 import { PrivateRoute } from "./components/PrivateRoute";
+import { ManageDrinks } from "./components/ManageDrinks";
+import { EditDrink } from "./components/EditDrink";
+import { RemoveDrink } from "./components/RemoveDrink";
+import { CreateDrink } from "./components/CreateDrink";
 
 function App() {
   return (
@@ -18,13 +22,50 @@ function App() {
       <Routes>
         <Route path={routes.HOME} element={<Home />}>
           <Route path={routes.HOME} element={<LatestDrinks />} />
-          <Route path={routes.SOME_DRINK} element={<DrinkView />} />
+          <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
           <Route path={routes.SEARCH_DRINKS} element={<SearchDrinks />} />
+
           <Route
             path={routes.LOGOUT}
             element={
               <PrivateRoute>
                 <Logout />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.MANAGE_DRINKS}
+            element={
+              <PrivateRoute>
+                <ManageDrinks />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.CREATE_DRINK}
+            element={
+              <PrivateRoute>
+                <CreateDrink />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.EDIT_DRINK}
+            element={
+              <PrivateRoute>
+                <EditDrink />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.REMOVE_DRINK}
+            element={
+              <PrivateRoute>
+                <RemoveDrink />
               </PrivateRoute>
             }
           />

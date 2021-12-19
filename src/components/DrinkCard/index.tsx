@@ -12,6 +12,7 @@ type DrinkCardProps = {
   loading: boolean;
   width: string | number;
   height: string | number;
+  moreActions?: React.ReactNode[],
 };
 
 const { Meta } = Card;
@@ -24,6 +25,7 @@ export function DrinkCard({
   loading,
   height,
   width,
+  moreActions = []
 }: DrinkCardProps) {
   function renderCover() {
     return (
@@ -48,10 +50,11 @@ export function DrinkCard({
         style={{ minWidth: width, width }}
         actions={[
           <Tooltip title="Abrir Página" key="view-drink">
-            <Link to={`${routes.SOME_DRINK}`.replace(":uuid", uuid)}>
+            <Link to={`${routes.VIEW_DRINK}`.replace(":uuid", uuid)}>
               <EyeOutlined />
             </Link>
           </Tooltip>,
+          ...moreActions
         ]}
         cover={renderCover()}
         loading={loading}

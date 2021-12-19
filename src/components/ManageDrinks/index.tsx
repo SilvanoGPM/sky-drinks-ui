@@ -1,0 +1,153 @@
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Empty, Input, Pagination, Tooltip } from "antd";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import endpoints from "src/api/api";
+import routes from "src/routes";
+import { DrinkCard } from "../DrinkCard";
+
+import styles from "./styles.module.scss";
+
+type FoundedDrinkType = {
+  uuid: string;
+  name: string;
+  picture: string;
+  price: number;
+};
+
+type PaginetedDataType = {
+  totalElements: number;
+  content: FoundedDrinkType[];
+};
+
+const { Search } = Input;
+
+export function ManageDrinks() {
+  const [loading, setLoading] = useState(true);
+
+  const [pagination, setPagination] = useState({
+    searchName: "",
+    page: 0,
+    size: 6,
+  });
+
+  const [data, setData] = useState<PaginetedDataType>({
+    totalElements: 0,
+    content: [],
+  });
+
+  useEffect(() => {
+    async function loadDrinks() {
+      const data = await endpoints.searchDrink(
+        `page=${pagination.page}${
+          pagination.searchName ? `&name=${pagination.searchName}` : ""
+        }`
+      );
+      setData(data);
+
+      setLoading(false);
+    }
+
+    if (loading) {
+      loadDrinks();
+    }
+  }, [loading, pagination]);
+
+  function handleSearch(value: string) {
+    setLoading(true);
+
+    setPagination({
+      ...pagination,
+      searchName: value,
+      page: 0,
+    });
+  }
+
+  function handlePaginationChange(page: number) {
+    setLoading(true);
+
+    setPagination((pagination) => {
+      return { ...pagination, page: page - 1 };
+    });
+  }
+
+  const cardWidth = window.innerWidth <= 400 ? 280 : 200;
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.search}>
+        <Search
+          loading={loading}
+          onSearch={handleSearch}
+          placeholder="Nome da bebida"
+          size="large"
+          allowClear
+          enterButton
+        />
+      </div>
+
+      <div className={styles.drinksWrapper}>
+        {data.content.length !== 0 ? (
+          <>
+            <ul className={styles.drinksList}>
+              {data.content.map((drink) => (
+                <DrinkCard
+                  key={drink.uuid}
+                  {...drink}
+                  width={cardWidth}
+                  height={cardWidth + 50}
+                  loading={loading}
+                  moreActions={[
+                    <Tooltip title="Editar Bebida" key="edit-drink">
+                      <Link
+                        to={`${routes.EDIT_DRINK}`.replace(":uuid", drink.uuid)}
+                      >
+                        <EditOutlined />
+                      </Link>
+                    </Tooltip>,
+
+                    <Tooltip title="Remover Bebida" key="remove-drink">
+                      <Link
+                        to={`${routes.REMOVE_DRINK}`.replace(
+                          ":uuid",
+                          drink.uuid
+                        )}
+                      >
+                        <DeleteOutlined />
+                      </Link>
+                    </Tooltip>,
+                  ]}
+                />
+              ))}
+            </ul>
+
+            <div className={styles.paginationContainer}>
+              <Pagination
+                defaultPageSize={pagination.size}
+                defaultCurrent={pagination.page + 1}
+                current={pagination.page + 1}
+                total={data.totalElements}
+                onChange={handlePaginationChange}
+              />
+            </div>
+          </>
+        ) : (
+          <Empty description="Nenhum drink foi encontrado!" />
+        )}
+      </div>
+
+      <div className={styles.createDrink}>
+        <Tooltip title="Criar nova bebida" placement="left">
+          <Link to={routes.CREATE_DRINK}>
+            <Button
+              style={{ minWidth: 50, minHeight: 50 }}
+              shape="circle"
+              type="primary"
+              icon={<PlusOutlined style={{ fontSize: 25 }} />}
+            />
+          </Link>
+        </Tooltip>
+      </div>
+    </div>
+  );
+}

@@ -23,15 +23,23 @@ import {
 
 import styles from "./styles.module.scss";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import routes from "src/routes";
 
 type NavMenuProps = {
   menuShow: boolean;
+  setMenuShow: (menuShow: boolean) => void;
 };
 
 const { SubMenu } = Menu;
 
-export function NavMenu({ menuShow }: NavMenuProps) {
+export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
   const { userInfo, authenticated } = useContext(AuthContext);
+
+  function closeMenu() {
+    if (window.innerWidth <= 700) {
+      setMenuShow(false);
+    }
+  }
 
   const location = useLocation();
 
@@ -48,6 +56,7 @@ export function NavMenu({ menuShow }: NavMenuProps) {
         defaultSelectedKeys={[location.pathname]}
         className={styles.menu}
         mode="inline"
+        onClick={closeMenu}
       >
         <Menu.Item icon={<HomeOutlined style={{ fontSize: 25 }} />} key="/">
           <Link to="/">Início</Link>
@@ -61,17 +70,17 @@ export function NavMenu({ menuShow }: NavMenuProps) {
         >
           <Menu.Item
             icon={<SearchOutlined style={{ fontSize: 25 }} />}
-            key="drinks/search"
+            key={routes.SEARCH_DRINKS}
           >
-            <Link to="drinks/search">Pesquisar Drinks</Link>
+            <Link to={routes.SEARCH_DRINKS}>Pesquisar Drinks</Link>
           </Menu.Item>
 
           {permissions.isBarmen && (
             <Menu.Item
               icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key="manage-drinks"
+              key="drinks/manage"
             >
-              <Link to="manage-drinks">Gerenciar Drinks</Link>
+              <Link to={routes.MANAGE_DRINKS}>Gerenciar Drinks</Link>
             </Menu.Item>
           )}
         </SubMenu>

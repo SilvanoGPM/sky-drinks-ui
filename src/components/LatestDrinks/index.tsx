@@ -29,6 +29,8 @@ const latestDrinksFake = Array(5)
 export function LatestDrinks() {
   const drinksRef = useRef<HTMLUListElement>(null);
 
+  const { onMouseDown } = useDraggableScroll(drinksRef);
+
   const [loading, setLoading] = useState(true);
   const [latestDrinks, setLatestDrinks] =
     useState<LatestDrinkType[]>(latestDrinksFake);
@@ -64,8 +66,6 @@ export function LatestDrinks() {
       loadLatestDrinks();
     }
   }, [loading]);
-
-  const { onMouseDown } = useDraggableScroll(drinksRef);
 
   return (
     <div className={styles.latest}>
