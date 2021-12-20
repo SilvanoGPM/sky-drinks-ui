@@ -172,9 +172,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           {permissions.isAdmin && (
             <Menu.Item
               icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key="manage-users"
+              key={routes.MANAGE_USERS}
             >
-              <Link to="/manage-users">Gerenciar Usuários</Link>
+              <Link to={routes.MANAGE_USERS}>Gerenciar Usuários</Link>
             </Menu.Item>
           )}
 

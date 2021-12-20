@@ -12,6 +12,9 @@ import { PrivateRoute } from "./components/custom/PrivateRoute";
 import { ManageDrinks } from "./components/drink/ManageDrinks";
 import { EditDrink } from "./components/drink/EditDrink";
 import { CreateDrink } from "./components/drink/CreateDrink";
+import { ManageUsers } from "./components/user/ManageUsers";
+import { CreateUser } from "./components/user/CreateUser";
+import { EditUser } from "./components/user/EditUser";
 
 import routes from "./routes";
 
@@ -59,7 +62,35 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          <Route
+            path={routes.MANAGE_USERS}
+            element={
+              <PrivateRoute requiredPerms={["isAdmin"]}>
+                <ManageUsers />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.CREATE_USER}
+            element={
+              <PrivateRoute requiredPerms={["isAdmin"]}>
+                <CreateUser />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.EDIT_USER}
+            element={
+              <PrivateRoute requiredPerms={["isAdmin"]}>
+                <EditUser />
+              </PrivateRoute>
+            }
+          />
         </Route>
+
         <Route path={routes.LOGIN} element={<Login />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

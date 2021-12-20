@@ -4,7 +4,7 @@ import drinksEndpoints from "./drinks";
 import filesEndpoints from "./files";
 import usersEndpoints from "./users";
 
-import "./refreshToken";
+import { refreshToken } from "./refreshToken";
 
 type DrinkType = {
   uuid: string;
@@ -33,7 +33,18 @@ export function toFullPictureURI(drink: DrinkType) {
   };
 }
 
+refreshToken();
+
 const endpoints = {
+  async getTables() {
+    try {
+      const response = await api.get("/tables/waiter");
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+
   ...drinksEndpoints,
   ...usersEndpoints,
   ...filesEndpoints,

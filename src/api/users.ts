@@ -1,6 +1,39 @@
 import { api } from "./api";
 
+type UserToCreate = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  birthDay: string;
+  cpf: string;
+};
+
 const usersEndpoints = {
+  async createUser(user: UserToCreate) {
+    try {
+      const { data } = await api.post("/users/admin", user);
+      return data;
+    } catch (e: any) {
+      console.log(e?.response);
+      const message = e?.response?.data?.details || "Aconteceu um erro ao tentar criar o usuário";
+      throw new Error(message);
+    }
+  },
+
+  async searchUser(params: string, size = 6) {
+    try {
+      const { data } = await api.get(`/users/search?size=${size}&${params}`);
+
+      return {
+        totalElements: data.totalElements,
+        content: data.content,
+      };
+    } catch (exception: any) {
+      throw new Error("Aconteceu um erro ao tentar conectar no servidor.");
+    }
+  },
+
   async getUserInfo() {
     try {
       const response = await api.get("/users/all/user-info");
