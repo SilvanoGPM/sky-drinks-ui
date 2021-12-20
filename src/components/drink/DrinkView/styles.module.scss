@@ -1,0 +1,50 @@
+@import '../../../scss/variables';
+
+.container {
+  --height: 70vh;
+  padding: 2rem;
+  display: flex;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media screen and (max-width: $break1) {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-height: 300px;
+  }
+}
+
+.image {
+  width: 600px;
+  max-width: 50%;
+  max-height: var(--height);
+  height: var(--height);
+  min-height: var(--height);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+
+  @media screen and (max-width: $break1) {
+    width: 100%;
+    max-width: 100%;
+    min-height: 300px;
+  }
+}
+
+.info {
+  flex: 1;
+  overflow-y: auto;
+  max-height: var(--height);
+  height: var(--height);
+  min-height: var(--height);
+}
+
+.additional {
+  margin-bottom: 1rem;
+}
+
+.bold {
+  font-weight: bold;
+}

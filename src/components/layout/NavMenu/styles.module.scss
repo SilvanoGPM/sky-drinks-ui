@@ -1,0 +1,49 @@
+@import '../../../scss/variables';
+
+.menu {
+  width: 100%;
+
+  &Wrapper {
+    position: relative;
+    overflow-y: auto;
+    width: 0;
+    transition: 0.15s ease-in-out width;
+    background-color: var(--navmenu-background);
+
+    &.active {
+      width: $menuWidth;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    @media screen and (max-width: $break1) {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+    }
+  }
+
+  &Header {
+    height: $headerHeight;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    h2 {
+      color: var(--navmenu-color);
+      background-color: var(--navmenu-header-background);
+      margin: 0;
+      padding: 0.5rem 2rem;
+      width: 80%;
+      text-align: center;
+
+      svg {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
+
+.subMenu {
+  font-size: 18x;
+}

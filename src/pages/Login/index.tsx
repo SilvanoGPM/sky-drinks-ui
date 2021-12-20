@@ -4,6 +4,7 @@ import { Input, Form, Button, Checkbox, notification } from "antd";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AuthContext } from "src/contexts/AuthContext";
+import { useTitle } from "src/hooks/useTitle";
 
 import routes from "src/routes";
 
@@ -17,6 +18,8 @@ type LoginValues = {
 };
 
 export function Login() {
+  useTitle("SkyDrinks - Login");
+
   const location = useLocation();
 
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);

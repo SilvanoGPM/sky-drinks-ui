@@ -3,17 +3,17 @@ import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { NotFound } from "./pages/NotFound";
+import { LatestDrinks } from "./components/drink/LatestDrinks";
+import { DrinkView } from "./components/drink/DrinkView";
+import { SearchDrinks } from "./components/drink/SearchDrinks";
+import { AuthProvider } from "./contexts/AuthContext";
+import { Logout } from "./components/other/Logout";
+import { PrivateRoute } from "./components/custom/PrivateRoute";
+import { ManageDrinks } from "./components/drink/ManageDrinks";
+import { EditDrink } from "./components/drink/EditDrink";
+import { CreateDrink } from "./components/drink/CreateDrink";
 
 import routes from "./routes";
-import { LatestDrinks } from "src/components/LatestDrinks";
-import { DrinkView } from "src/components/DrinkView";
-import { SearchDrinks } from "src/components/SearchDrinks";
-import { AuthProvider } from "./contexts/AuthContext";
-import { Logout } from "./components/Logout";
-import { PrivateRoute } from "./components/PrivateRoute";
-import { ManageDrinks } from "./components/ManageDrinks";
-import { EditDrink } from "./components/EditDrink";
-import { CreateDrink } from "./components/CreateDrink";
 
 function App() {
   return (
