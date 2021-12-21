@@ -8,11 +8,12 @@ import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
-import { formatBirthDayDate, formatDatabaseDate, formatToDatabaseDate } from "src/utils/formatDatabaseDate";
+import { formatBirthDayDate, formatDatabaseDate } from "src/utils/formatDatabaseDate";
 
 import styles from "./styles.module.scss";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
 import { useForm } from "antd/lib/form/Form";
+import moment from "moment";
 
 type FoundedUserType = {
   uuid: string;
@@ -33,7 +34,7 @@ type PaginetedDataType = {
 type SearchUserType = {
   name: string;
   role: string[];
-  birthAt: any;
+  birthDay: any;
 };
 
 const { Option } = Select;
@@ -60,10 +61,18 @@ export function ManageUsers() {
 
   useEffect(() => {
     async function loadUsers() {
-      const data = await endpoints.searchUser(`page=${pagination.page}&${qs.stringify(params)}`, pagination.size);
-      setData(data);
-
-      setLoading(false);
+      try {
+        const data = await endpoints.searchUser(`page=${pagination.page}&${qs.stringify(params)}`, pagination.size);
+        setData(data);
+      } catch (e: any) {
+        notification.warn({
+          message: e.message,
+          duration: 3,
+          placement: "bottomRight",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
 
     if (loading) {
@@ -92,12 +101,10 @@ export function ManageUsers() {
   }
 
   function handleFormFinish(values: SearchUserType) {
-    console.log(values);
-
     setParams({
       ...values,
       role: values?.role?.join(","),
-      birthAt: values.birthAt ? formatToDatabaseDate(values.birthAt._d) : undefined,
+      birthDay: values.birthDay ? moment(values.birthDay._d).format("yyyy-MM-DD") : undefined,
     });
 
     setLoading(true);
@@ -283,7 +290,7 @@ export function ManageUsers() {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Data de nascimento" name="birthAt">
+          <Form.Item label="Data de nascimento" name="birthDay">
             <DatePicker />
           </Form.Item>
 

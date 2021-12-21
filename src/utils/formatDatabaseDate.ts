@@ -21,6 +21,5 @@ export function formatBirthDayDate(dateStr: string) {
 }
 
 export function formatToDatabaseDate(date: Date) {
-  console.log(ofPattern("y-m-d", date));
   return ofPattern("y-m-d", date);
 }

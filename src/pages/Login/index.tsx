@@ -60,7 +60,7 @@ export function Login() {
             name="login"
             layout="vertical"
             onFinish={handleFormLogin}
-            // initialValues={{ remember: true, email: "admin@mail.com", password: "admin" }}
+            initialValues={{ remember: true }}
           >
             <Form.Item
               label="Email"

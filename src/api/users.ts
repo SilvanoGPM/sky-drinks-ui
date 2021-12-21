@@ -49,8 +49,6 @@ const usersEndpoints = {
       const { data } = await api.post("/users/admin", user);
       return data;
     } catch (e: any) {
-      console.log(e?.response);
-
       throw e;
     }
   },

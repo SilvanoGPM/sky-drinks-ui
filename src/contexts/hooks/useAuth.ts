@@ -1,3 +1,4 @@
+import { notification } from "antd";
 import { useState, useEffect } from "react";
 
 import endpoints, { api } from "src/api/api";
@@ -25,19 +26,30 @@ export function useAuth() {
 
   useEffect(() => {
     async function loadUserInfo() {
-      const userInfo = await endpoints.getUserInfo();
-      setUserInfo(userInfo);
-      setAuthLoading(false);
+      try {
+        const userInfo = await endpoints.getUserInfo();
+        setUserInfo(userInfo);
 
-      localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+        localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+
+        setAuthenticated(true);
+      } catch (e: any) {
+        notification.warn({
+          message: e.message,
+          duration: 5,
+          placement: "bottomRight",
+        });
+      } finally {
+        setAuthLoading(false);
+      }
+
+      return () => setAuthLoading(false);
     }
 
     const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
 
     if (userCredentials) {
       api.defaults.headers.common["Authorization"] = JSON.parse(userCredentials).token;
-      setAuthenticated(true);
-
       loadUserInfo();
     }
 
