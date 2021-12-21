@@ -13,7 +13,6 @@ import {
   Form,
   Input,
   InputNumber,
-  notification,
   Select,
   Spin,
   Switch,
@@ -26,6 +25,7 @@ import endpoints from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
+import { showNotification } from "src/utils/showNotification";
 
 type DrinkToCreate = {
   volume: number;
@@ -71,11 +71,10 @@ export function EditDrink() {
         const drink = await endpoints.findDrinkByUUID(params.uuid);
         setDrink(drink);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: "Atualização de Bebida",
           description: e.message,
-          duration: 3,
-          placement: "bottomRight",
         });
 
         navigate(`/${routes.MANAGE_DRINKS}`);
@@ -102,18 +101,16 @@ export function EditDrink() {
           : "",
       });
 
-      notification.success({
+      showNotification({
+        type: "success",
         message: "Bebida atualizada com sucesso!",
-        duration: 5,
-        placement: "bottomRight",
       });
 
       navigate(`/${routes.MANAGE_DRINKS}`);
     } catch (e: any) {
-      notification.error({
-        message: "Aconteceu um erro ao tentar atualizar",
-        duration: 3,
-        placement: "bottomRight",
+      showNotification({
+        type: "error",
+        message: "Aconteceu um erro ao tentar atualizar!",
       });
     } finally {
       setEditLoading(false);

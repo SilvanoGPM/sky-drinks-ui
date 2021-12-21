@@ -4,10 +4,10 @@ import {
   DatePicker,
   Form,
   Input,
-  notification,
   Select,
   Spin,
 } from "antd";
+
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
@@ -21,6 +21,7 @@ import routes from "src/routes";
 import { cpfMask } from "src/utils/cpfMask";
 import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
 
@@ -75,11 +76,10 @@ export function EditUser() {
         const user = await endpoints.findUserByUUID(params.uuid);
         setUser(user);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: "Atualização de Usuário",
           description: e.message,
-          duration: 3,
-          placement: "bottomRight",
         });
 
         navigate(`/${routes.MANAGE_USERS}`);
@@ -108,10 +108,9 @@ export function EditUser() {
         birthDay: moment(values.birthDay._d).format("yyyy-MM-DD"),
       });
 
-      notification.success({
+      showNotification({
+        type: "success",
         message: "Usuário foi atualizado com sucesso",
-        duration: 3,
-        placement: "bottomRight",
       });
 
       navigate(`/${routes.MANAGE_USERS}`);
@@ -122,11 +121,10 @@ export function EditUser() {
 
       const description = errors ? Object.values(errors).flat().join("\n") : "";
 
-      notification.error({
+      showNotification({
+        type: "error",
         message,
         description,
-        duration: 3,
-        placement: "bottomRight",
       });
     } finally {
       setEditLoading(false);

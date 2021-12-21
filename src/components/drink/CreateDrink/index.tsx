@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Input, Form, Select, Button, Switch, InputNumber, Upload, notification } from "antd";
+import { Input, Form, Select, Button, Switch, InputNumber, Upload } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import endpoints from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
+import { showNotification } from "src/utils/showNotification";
 
 type DrinkToCreate = {
   volume: number;
@@ -41,19 +42,17 @@ export function CreateDrink() {
         additional: values.additional ? values.additional.join(";").toLowerCase() : '',
       });
 
-      notification.success({
+      showNotification({
+        type: "success",
         message: "Bebida adicionada com sucesso!",
-        description: `Nome: ${drink.name} / Preço: R$ ${drink.price}`,
-        duration: 5,
-        placement: "bottomRight"
+        description: `Nome: ${drink.name} / Preço: R$ ${drink.price}`
       });
 
       navigate(`/${routes.MANAGE_DRINKS}`);
     } catch (e: any) {
-      notification.error({
+      showNotification({
+        type: "error",
         message: "Aconteceu um erro ao tentar criar bebida!",
-        duration: 3,
-        placement: "bottomRight"
       });
 
       form.resetFields();

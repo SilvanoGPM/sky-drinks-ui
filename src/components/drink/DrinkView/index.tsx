@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { Skeleton, Tag, Divider, Button, notification } from "antd";
+import { Skeleton, Tag, Divider, Button } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import useDraggableScroll from "use-draggable-scroll";
 
@@ -14,6 +14,7 @@ import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
 
 import styles from "./styles.module.scss";
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import { showNotification } from "src/utils/showNotification";
 
 type DrinkType = {
   uuid: string;
@@ -50,11 +51,10 @@ export function DrinkView() {
       } catch (exception: any) {
         navigation(routes.HOME);
 
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: "Visualização de Bebida",
           description: exception.message,
-          duration: 2,
-          placement: "bottomRight",
         });
 
         return;

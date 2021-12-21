@@ -6,7 +6,6 @@ import {
   Button,
   Empty,
   Input,
-  notification,
   Pagination,
   Popconfirm,
   Spin,
@@ -20,6 +19,7 @@ import endpoints from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
+import { showNotification } from "src/utils/showNotification";
 
 type FoundedDrinkType = {
   uuid: string;
@@ -61,10 +61,9 @@ export function ManageDrinks() {
         );
         setData(data);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: e.message,
-          duration: 3,
-          placement: "bottomRight",
         });
       } finally {
         setLoading(false);
@@ -116,16 +115,14 @@ export function ManageDrinks() {
           setLoading(true);
         }
 
-        notification.success({
-          message: "Bebida foi removida com sucesso!",
-          duration: 3,
-          placement: "bottomRight",
+        showNotification({
+          type: "success",
+          message: "Bebida foi removida com sucesso",
         });
       } catch (e: any) {
-        notification.error({
+        showNotification({
+          type: "error",
           message: "Aconteceu um erro ao tentar deletar a bebida",
-          duration: 3,
-          placement: "bottomRight",
         });
       }
     };

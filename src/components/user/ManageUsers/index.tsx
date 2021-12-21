@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Avatar, Button, DatePicker, Divider, Drawer, Form, Input, List, notification, Pagination, Popconfirm, Select, Tooltip } from "antd";
+import { Avatar, Button, DatePicker, Divider, Drawer, Form, Input, List, Pagination, Popconfirm, Select, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import qs from "query-string";
@@ -14,6 +14,7 @@ import styles from "./styles.module.scss";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
+import { showNotification } from "src/utils/showNotification";
 
 type FoundedUserType = {
   uuid: string;
@@ -65,10 +66,9 @@ export function ManageUsers() {
         const data = await endpoints.searchUser(`page=${pagination.page}&${qs.stringify(params)}`, pagination.size);
         setData(data);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: e.message,
-          duration: 3,
-          placement: "bottomRight",
         });
       } finally {
         setLoading(false);
@@ -132,16 +132,14 @@ export function ManageUsers() {
           setLoading(true);
         }
 
-        notification.success({
+        showNotification({
+          type: "success",
           message: "Usuário foi removido com sucesso!",
-          duration: 3,
-          placement: "bottomRight",
         });
       } catch (e: any) {
-        notification.error({
+        showNotification({
+          type: "error",
           message: "Aconteceu um erro ao tentar remover usuário",
-          duration: 3,
-          placement: "bottomRight",
         });
       }
     };

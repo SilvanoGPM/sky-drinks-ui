@@ -13,7 +13,6 @@ import {
   Drawer,
   Empty,
   Pagination,
-  notification,
 } from "antd";
 
 import { DrinkCard } from "../DrinkCard";
@@ -23,6 +22,7 @@ import { pluralize } from "src/utils/pluralize";
 import endpoints from "src/api/api";
 
 import styles from "./styles.module.scss";
+import { showNotification } from "src/utils/showNotification";
 
 type SearchDrinkForm = {
   name: string;
@@ -124,11 +124,10 @@ export function SearchDrinks() {
       const drinks = await endpoints.searchDrink(params);
       setData(drinks);
     } catch (e: any) {
-      notification.warn({
+      showNotification({
+        type: "warn",
         message: "Pesquisar Bebidas",
         description: e.message,
-        duration: 2,
-        placement: "bottomRight",
       });
     }
 

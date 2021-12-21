@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { HeartOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
 import { AuthContext } from "src/contexts/AuthContext";
@@ -9,6 +9,7 @@ import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
+import { showNotification } from "src/utils/showNotification";
 
 export function Logout() {
   useTitle("SkyDrinks - Sair");
@@ -24,11 +25,12 @@ export function Logout() {
   function logout() {
     handleLogout();
 
+
     navigate(routes.LOGIN);
-    notification.success({
-      message: "Deslogado com sucesso.",
-      duration: 3,
-      placement: "bottomRight",
+
+    showNotification({
+      type: "success",
+      message: "Deslogado com sucesso",
     });
   }
 

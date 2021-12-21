@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { LoginOutlined } from "@ant-design/icons";
-import { Input, Form, Button, Checkbox, notification } from "antd";
+import { Input, Form, Button, Checkbox } from "antd";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AuthContext } from "src/contexts/AuthContext";
@@ -10,6 +10,7 @@ import routes from "src/routes";
 
 import styles from "./styles.module.scss";
 import loginImage from "src/assets/login-image.jpg";
+import { showNotification } from "src/utils/showNotification";
 
 type LoginValues = {
   email: string;
@@ -28,16 +29,14 @@ export function Login() {
     try {
       await handleLogin(values);
 
-      notification.success({
+      showNotification({
+        type: "warn",
         message: "Login efetuado com sucesso!",
-        duration: 3,
-        placement: "bottomRight",
       });
     } catch (e: any) {
-      notification.error({
+      showNotification({
+        type: "error",
         message: e.message,
-        duration: 4,
-        placement: "bottomRight",
       });
     }
 

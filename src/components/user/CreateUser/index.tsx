@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, notification, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import routes from "src/routes";
 
 import { cpfMask } from "src/utils/cpfMask";
 import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
+import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
 
@@ -44,11 +45,10 @@ export function CreateUser() {
         birthDay: formatToDatabaseDate(values.birthDay._d),
       });
 
-      notification.success({
+      showNotification({
+        type: "success",
         message: "Usuário foi criado com sucesso",
         description: `Nome: ${user.name} / Email: ${user.email}`,
-        duration: 3,
-        placement: "bottomRight",
       });
 
       navigate(`/${routes.MANAGE_USERS}`);
@@ -61,11 +61,10 @@ export function CreateUser() {
 
       const description = errors ? Object.values(errors).flat().join("\n") : "";
 
-      notification.error({
+      showNotification({
+        type: "error",
         message,
         description,
-        duration: 3,
-        placement: "bottomRight",
       });
     } finally {
       setCreateLoading(false);

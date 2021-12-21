@@ -1,7 +1,7 @@
-import { notification } from "antd";
 import { useState, useEffect } from "react";
 
 import endpoints, { api } from "src/api/api";
+import { showNotification } from "src/utils/showNotification";
 
 type UserInfoProps = {
   uuid: string;
@@ -34,10 +34,9 @@ export function useAuth() {
 
         setAuthenticated(true);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: e.message,
-          duration: 5,
-          placement: "bottomRight",
         });
       } finally {
         setAuthLoading(false);

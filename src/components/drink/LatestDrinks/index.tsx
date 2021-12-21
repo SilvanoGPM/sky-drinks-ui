@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Empty, notification } from "antd";
+import { Empty } from "antd";
 import useDraggableScroll from "use-draggable-scroll";
 
 import { DrinkCard } from "../DrinkCard";
@@ -11,6 +11,7 @@ import styles from "./styles.module.scss";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
 import { useLocation } from "react-router-dom";
+import { showNotification } from "src/utils/showNotification";
 
 type LatestDrinkType = {
   uuid: string;
@@ -44,10 +45,9 @@ export function LatestDrinks() {
 
   useEffect(() => {
     if (location?.state?.warnMessage) {
-      notification.warn({
+      showNotification({
+        type: "warn",
         message: location.state.warnMessage,
-        duration: 5,
-        placement: "bottomRight",
       });
     }
   }, [location]);
@@ -58,19 +58,18 @@ export function LatestDrinks() {
         const drinks = await endpoints.getLatestDrinks(5);
 
         if (drinks.length === 0) {
-          notification.warn({
+          showNotification({
+            type: "warn",
             message: "Não existem drinks cadastrados!",
-            placement: "bottomRight",
           });
         }
 
         setLatestDrinks(drinks);
       } catch (e: any) {
-        notification.warn({
+        showNotification({
+          type: "warn",
           message: "Últimas Bebidas",
           description: e.message,
-          duration: 2,
-          placement: "bottomRight",
         });
 
         setLatestDrinks([]);
