@@ -40,7 +40,7 @@ export function PrivateRoute({ children, requiredPerms = { type: "and", perms: [
     : requiredPerms.perms.some(containsPerm);
 
   if (!hasPermission) {
-    return <Navigate to={routes.HOME} />;
+    return <Navigate to={routes.HOME} state={{ warn: { message: "Você não possui permissão!" } }} />;
   }
 
   return children;

@@ -10,8 +10,9 @@ import endpoints from "src/api/api";
 import styles from "./styles.module.scss";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
-import { useLocation } from "react-router-dom";
 import { showNotification } from "src/utils/showNotification";
+import routes from "src/routes";
+import { useFlashNotification } from "src/hooks/useFlashNotification";
 
 type LatestDrinkType = {
   uuid: string;
@@ -41,16 +42,7 @@ export function LatestDrinks() {
   const [latestDrinks, setLatestDrinks] =
     useState<LatestDrinkType[]>(latestDrinksFake);
 
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location?.state?.warnMessage) {
-      showNotification({
-        type: "warn",
-        message: location.state.warnMessage,
-      });
-    }
-  }, [location]);
+  useFlashNotification(routes.HOME);
 
   useEffect(() => {
     async function loadLatestDrinks() {
