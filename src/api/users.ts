@@ -10,14 +10,22 @@ type UserToCreate = {
 };
 
 const usersEndpoints = {
+  async deleteUser(uuid: string) {
+    try {
+      await api.delete(`/users/user/${uuid}`);
+    } catch (e: any) {
+      throw e;
+    }
+  },
+
   async createUser(user: UserToCreate) {
     try {
       const { data } = await api.post("/users/admin", user);
       return data;
     } catch (e: any) {
       console.log(e?.response);
-      const message = e?.response?.data?.details || "Aconteceu um erro ao tentar criar o usuário";
-      throw new Error(message);
+
+      throw e;
     }
   },
 

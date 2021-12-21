@@ -104,13 +104,8 @@ export function ManageDrinks() {
           content: data.content.filter((item) => item.uuid !== uuid),
         });
 
-        console.log(data);
-        console.log(pagination);
-
         const isLastElementOfPage =
           data.content.length === 1 && pagination.page > 0;
-
-        console.log(isLastElementOfPage);
 
         if (isLastElementOfPage) {
           setPagination({

@@ -3,6 +3,7 @@ import { Empty, notification } from "antd";
 import useDraggableScroll from "use-draggable-scroll";
 
 import { DrinkCard } from "../DrinkCard";
+import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 
@@ -28,6 +29,8 @@ const latestDrinksFake = Array(5)
   .map((drink, uuid) => ({ ...drink, uuid }));
 
 export function LatestDrinks() {
+  useTitle("SkyDrinks - Home");
+
   const drinksRef = useRef<HTMLUListElement>(null);
 
   const { onMouseDown } = useDraggableScroll(drinksRef);

@@ -1,15 +1,18 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Avatar, Button, List, Pagination, Popconfirm, Tooltip } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { Avatar, Button, DatePicker, Divider, Drawer, Form, Input, List, notification, Pagination, Popconfirm, Select, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import qs from "query-string";
 
 import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
-import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
+import { formatBirthDayDate, formatDatabaseDate, formatToDatabaseDate } from "src/utils/formatDatabaseDate";
 
 import styles from "./styles.module.scss";
+import { formatDisplayRole } from "src/utils/formatDisplayRole";
+import { useForm } from "antd/lib/form/Form";
 
 type FoundedUserType = {
   uuid: string;
@@ -27,14 +30,27 @@ type PaginetedDataType = {
   content: FoundedUserType[];
 };
 
+type SearchUserType = {
+  name: string;
+  role: string[];
+  birthAt: any;
+};
+
+const { Option } = Select;
+
 export function ManageUsers() {
   useTitle("SkyDrinks - Gerenciar usuários");
 
+  const [form] = useForm();
+
   const [loading, setLoading] = useState(true);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
+  const [params, setParams] = useState({});
 
   const [pagination, setPagination] = useState({
     page: 0,
-    size: 6,
+    size: 2,
   });
 
   const [data, setData] = useState<PaginetedDataType>({
@@ -42,15 +58,9 @@ export function ManageUsers() {
     content: [],
   });
 
-  function handlePaginationChange(page: number) {
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
-    });
-  }
-
   useEffect(() => {
     async function loadUsers() {
-      const data = await endpoints.searchUser(`page=${pagination.page}`);
+      const data = await endpoints.searchUser(`page=${pagination.page}&${qs.stringify(params)}`, pagination.size);
       setData(data);
 
       setLoading(false);
@@ -59,11 +69,88 @@ export function ManageUsers() {
     if (loading) {
       loadUsers();
     }
-  }, [loading, pagination]);
+  }, [loading, pagination, params]);
+
+  function clearForm() {
+    form.resetFields();
+  }
+
+  function openDrawer() {
+    setDrawerVisible(true);
+  }
+
+  function closeDrawer() {
+    setDrawerVisible(false);
+  }
+
+  function handlePaginationChange(page: number) {
+    setLoading(true);
+
+    setPagination((pagination) => {
+      return { ...pagination, page: page - 1 };
+    });
+  }
+
+  function handleFormFinish(values: SearchUserType) {
+    console.log(values);
+
+    setParams({
+      ...values,
+      role: values?.role?.join(","),
+      birthAt: values.birthAt ? formatToDatabaseDate(values.birthAt._d) : undefined,
+    });
+
+    setLoading(true);
+  }
+
+  function removeUser(uuid: string) {
+    return async () => {
+      try {
+        await endpoints.deleteUser(uuid);
+
+        setData({
+          ...data,
+          content: data.content.filter((item) => item.uuid !== uuid),
+        });
+
+        const isLastElementOfPage =
+          data.content.length === 1 && pagination.page > 0;
+
+        if (isLastElementOfPage) {
+          setPagination({
+            ...pagination,
+            page: pagination.page - 1,
+          });
+
+          setLoading(true);
+        }
+
+        notification.success({
+          message: "Usuário foi removido com sucesso!",
+          duration: 3,
+          placement: "bottomRight",
+        });
+      } catch (e: any) {
+        notification.error({
+          message: "Aconteceu um erro ao tentar remover usuário",
+          duration: 3,
+          placement: "bottomRight",
+        });
+      }
+    };
+  }
+
+  const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Usuários</h2>
+
+      <div className={styles.buttonContainer}>
+        <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
+          Pesquisar Usuário
+        </Button>
+      </div>
 
       <div className={styles.list}>
         <List
@@ -85,6 +172,7 @@ export function ManageUsers() {
             email,
             cpf,
             birthDay,
+            role,
             createdAt,
             updatedAt,
             uuid,
@@ -97,6 +185,7 @@ export function ManageUsers() {
                     title="Deletar Usuário?"
                     placement="top"
                     okText="Remover"
+                    onConfirm={removeUser(uuid)}
                     cancelText="Cancelar"
                   >
                     <DeleteOutlined />
@@ -112,7 +201,7 @@ export function ManageUsers() {
               <List.Item.Meta
                 avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                 title={<p className={styles.name}>{name}</p>}
-                description={<p className={styles.email}>Email: ${email}</p>}
+                description={<p className={styles.email}>Email: {email}</p>}
               />
               <div>
                 <p>
@@ -122,9 +211,15 @@ export function ManageUsers() {
                   CPF: <span className={styles.bold}>{cpf}</span>
                 </p>
                 <p>
+                  Tipo:{" "}
+                  <span className={styles.bold}>
+                    {formatDisplayRole(role)}
+                  </span>
+                </p>
+                <p>
                   Data de nascimento:{" "}
                   <span className={styles.bold}>
-                    {formatDatabaseDate(birthDay)}
+                    {formatBirthDayDate(birthDay)}
                   </span>
                 </p>
                 <p>
@@ -157,6 +252,75 @@ export function ManageUsers() {
           </Link>
         </Tooltip>
       </div>
+
+      <Drawer
+        width={drawerWidth}
+        title="Pesquisar Usuário"
+        placement="right"
+        onClose={closeDrawer}
+        visible={drawerVisible}
+      >
+        <Form
+          form={form}
+          onFinish={handleFormFinish}
+          layout="vertical"
+          style={{ flex: 1 }}
+          name="search-users"
+          autoComplete="off"
+        >
+          <Divider orientation="left">Geral</Divider>
+
+          <Form.Item label="Nome" name="name">
+            <Input placeholder="ex: Roger" />
+          </Form.Item>
+
+          <Form.Item label="Cargo" name="role">
+            <Select mode="multiple">
+              <Option value="USER">User</Option>
+              <Option value="BARMEN">Barmen</Option>
+              <Option value="WAITER">Waiter</Option>
+              <Option value="ADMIN">Admin</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Data de nascimento" name="birthAt">
+            <DatePicker />
+          </Form.Item>
+
+          <Form.Item
+            wrapperCol={{
+              span: 24,
+              offset: 0,
+            }}
+          >
+            <Button
+              icon={<SearchOutlined />}
+              size="large"
+              type="primary"
+              htmlType="submit"
+              style={{ width: "100%" }}
+            >
+              Pesquisar
+            </Button>
+          </Form.Item>
+
+          <Form.Item
+            wrapperCol={{
+              span: 24,
+              offset: 0,
+            }}
+          >
+            <Button
+              icon={<DeleteOutlined />}
+              size="large"
+              style={{ width: "100%" }}
+              onClick={clearForm}
+            >
+              Limpar
+            </Button>
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 }

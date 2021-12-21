@@ -28,6 +28,10 @@ export function CreateUser() {
 
   const navigate = useNavigate();
 
+  function handleCPFChange(any: any) {
+    form.setFieldsValue({ cpf: cpfMask(any.target.value) });
+  }
+
   async function handleFormFinish(values: UserToCreate) {
     try {
       const user = await endpoints.createUser({
@@ -44,16 +48,21 @@ export function CreateUser() {
 
       navigate(`/${routes.MANAGE_USERS}`);
     } catch (e: any) {
+      const errors = e?.response?.data?.fieldErrors;
+
+      const message =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar criar o usuário";
+
+      const description = errors ? Object.values(errors).flat().join("\n") : "";
+
       notification.error({
-        message: e.message,
+        message,
+        description,
         duration: 3,
         placement: "bottomRight",
       });
     }
-  }
-
-  function handleCPFChange(any: any) {
-    form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 
   return (
