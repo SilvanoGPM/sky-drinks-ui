@@ -24,16 +24,23 @@ export function useAuth() {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
-    const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
-    const userInfo = localStorage.getItem(USER_INFO_KEY);
+    async function loadUserInfo() {
+      const userInfo = await endpoints.getUserInfo();
+      setUserInfo(userInfo);
+      setAuthLoading(false);
 
-    if (userCredentials && userInfo) {
-      api.defaults.headers.common["Authorization"] = JSON.parse(userCredentials).token;
-      setUserInfo(JSON.parse(userInfo));
-      setAuthenticated(true);
+      localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
     }
 
-    setAuthLoading(false);
+    const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
+
+    if (userCredentials) {
+      api.defaults.headers.common["Authorization"] = JSON.parse(userCredentials).token;
+      setAuthenticated(true);
+
+      loadUserInfo();
+    }
+
   }, []);
 
   async function handleLogin({ email, password, remember }: LoginProps) {

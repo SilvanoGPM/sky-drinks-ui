@@ -39,7 +39,7 @@ function App() {
           <Route
             path={routes.MANAGE_DRINKS}
             element={
-              <PrivateRoute requiredPerms={["isBarmen"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
                 <ManageDrinks />
               </PrivateRoute>
             }
@@ -48,7 +48,7 @@ function App() {
           <Route
             path={routes.CREATE_DRINK}
             element={
-              <PrivateRoute requiredPerms={["isBarmen"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
                 <CreateDrink />
               </PrivateRoute>
             }
@@ -57,7 +57,7 @@ function App() {
           <Route
             path={routes.EDIT_DRINK}
             element={
-              <PrivateRoute requiredPerms={["isBarmen"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
                 <EditDrink />
               </PrivateRoute>
             }
@@ -66,7 +66,7 @@ function App() {
           <Route
             path={routes.MANAGE_USERS}
             element={
-              <PrivateRoute requiredPerms={["isAdmin"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
                 <ManageUsers />
               </PrivateRoute>
             }
@@ -75,7 +75,7 @@ function App() {
           <Route
             path={routes.CREATE_USER}
             element={
-              <PrivateRoute requiredPerms={["isAdmin"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
                 <CreateUser />
               </PrivateRoute>
             }
@@ -84,7 +84,7 @@ function App() {
           <Route
             path={routes.EDIT_USER}
             element={
-              <PrivateRoute requiredPerms={["isAdmin"]}>
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
                 <EditUser />
               </PrivateRoute>
             }

@@ -9,7 +9,33 @@ type UserToCreate = {
   cpf: string;
 };
 
+type UserToUpdate = {
+  uuid: string;
+  name: string;
+  email: string;
+  password: string;
+  newPassword?: string;
+  role: string;
+  birthDay: string;
+  cpf: string;
+};
+
 const usersEndpoints = {
+  async replaceUser(drink: UserToUpdate) {
+    try {
+      await this.login(drink.email, drink.password);
+
+      const { newPassword, ...drinkToUpdate } = {
+        ...drink,
+        password: drink.newPassword || drink.password,
+      };
+
+      await api.put("/users/user", drinkToUpdate);
+    } catch (e: any) {
+      throw e;
+    }
+  },
+
   async deleteUser(uuid: string) {
     try {
       await api.delete(`/users/user/${uuid}`);
@@ -39,6 +65,22 @@ const usersEndpoints = {
       };
     } catch (exception: any) {
       throw new Error("Aconteceu um erro ao tentar conectar no servidor.");
+    }
+  },
+
+  async findUserByUUID(uuid?: string) {
+    if (!uuid) {
+      throw new Error("Passe um UUID para a pesquisa!");
+    }
+
+    try {
+      const response = await api.get(`/users/${uuid}`);
+      return response.data;
+    } catch (exception: any) {
+      const details =
+        exception?.response?.data?.details ||
+        "Aconteceu um erro ao tentar conectar no servidor.";
+      throw new Error(details);
     }
   },
 

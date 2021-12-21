@@ -10,17 +10,17 @@ export function formatDatabaseDate(dateStr: string) {
   return ofPattern("d/m/y", date);
 }
 
+export function getBirthDayDate(dateStr: string, monthMinus = false) {
+  const [year, month, day] = dateStr.split("-").slice(0, 3).map(Number);
+
+  return new Date(year, monthMinus ? month - 1 : month, day);
+}
+
 export function formatBirthDayDate(dateStr: string) {
-  const [year, month, day] = dateStr
-    .split("-")
-    .slice(0, 3)
-    .map(Number);
-
-  const date = new Date(year, month, day);
-
-  return ofPattern("d/m/y", date);
+  return ofPattern("d/m/y", getBirthDayDate(dateStr));
 }
 
 export function formatToDatabaseDate(date: Date) {
+  console.log(ofPattern("y-m-d", date));
   return ofPattern("y-m-d", date);
 }

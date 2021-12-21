@@ -1,0 +1,23 @@
+.container {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.title {
+  text-align: center;
+
+  &Container {
+    margin-bottom: 2rem;
+    width: 100%;
+    border-bottom: 1px solid black;
+  }
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

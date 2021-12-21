@@ -9,10 +9,13 @@ type UserPerms = "isAdmin" | "isBarmen" | "isWaiter" | "isUser" | "isGuest";
 
 type CustomRouteProps = {
   children: JSX.Element;
-  requiredPerms?: UserPerms[];
+  requiredPerms?: {
+    type: "or" | "and";
+    perms: UserPerms[];
+  };
 };
 
-export function PrivateRoute({ children, requiredPerms = [] }: CustomRouteProps): JSX.Element {
+export function PrivateRoute({ children, requiredPerms = { type: "and", perms: [] } }: CustomRouteProps): JSX.Element {
   const location = useLocation();
 
   const { authenticated, userInfo } = useContext(AuthContext);
@@ -23,9 +26,13 @@ export function PrivateRoute({ children, requiredPerms = [] }: CustomRouteProps)
 
   const permissions = getUserPermissions(userInfo.role);
 
-  const hasPermission = requiredPerms.every((perm) => (
-    permissions[perm]
-  ));
+  function containsPerm(perm: UserPerms) {
+    return permissions[perm];
+  }
+
+  const hasPermission = requiredPerms.type === "and"
+    ? requiredPerms.perms.every(containsPerm)
+    : requiredPerms.perms.some(containsPerm);
 
   if (!hasPermission) {
     return <Navigate to={routes.HOME} />;

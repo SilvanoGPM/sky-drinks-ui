@@ -10,6 +10,7 @@ import endpoints from "src/api/api";
 import styles from "./styles.module.scss";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import { useLocation } from "react-router-dom";
 
 type LatestDrinkType = {
   uuid: string;
@@ -38,6 +39,18 @@ export function LatestDrinks() {
   const [loading, setLoading] = useState(true);
   const [latestDrinks, setLatestDrinks] =
     useState<LatestDrinkType[]>(latestDrinksFake);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location?.state?.warnMessage) {
+      notification.warn({
+        message: location.state.warnMessage,
+        duration: 5,
+        placement: "bottomRight",
+      });
+    }
+  }, [location]);
 
   useEffect(() => {
     async function loadLatestDrinks() {
@@ -82,7 +95,13 @@ export function LatestDrinks() {
           className={styles.latestDrinks}
         >
           {latestDrinks.map((props) => (
-            <DrinkCard {...props} key={props.uuid} width={260} height={300} loading={loading} />
+            <DrinkCard
+              {...props}
+              key={props.uuid}
+              width={260}
+              height={300}
+              loading={loading}
+            />
           ))}
         </ul>
       ) : (
