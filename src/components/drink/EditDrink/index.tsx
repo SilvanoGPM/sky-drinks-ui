@@ -26,6 +26,7 @@ import routes from "src/routes";
 
 import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
+import { useFavicon } from "src/hooks/useFavicon";
 
 type DrinkToCreate = {
   volume: number;
@@ -53,6 +54,7 @@ type DrinkType = {
 
 export function EditDrink() {
   useTitle("SkyDrinks - Editar bebida");
+  useFavicon("blue");
 
   const [form] = useForm();
 

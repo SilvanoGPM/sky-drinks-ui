@@ -14,6 +14,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import endpoints from "src/api/api";
 import { AuthContext } from "src/contexts/AuthContext";
+import { useFavicon } from "src/hooks/useFavicon";
 
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
@@ -46,6 +47,7 @@ type UserToUpdate = {
 
 export function EditUser() {
   useTitle("SkyDrinks - Editar usuário");
+  useFavicon("blue");
 
   const [form] = useForm();
 

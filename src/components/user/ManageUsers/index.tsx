@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
 import { Avatar, Button, DatePicker, Divider, Drawer, Form, Input, List, Pagination, Popconfirm, Select, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -252,7 +252,7 @@ export function ManageUsers() {
               style={{ minWidth: 50, minHeight: 50 }}
               shape="circle"
               type="primary"
-              icon={<PlusOutlined style={{ fontSize: 25 }} />}
+              icon={<UserAddOutlined style={{ fontSize: 25 }} />}
             />
           </Link>
         </Tooltip>
