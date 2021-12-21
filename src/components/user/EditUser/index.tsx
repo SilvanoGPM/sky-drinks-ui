@@ -55,7 +55,8 @@ export function EditUser() {
   const { userInfo } = useContext(AuthContext);
 
   const [user, setUser] = useState<UserType>({} as UserType);
-  const [loading, setLoading] = useState(true);
+  const [infoLoading, setInfoLoading] = useState(true);
+  const [editLoading, setEditLoading] = useState(false);
 
   const permissions = getUserPermissions(userInfo.role);
 
@@ -64,7 +65,7 @@ export function EditUser() {
       navigate(routes.HOME, {
         state: { warnMessage: "Você não possui permissão!" },
       });
-      return () => setLoading(false);
+      return () => setInfoLoading(false);
     }
   }, [userInfo, params, navigate, permissions]);
 
@@ -84,13 +85,13 @@ export function EditUser() {
         navigate(`/${routes.MANAGE_USERS}`);
       }
 
-      setLoading(false);
+      setInfoLoading(false);
     }
 
-    if (loading) {
+    if (infoLoading) {
       loadUser();
     }
-  }, [loading, params, navigate]);
+  }, [infoLoading, params, navigate]);
 
   function handleCPFChange(any: any) {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
@@ -98,6 +99,8 @@ export function EditUser() {
 
   async function handleFormFinish(values: UserToUpdate) {
     try {
+      setEditLoading(true);
+
       await endpoints.replaceUser({
         ...values,
         uuid: params.uuid || "",
@@ -125,6 +128,8 @@ export function EditUser() {
         duration: 3,
         placement: "bottomRight",
       });
+    } finally {
+      setEditLoading(false);
     }
   }
 
@@ -134,7 +139,7 @@ export function EditUser() {
         <h1 className={styles.title}>Editar Usuário</h1>
       </div>
 
-      {loading ? (
+      {infoLoading ? (
         <div className={styles.loading}>
           <Spin />
         </div>
@@ -256,6 +261,7 @@ export function EditUser() {
               }}
             >
               <Button
+                loading={editLoading}
                 icon={<PlusOutlined />}
                 size="large"
                 type="primary"

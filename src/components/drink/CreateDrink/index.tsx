@@ -29,9 +29,12 @@ export function CreateDrink() {
   const navigate = useNavigate();
 
   const [image, setImage] = useState<File>();
+  const [createLoading, setCreateLoading] = useState(false);
 
   async function handleFormFinish(values: DrinkToCreate) {
     try {
+      setCreateLoading(true);
+
       const drink = await endpoints.createDrink({
         ...values,
         picture: image,
@@ -54,6 +57,8 @@ export function CreateDrink() {
       });
 
       form.resetFields();
+    } finally {
+      setCreateLoading(false);
     }
   }
 
@@ -174,6 +179,7 @@ export function CreateDrink() {
             }}
           >
             <Button
+              loading={createLoading}
               icon={<PlusOutlined />}
               size="large"
               type="primary"

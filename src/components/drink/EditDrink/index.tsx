@@ -62,7 +62,8 @@ export function EditDrink() {
 
   const [image, setImage] = useState<File>();
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
-  const [loading, setLoading] = useState(true);
+  const [drinkLoading, setDrinkLoading] = useState(true);
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     async function loadDrink() {
@@ -78,18 +79,20 @@ export function EditDrink() {
         });
 
         navigate(`/${routes.MANAGE_DRINKS}`);
+      } finally {
+        setDrinkLoading(false);
       }
-
-      setLoading(false);
     }
 
-    if (loading) {
+    if (drinkLoading) {
       loadDrink();
     }
-  }, [loading, params, navigate]);
+  }, [drinkLoading, params, navigate]);
 
   async function handleFormFinish(values: DrinkToCreate) {
     try {
+      setEditLoading(true);
+
       await endpoints.replaceDrink({
         ...values,
         uuid: params.uuid || "",
@@ -112,6 +115,8 @@ export function EditDrink() {
         duration: 3,
         placement: "bottomRight",
       });
+    } finally {
+      setEditLoading(false);
     }
   }
 
@@ -139,7 +144,7 @@ export function EditDrink() {
         <h1 className={styles.title}>Editar Bebida</h1>
       </div>
 
-      {loading ? (
+      {drinkLoading ? (
         <div className={styles.loading}>
           <Spin />
         </div>
@@ -279,6 +284,7 @@ export function EditDrink() {
               }}
             >
               <Button
+                loading={editLoading}
                 icon={<PlusOutlined />}
                 size="large"
                 type="primary"

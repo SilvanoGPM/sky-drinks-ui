@@ -1,6 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, notification, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import endpoints from "src/api/api";
 
@@ -28,12 +29,16 @@ export function CreateUser() {
 
   const navigate = useNavigate();
 
+  const [createLoading, setCreateLoading] = useState(false);
+
   function handleCPFChange(any: any) {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 
   async function handleFormFinish(values: UserToCreate) {
     try {
+      setCreateLoading(true);
+
       const user = await endpoints.createUser({
         ...values,
         birthDay: formatToDatabaseDate(values.birthDay._d),
@@ -62,6 +67,8 @@ export function CreateUser() {
         duration: 3,
         placement: "bottomRight",
       });
+    } finally {
+      setCreateLoading(false);
     }
   }
 
@@ -188,6 +195,7 @@ export function CreateUser() {
             }}
           >
             <Button
+              loading={createLoading}
               icon={<PlusOutlined />}
               size="large"
               type="primary"
