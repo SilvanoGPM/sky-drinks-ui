@@ -4,7 +4,7 @@ import drinksEndpoints from "./drinks";
 import filesEndpoints from "./files";
 import usersEndpoints from "./users";
 
-import { refreshToken } from "./refreshToken";
+import { tokenExpirationInterceptor } from "./tokenExpirationInterceptor";
 
 type DrinkType = {
   uuid: string;
@@ -33,7 +33,7 @@ export function toFullPictureURI(drink: DrinkType) {
   };
 }
 
-refreshToken();
+tokenExpirationInterceptor();
 
 const endpoints = {
   async getTables() {

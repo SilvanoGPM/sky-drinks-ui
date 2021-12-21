@@ -17,7 +17,6 @@ type UserInfoProps = {
 type LoginProps = { email: string; password: string; remember: boolean };
 
 export const USER_CREDENTIALS_KEY = "userCredentials";
-export const USER_INFO_KEY = "userInfo";
 
 export function useAuth() {
   const [userInfo, setUserInfo] = useState<UserInfoProps>({} as UserInfoProps);
@@ -28,10 +27,8 @@ export function useAuth() {
     async function loadUserInfo() {
       try {
         const userInfo = await endpoints.getUserInfo();
+
         setUserInfo(userInfo);
-
-        localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
-
         setAuthenticated(true);
       } catch (e: any) {
         showNotification({
@@ -43,14 +40,16 @@ export function useAuth() {
       }
     }
 
-    const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
+    const userCredentialsLocal = localStorage.getItem(USER_CREDENTIALS_KEY);
+    const userCredentialsSession = sessionStorage.getItem(USER_CREDENTIALS_KEY);
 
-    if (userCredentials) {
-      api.defaults.headers.common["Authorization"] = JSON.parse(userCredentials).token;
-      loadUserInfo();
-    } else {
-      setAuthLoading(false);
-    }
+      if (userCredentialsLocal || userCredentialsSession) {
+        api.defaults.headers.common["Authorization"] =
+          JSON.parse(userCredentialsLocal || userCredentialsSession || "").token;
+        loadUserInfo();
+      } else {
+        setAuthLoading(false);
+      }
 
     return () => setAuthLoading(false);
   }, []);
@@ -61,19 +60,13 @@ export function useAuth() {
     try {
       const token = await endpoints.login(email, password);
 
-      // EU SEI EU SEI
-      // mas é temporário, colocar a senha ali parece uma pessíma ideia
-      // porém a única que tenho no momento.
+      const storage = remember ? localStorage : sessionStorage;
 
-      const userCredentials = { token, ...(remember ? { email, password } : {}) };
-
-      localStorage.setItem(USER_CREDENTIALS_KEY, JSON.stringify(userCredentials));
+      storage.setItem(USER_CREDENTIALS_KEY, JSON.stringify({ token }));
 
       api.defaults.headers.common["Authorization"] = token;
 
       const userInfo = await endpoints.getUserInfo();
-
-      localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
 
       setUserInfo(userInfo);
       setAuthenticated(true);
@@ -87,7 +80,7 @@ export function useAuth() {
   function handleLogout() {
     setAuthenticated(false);
     localStorage.removeItem(USER_CREDENTIALS_KEY);
-    localStorage.removeItem(USER_INFO_KEY);
+    sessionStorage.removeItem(USER_CREDENTIALS_KEY);
     api.defaults.headers.common["Authorization"] = "";
   }
 
