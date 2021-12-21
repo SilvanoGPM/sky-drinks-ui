@@ -169,9 +169,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           {authenticated && (
             <Menu.Item
               icon={<RocketOutlined style={{ fontSize: 25 }} />}
-              key="my-account"
+              key={routes.MY_ACCOUNT}
             >
-              <Link to="/my-account">Minha Conta</Link>
+              <Link to={routes.MY_ACCOUNT}>Minha Conta</Link>
             </Menu.Item>
           )}
 

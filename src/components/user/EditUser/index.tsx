@@ -11,7 +11,7 @@ import {
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints from "src/api/api";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useFavicon } from "src/hooks/useFavicon";
@@ -53,9 +53,11 @@ export function EditUser() {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   const params = useParams();
 
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, setUserInfo } = useContext(AuthContext);
 
   const [user, setUser] = useState<UserType>({} as UserType);
   const [infoLoading, setInfoLoading] = useState(true);
@@ -64,7 +66,9 @@ export function EditUser() {
   const permissions = getUserPermissions(userInfo.role);
 
   useEffect(() => {
-    if (params.uuid !== userInfo.uuid && !permissions.isAdmin) {
+    const isOwnerOrAdmin = params.uuid === userInfo.uuid || permissions.isAdmin;
+
+    if (!isOwnerOrAdmin) {
       navigate(routes.HOME, {
         state: { warnMessage: "Você não possui permissão!" },
       });
@@ -84,7 +88,7 @@ export function EditUser() {
           description: e.message,
         });
 
-        navigate(`/${routes.MANAGE_USERS}`);
+        navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
       }
 
       setInfoLoading(false);
@@ -93,7 +97,7 @@ export function EditUser() {
     if (infoLoading) {
       loadUser();
     }
-  }, [infoLoading, params, navigate]);
+  }, [infoLoading, params, navigate, location]);
 
   function handleCPFChange(any: any) {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
@@ -110,12 +114,17 @@ export function EditUser() {
         birthDay: moment(values.birthDay._d).format("yyyy-MM-DD"),
       });
 
+      if (params.uuid === userInfo.uuid) {
+        const userInfo = await endpoints.getUserInfo();
+        setUserInfo(userInfo);
+      }
+
       showNotification({
         type: "success",
         message: "Usuário foi atualizado com sucesso",
       });
 
-      navigate(`/${routes.MANAGE_USERS}`);
+      navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
     } catch (e: any) {
       const errors = e?.response?.data?.fieldErrors;
 

@@ -88,6 +88,7 @@ export function useAuth() {
     userInfo,
     authenticated,
     authLoading,
+    setUserInfo,
     setAuthenticated,
     handleLogin,
     handleLogout,

@@ -11,6 +11,8 @@ import routes from "src/routes";
 import { formatBirthDayDate, formatDatabaseDate } from "src/utils/formatDatabaseDate";
 
 import styles from "./styles.module.scss";
+import avatar from "src/assets/avatar.png";
+
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
@@ -204,7 +206,7 @@ export function ManageUsers() {
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
+                avatar={<Avatar src={avatar} />}
                 title={<p className={styles.name}>{name}</p>}
                 description={<p className={styles.email}>Email: {email}</p>}
               />

@@ -18,6 +18,7 @@ import { EditUser } from "./components/user/EditUser";
 
 import routes from "./routes";
 import { NotAuthorized } from "./pages/NotAuthorized";
+import { MyAccount } from "./components/user/MyAccount";
 
 function App() {
   return (
@@ -87,6 +88,15 @@ function App() {
             element={
               <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
                 <EditUser />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.MY_ACCOUNT}
+            element={
+              <PrivateRoute>
+                <MyAccount />
               </PrivateRoute>
             }
           />
