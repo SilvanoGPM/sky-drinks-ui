@@ -9,11 +9,13 @@ export function useFlashNotification(route: string) {
 
   useEffect(() => {
     if (location?.state) {
+      const { warn, error, success, info, ...state } = location.state;
+
       const notifications: { [key: string]: { message: string, description?: string } } = {
-        warn: location?.state?.warn,
-        error: location?.state?.error,
-        success: location?.state?.success,
-        info: location?.state?.info,
+        warn,
+        error,
+        success,
+        info,
       };
 
       const perfomedNotifications = Object.keys(notifications).map((notification) => {
@@ -32,7 +34,7 @@ export function useFlashNotification(route: string) {
 
       if (hasNotification) {
         // Limpando o estado quando recaregar a página.
-        navigate(route, { replace: true });
+        navigate(route, { state, replace: true });
       }
     }
   }, [location, navigate, route]);

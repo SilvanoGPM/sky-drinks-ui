@@ -1,5 +1,6 @@
 const routes = {
   HOME: "/",
+  NOT_AUTHORIZED: "/not-authorized",
 
   LOGIN: "/login",
   LOGOUT: "logout",

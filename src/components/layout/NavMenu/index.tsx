@@ -47,6 +47,8 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
   const permissions = getUserPermissions(userInfo.role);
 
+  const userName = permissions.isGuest ? "Visitante" : userInfo.name.split(" ")[0];
+
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
       <div className={styles.menuHeader}>
@@ -54,6 +56,10 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           <SkyDrinksIcon />
           <span>SkyDrinks</span>
         </h2>
+      </div>
+
+      <div className={styles.userInfo}>
+        <p>Seja bem vindo, <span title={userName}>{userName}</span></p>
       </div>
 
       <Menu

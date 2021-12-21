@@ -41,8 +41,6 @@ export function useAuth() {
       } finally {
         setAuthLoading(false);
       }
-
-      return () => setAuthLoading(false);
     }
 
     const userCredentials = localStorage.getItem(USER_CREDENTIALS_KEY);
@@ -50,8 +48,11 @@ export function useAuth() {
     if (userCredentials) {
       api.defaults.headers.common["Authorization"] = JSON.parse(userCredentials).token;
       loadUserInfo();
+    } else {
+      setAuthLoading(false);
     }
 
+    return () => setAuthLoading(false);
   }, []);
 
   async function handleLogin({ email, password, remember }: LoginProps) {

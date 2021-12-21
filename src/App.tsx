@@ -17,6 +17,7 @@ import { CreateUser } from "./components/user/CreateUser";
 import { EditUser } from "./components/user/EditUser";
 
 import routes from "./routes";
+import { NotAuthorized } from "./pages/NotAuthorized";
 
 function App() {
   return (
@@ -92,6 +93,7 @@ function App() {
         </Route>
 
         <Route path={routes.LOGIN} element={<Login />} />
+        <Route path={routes.NOT_AUTHORIZED} element={<NotAuthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AuthProvider>

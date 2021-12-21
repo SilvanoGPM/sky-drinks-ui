@@ -11,6 +11,7 @@ import routes from "src/routes";
 import styles from "./styles.module.scss";
 import loginImage from "src/assets/login-image.jpg";
 import { showNotification } from "src/utils/showNotification";
+import { useFlashNotification } from "src/hooks/useFlashNotification";
 
 type LoginValues = {
   email: string;
@@ -25,12 +26,14 @@ export function Login() {
 
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);
 
+  useFlashNotification(routes.LOGIN);
+
   async function handleFormLogin(values: LoginValues) {
     try {
       await handleLogin(values);
 
       showNotification({
-        type: "warn",
+        type: "success",
         message: "Login efetuado com sucesso!",
       });
     } catch (e: any) {

@@ -26,7 +26,7 @@ export function PrivateRoute({ children, requiredPerms = { type: "and", perms: [
   }
 
   if (!authenticated) {
-    return <Navigate to={routes.LOGIN} state={{ path: location.pathname }} />;
+    return <Navigate to={routes.LOGIN} state={{ path: location.pathname, info: { message: "Faça login primeiro" } }} />;
   }
 
   const permissions = getUserPermissions(userInfo.role);
@@ -40,7 +40,7 @@ export function PrivateRoute({ children, requiredPerms = { type: "and", perms: [
     : requiredPerms.perms.some(containsPerm);
 
   if (!hasPermission) {
-    return <Navigate to={routes.HOME} state={{ warn: { message: "Você não possui permissão!" } }} />;
+    return <Navigate to={routes.NOT_AUTHORIZED} state={{ warn: { message: "Você não possui permissão!" } }} />;
   }
 
   return children;

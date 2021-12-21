@@ -1,4 +1,4 @@
-@import '../../../scss/variables';
+@import "../../../scss/variables";
 
 .menu {
   width: 100%;
@@ -46,4 +46,30 @@
 
 .subMenu {
   font-size: 18x;
+}
+
+.userInfo {
+  height: $headerHeight;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+
+  p {
+    color: var(--navmenu-color);
+    margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1rem;
+    width: 100%;
+    text-align: center;
+
+    span {
+      font-style: italic;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
 }
