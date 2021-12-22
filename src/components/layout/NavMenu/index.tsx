@@ -117,9 +117,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
                 <Menu.Item
                   icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
-                  key="perform-request"
+                  key={routes.FIND_REQUEST}
                 >
-                  <Link to="perform-request">Realizar Pedido</Link>
+                  <Link to={routes.FIND_REQUEST}>Encontrar Pedido</Link>
                 </Menu.Item>
               </>
             )}

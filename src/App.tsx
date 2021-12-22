@@ -22,6 +22,8 @@ import { MyAccount } from "./components/user/MyAccount";
 import { RequestProvider } from "./contexts/RequestContext";
 import { FinalizeRequest } from "./components/request/FinalizeRequest";
 import { RequestCreated } from "./components/request/RequestCreated";
+import { FindRequest } from "./components/request/FindRequest";
+import { ViewRequest } from "./components/request/ViewRequest";
 
 function App() {
   return (
@@ -131,8 +133,28 @@ function App() {
             <Route
               path={routes.REQUEST_CREATED}
               element={
-                <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isUser"] }}
+                >
                   <RequestCreated />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={routes.FIND_REQUEST}
+              element={
+                <PrivateRoute>
+                  <FindRequest />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={routes.VIEW_REQUEST}
+              element={
+                <PrivateRoute>
+                  <ViewRequest />
                 </PrivateRoute>
               }
             />

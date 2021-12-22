@@ -29,7 +29,19 @@ const requestsEndpoints = {
     } catch (e) {
       throw e;
     }
-  }
+  },
+
+  async findRequestByUUID(uuid: string) {
+    try {
+      const { data } = await api.get(`/requests/${uuid}`);
+      return data;
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar conectar no servidor.";
+      throw new Error(details);
+    }
+  },
 };
 
 export default requestsEndpoints;

@@ -18,6 +18,8 @@ const routes = {
 
   FINALIZE_REQUEST: "request/finish",
   REQUEST_CREATED: "request/created",
+  VIEW_REQUEST: "request/view/:uuid",
+  FIND_REQUEST: "request/find/",
 };
 
 export default routes;
