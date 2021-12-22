@@ -79,11 +79,9 @@ export function RequestInfo() {
         </>
       ) : (
         <>
-          <div>
+          <div className={styles.noRequest}>
             <p>Nenhum pedido no momento</p>
           </div>
-
-          <Button type="primary">Iniciar Pedido</Button>
         </>
       )}
     </div>

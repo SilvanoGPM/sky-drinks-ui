@@ -1,4 +1,4 @@
-import { CloseOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, MinusOutlined, PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -163,6 +163,7 @@ export function FinalizeRequest() {
           onClick={handleCreateRequest}
           size="large"
           type="primary"
+          icon={<ShoppingCartOutlined />}
         >
           Finalizar Pedido
         </Button>

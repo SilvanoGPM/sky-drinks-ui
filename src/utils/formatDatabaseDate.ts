@@ -1,3 +1,5 @@
+import moment from "moment";
+
 function ofPattern(pattern: string, date: Date) {
   return pattern
     .replace("y", `${date.getFullYear().toString().padStart(2, "0")}`)
@@ -22,4 +24,8 @@ export function formatBirthDayDate(dateStr: string) {
 
 export function formatToDatabaseDate(date: Date) {
   return ofPattern("y-m-d", date);
+}
+
+export function formatDisplayDate(date: string) {
+  return moment(date).locale("pt-br").format("DD [de] MMMM, yyyy");
 }

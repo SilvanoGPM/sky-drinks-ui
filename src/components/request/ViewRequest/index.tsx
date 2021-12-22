@@ -1,9 +1,15 @@
+import { Badge, Divider, Spin } from "antd";
 import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import endpoints from "src/api/api";
-import { LoadingPage } from "src/components/other/LoadingPage";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import endpoints, { toFullPictureURI } from "src/api/api";
+import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { formatDisplayDate } from "src/utils/formatDatabaseDate";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { showNotification } from "src/utils/showNotification";
+
+import styles from "./styles.module.scss";
 
 type DrinkType = {
   uuid: string;
@@ -35,13 +41,15 @@ type UserType = {
 type RequestType = {
   drinks: DrinkType[];
   createdAt: string;
-  updateddAt: string;
+  updatedAt: string;
   uuid: string;
   user: UserType;
   table?: Table;
 };
 
 export function ViewRequest() {
+  useTitle("SkyDrinks - Visualizar pedido");
+
   const params = useParams();
 
   const location = useLocation();
@@ -99,12 +107,65 @@ export function ViewRequest() {
   }, [params, loading, navigate, location, redirect]);
 
   return (
-    <div>
+    <div className={styles.container}>
       {loading ? (
-        <LoadingPage />
+        <Spin />
       ) : (
         <>
-          <h1>{requestFound.uuid}</h1>
+          <div>
+            <h2 className={styles.title}>Visualizar Pedido</h2>
+          </div>
+
+          <div>
+            <h3>Código do pedido: {requestFound.uuid}</h3>
+            <p>
+              Pedido realizado em {formatDisplayDate(requestFound.createdAt)}
+            </p>
+            <p>
+              Pedido atualizado em {formatDisplayDate(requestFound.updatedAt)}
+            </p>
+
+            <Divider orientation="left">Bebidas</Divider>
+
+            <div>
+              {Object.keys(getDrinksGroupedByUUID(requestFound)).map(
+                (key, index) => {
+                  const drinksWithFullPicture =
+                    requestFound.drinks.map(toFullPictureURI);
+                  const drinksGrouped = getDrinksGroupedByUUID({
+                    drinks: drinksWithFullPicture,
+                  });
+                  const [drink] = drinksGrouped[key];
+                  const length = drinksGrouped[key].length;
+
+                  const { picture, name, price } = drink;
+
+                  return (
+                    <div
+                      title={name}
+                      key={`${key} - ${index}`}
+                      className={styles.drink}
+                    >
+                      <div className={styles.info}>
+                        <Link to={routes.VIEW_DRINK.replace(":uuid", key)}>
+                          <p className={styles.name}>{name}</p>
+                        </Link>
+                        <p className={styles.price}>
+                          R$ {formatDisplayPrice(price * length)}
+                        </p>
+                      </div>
+
+                      <Badge count={length}>
+                        <figure>
+                          <img src={picture} alt={name} />
+                        </figure>
+                      </Badge>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </div>
         </>
       )}
     </div>

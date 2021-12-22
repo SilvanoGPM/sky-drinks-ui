@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import routes from "src/routes";
 import styles from "./styles.module.scss";
+import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 
 export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");
@@ -65,17 +66,13 @@ export function MyAccount() {
           <p>
             Sua conta foi criada em:{" "}
             <span className={styles.bold}>
-              {moment(userInfo.createdAt)
-                .locale("pt-br")
-                .format("DD [de] MMMM, yyyy")}
+              {formatDisplayDate(userInfo.createdAt)}
             </span>
           </p>
           <p>
             Última atualização:{" "}
             <span className={styles.bold}>
-              {moment(userInfo.createdAt)
-                .locale("pt-br")
-                .format("DD [de] MMMM, yyyy")}
+              {formatDisplayDate(userInfo.updatedAt)}
             </span>
           </p>
         </div>
