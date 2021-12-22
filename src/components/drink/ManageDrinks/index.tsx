@@ -94,7 +94,7 @@ export function ManageDrinks() {
   }
 
   function removeDrink(uuid: string) {
-    return async () =>  {
+    return async () => {
       try {
         await endpoints.deleteDrink(uuid);
 
@@ -153,8 +153,9 @@ export function ManageDrinks() {
                 <ul className={styles.drinksList}>
                   {data.content.map((drink) => (
                     <DrinkCard
-                      key={drink.uuid}
                       {...drink}
+                      showBuyAction={false}
+                      key={drink.uuid}
                       width={cardWidth}
                       height={cardWidth + 50}
                       loading={loading}
@@ -166,11 +167,17 @@ export function ManageDrinks() {
                               drink.uuid
                             )}
                           >
-                            <EditOutlined />
+                            <Button type="link">
+                              <EditOutlined />
+                            </Button>
                           </Link>
                         </Tooltip>,
 
-                        <Tooltip title="Remover Bebida" placement="bottom" key="remove-drink">
+                        <Tooltip
+                          title="Remover Bebida"
+                          placement="bottom"
+                          key="remove-drink"
+                        >
                           <Popconfirm
                             title="Remover Bebida"
                             placement="top"
@@ -178,7 +185,9 @@ export function ManageDrinks() {
                             okText="Remover"
                             cancelText="Cancelar"
                           >
-                            <DeleteOutlined />
+                            <Button type="link">
+                              <DeleteOutlined />
+                            </Button>
                           </Popconfirm>
                         </Tooltip>,
                       ]}
@@ -192,6 +201,7 @@ export function ManageDrinks() {
                     defaultCurrent={pagination.page + 1}
                     current={pagination.page + 1}
                     total={data.totalElements}
+                    hideOnSinglePage
                     onChange={handlePaginationChange}
                   />
                 </div>

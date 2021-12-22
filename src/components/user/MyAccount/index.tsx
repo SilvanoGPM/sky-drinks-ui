@@ -1,6 +1,6 @@
 import { useTitle } from "src/hooks/useTitle";
 
-import avatar from "src/assets/avatar.png";
+import avatar from "src/assets/avatar_white.png";
 import { Avatar, Divider, Tooltip } from "antd";
 import { useContext } from "react";
 import { AuthContext } from "src/contexts/AuthContext";

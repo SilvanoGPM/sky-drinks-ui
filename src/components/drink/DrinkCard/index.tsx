@@ -1,10 +1,15 @@
-import { EyeOutlined } from "@ant-design/icons";
-import { Card, Image, Tooltip } from "antd";
+import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { Button, Card, Image, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import routes from "src/routes";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import { showNotification } from "src/utils/showNotification";
+import endpoints from "src/api/api";
+import { useContext } from "react";
+import { RequestContext } from "src/contexts/RequestContext";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 
 type DrinkCardProps = {
   uuid: string;
@@ -14,7 +19,8 @@ type DrinkCardProps = {
   loading: boolean;
   width: string | number;
   height: string | number;
-  moreActions?: React.ReactNode[],
+  showBuyAction?: boolean;
+  moreActions?: React.ReactNode[];
 };
 
 const { Meta } = Card;
@@ -27,17 +33,32 @@ export function DrinkCard({
   loading,
   height,
   width,
-  moreActions = []
+  showBuyAction = true,
+  moreActions = [],
 }: DrinkCardProps) {
+  const { addDrink } = useContext(RequestContext);
+
   function renderCover() {
     return (
       <Image
         height={height}
         width={width}
         alt={`Drink - ${name}`}
-        src={picture && !picture.endsWith('null') ? picture : drinkPlaceholder}
+        src={picture && !picture.endsWith("null") ? picture : drinkPlaceholder}
       />
     );
+  }
+
+  async function addDrinkToRequest() {
+    try {
+      const drink = await endpoints.findDrinkByUUID(uuid);
+      addDrink(drink);
+    } catch (e: any) {
+      showNotification({
+        type: "warn",
+        message: "Não foi possível adicionar bebida ao pedido",
+      });
+    }
   }
 
   return (
@@ -53,15 +74,29 @@ export function DrinkCard({
         actions={[
           <Tooltip title="Abrir Página" key="view-drink">
             <Link to={`${routes.VIEW_DRINK}`.replace(":uuid", uuid)}>
-              <EyeOutlined />
+              <Button type="link">
+                <EyeOutlined />
+              </Button>
             </Link>
           </Tooltip>,
-          ...moreActions
+          ...(showBuyAction
+            ? [
+                <Tooltip title="Adicionar ao Pedido" key="add-to-request">
+                  <Button onClick={addDrinkToRequest} type="link">
+                    <ShoppingCartOutlined />
+                  </Button>
+                </Tooltip>,
+              ]
+            : []),
+          ...moreActions,
         ]}
         cover={renderCover()}
         loading={loading}
       >
-        <Meta title={name} description={`Preço: R$ ${price.toLocaleString("pt-BR")}`} />
+        <Meta
+          title={name}
+          description={`Preço: R$ ${formatDisplayPrice(price)}`}
+        />
       </Card>
     </Tooltip>
   );

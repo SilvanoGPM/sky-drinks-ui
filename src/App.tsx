@@ -19,93 +19,120 @@ import { EditUser } from "./components/user/EditUser";
 import routes from "./routes";
 import { NotAuthorized } from "./pages/NotAuthorized";
 import { MyAccount } from "./components/user/MyAccount";
+import { RequestProvider } from "./contexts/RequestContext";
+import { FinalizeRequest } from "./components/request/FinalizeRequest";
 
 function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route path={routes.HOME} element={<Home />}>
-          <Route path={routes.HOME} element={<LatestDrinks />} />
-          <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
-          <Route path={routes.SEARCH_DRINKS} element={<SearchDrinks />} />
+      <RequestProvider>
+        <Routes>
+          <Route path={routes.HOME} element={<Home />}>
+            <Route path={routes.HOME} element={<LatestDrinks />} />
+            <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
+            <Route path={routes.SEARCH_DRINKS} element={<SearchDrinks />} />
 
-          <Route
-            path={routes.LOGOUT}
-            element={
-              <PrivateRoute>
-                <Logout />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.LOGOUT}
+              element={
+                <PrivateRoute>
+                  <Logout />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.MANAGE_DRINKS}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
-                <ManageDrinks />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.MANAGE_DRINKS}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                >
+                  <ManageDrinks />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.CREATE_DRINK}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
-                <CreateDrink />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.CREATE_DRINK}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                >
+                  <CreateDrink />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.EDIT_DRINK}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isBarmen"] }}>
-                <EditDrink />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.EDIT_DRINK}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                >
+                  <EditDrink />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.MANAGE_USERS}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
-                <ManageUsers />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.MANAGE_USERS}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isAdmin"] }}
+                >
+                  <ManageUsers />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.CREATE_USER}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
-                <CreateUser />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.CREATE_USER}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isAdmin"] }}
+                >
+                  <CreateUser />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.EDIT_USER}
-            element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
-                <EditUser />
-              </PrivateRoute>
-            }
-          />
+            <Route
+              path={routes.EDIT_USER}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isUser"] }}
+                >
+                  <EditUser />
+                </PrivateRoute>
+              }
+            />
 
-          <Route
-            path={routes.MY_ACCOUNT}
-            element={
-              <PrivateRoute>
-                <MyAccount />
-              </PrivateRoute>
-            }
-          />
-        </Route>
+            <Route
+              path={routes.MY_ACCOUNT}
+              element={
+                <PrivateRoute>
+                  <MyAccount />
+                </PrivateRoute>
+              }
+            />
 
-        <Route path={routes.LOGIN} element={<Login />} />
-        <Route path={routes.NOT_AUTHORIZED} element={<NotAuthorized />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+            <Route
+              path={routes.FINALIZE_REQUEST}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isUser"] }}
+                >
+                  <FinalizeRequest />
+                </PrivateRoute>
+              }
+            />
+          </Route>
+
+          <Route path={routes.LOGIN} element={<Login />} />
+          <Route path={routes.NOT_AUTHORIZED} element={<NotAuthorized />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </RequestProvider>
     </AuthProvider>
   );
 }

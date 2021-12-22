@@ -151,7 +151,7 @@ export function ManageUsers() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Usuários</h2>
+      <h2 className={styles.title}>Gerenciar Usuários</h2>
 
       <div className={styles.buttonContainer}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
@@ -170,6 +170,7 @@ export function ManageUsers() {
                 defaultCurrent={pagination.page + 1}
                 current={pagination.page + 1}
                 total={data.totalElements}
+                hideOnSinglePage
                 onChange={handlePaginationChange}
               />
             </div>

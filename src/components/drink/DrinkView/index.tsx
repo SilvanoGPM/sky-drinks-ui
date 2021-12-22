@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Skeleton, Tag, Divider, Button } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +15,8 @@ import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
 import styles from "./styles.module.scss";
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
 import { showNotification } from "src/utils/showNotification";
+import { RequestContext } from "src/contexts/RequestContext";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 
 type DrinkType = {
   uuid: string;
@@ -38,10 +40,13 @@ export function DrinkView() {
   const { onMouseDown } = useDraggableScroll(infoRef);
 
   const params = useParams();
+
   const navigation = useNavigate();
 
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
   const [loading, setLoading] = useState(true);
+
+  const { addDrink } = useContext(RequestContext);
 
   useEffect(() => {
     async function findDrink() {
@@ -67,6 +72,10 @@ export function DrinkView() {
       findDrink();
     }
   }, [loading, params, navigation]);
+
+  function addDrinkToRequest() {
+    addDrink(drink);
+  }
 
   const picture = drink.picture && !drink.picture.endsWith('null')
     ? drink.picture
@@ -113,7 +122,7 @@ export function DrinkView() {
             <p>
               Preço:{" "}
               <span className={styles.bold}>
-                R$ {drink.price.toLocaleString("pt-BR")}
+                R$ {formatDisplayPrice(drink.price)}
               </span>
             </p>
 
@@ -130,7 +139,7 @@ export function DrinkView() {
               ))}
             </div>
 
-            <Button icon={<PlusOutlined />} type="primary">
+            <Button onClick={addDrinkToRequest} icon={<PlusOutlined />} type="primary">
               Adicionar ao Pedido
             </Button>
           </div>

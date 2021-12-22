@@ -1,3 +1,5 @@
+@import '../../../scss/variables';
+
 .container {
   padding: 2rem;
   display: flex;
@@ -11,7 +13,6 @@
 
 .buttonContainer {
   width: 100%;
-  padding: 0 2rem;
 
   button {
     width: 100%;
@@ -26,10 +27,15 @@
 
   &List {
     display: flex;
-    align-items: center;
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.8rem;
+  }
+
+  &Founded {
+    @media screen and (max-width: $break1) {
+      text-align: center;
+    }
   }
 
 }

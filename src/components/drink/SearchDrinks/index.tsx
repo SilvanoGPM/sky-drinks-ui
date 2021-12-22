@@ -145,7 +145,7 @@ export function SearchDrinks() {
       description: values.description || undefined,
       additional: values.additional ? values.additional.join(";") : undefined,
       alcoholic: values.alcoholic,
-      page: pagination.page,
+      page: 0,
     } as SearchParameters;
 
     if (form.isFieldTouched("volume")) {
@@ -189,7 +189,7 @@ export function SearchDrinks() {
       <div className={styles.drinksWrapper}>
         {data.content.length !== 0 ? (
           <>
-            <h2>
+            <h2 className={styles.drinksFounded}>
               {data.totalElements}{" "}
               {pluralize(
                 data.totalElements,
@@ -215,6 +215,7 @@ export function SearchDrinks() {
                 defaultPageSize={pagination.size}
                 defaultCurrent={pagination.page + 1}
                 total={data.totalElements}
+                hideOnSinglePage
                 onChange={handlePaginationChange}
               />
             </div>

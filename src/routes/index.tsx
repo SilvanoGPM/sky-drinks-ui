@@ -15,6 +15,8 @@ const routes = {
   CREATE_USER: "/users/create",
   EDIT_USER: "/users/edit/:uuid",
   MY_ACCOUNT: "my-account",
+
+  FINALIZE_REQUEST: "request/finish",
 };
 
 export default routes;
