@@ -17,6 +17,7 @@ const routes = {
   MY_ACCOUNT: "my-account",
 
   FINALIZE_REQUEST: "request/finish",
+  REQUEST_CREATED: "request/created",
 };
 
 export default routes;

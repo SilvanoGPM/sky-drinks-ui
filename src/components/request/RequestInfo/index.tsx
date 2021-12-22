@@ -1,5 +1,5 @@
-import { Badge, Button, Popover } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
+import { Badge, Button, Popover, Tooltip } from "antd";
+import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import styles from "./styles.module.scss";
 import { useContext } from "react";
@@ -10,7 +10,7 @@ import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 
 export function RequestInfo() {
-  const { request } = useContext(RequestContext);
+  const { request, clearRequest } = useContext(RequestContext);
 
   function calculateRequestPrice() {
     return request.drinks.reduce((total, { price }) => total + price, 0);
@@ -31,7 +31,18 @@ export function RequestInfo() {
       );
     });
 
-    return <ul className={styles.drinksList}>{elements}</ul>;
+    return (
+      <div>
+        <ul className={styles.drinksList}>{elements}</ul>
+        <div className={styles.clearRequest}>
+          <Tooltip title="Limpar Pedido" placement="bottom">
+            <Button onClick={clearRequest} shape="round">
+              <DeleteOutlined />
+            </Button>
+          </Tooltip>
+        </div>
+      </div>
+    );
   }
 
   const containsRequest = request.drinks.length > 0;
@@ -50,7 +61,7 @@ export function RequestInfo() {
             <div className={styles.requestInfoTotal}>
               <p>Total de bebidas:</p>
               <Badge
-                style={{ backgroundColor: '#52c41a' }}
+                style={{ backgroundColor: "#52c41a" }}
                 count={request.drinks.length}
               />
             </div>

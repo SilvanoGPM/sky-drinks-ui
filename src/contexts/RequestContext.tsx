@@ -29,6 +29,7 @@ type RequestType = {
 type RequestContextProps = {
   request: RequestType;
   addDrink: (drink: DrinkType) => void;
+  clearRequest: () => void;
   setRequest: (request: RequestType) => void;
 };
 

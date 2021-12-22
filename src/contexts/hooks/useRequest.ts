@@ -1,5 +1,5 @@
 import { Modal } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { showNotification } from "src/utils/showNotification";
 
 type DrinkType = {
@@ -23,12 +23,26 @@ type RequestType = {
   table?: Table;
 };
 
+export const REQUEST_KEY = "request";
+
 const { confirm } = Modal;
 
 export function useRequest() {
   const [request, setRequest] = useState<RequestType>({
     drinks: []
   });
+
+  useEffect(() => {
+    const request = localStorage.getItem(REQUEST_KEY);
+
+    if (request) {
+      setRequest(JSON.parse(request));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(REQUEST_KEY, JSON.stringify(request));
+  }, [request]);
 
   function add(drink: DrinkType) {
     setRequest({ ...request, drinks: [...request.drinks, drink] });
@@ -37,6 +51,10 @@ export function useRequest() {
       message: "Bebida foi adicionada ao pedido com sucesso!",
       duration: 2,
     });
+  }
+
+  function clearRequest() {
+    setRequest({ drinks: [] });
   }
 
   function addDrink(drink: DrinkType) {
@@ -56,5 +74,5 @@ export function useRequest() {
     add(drink);
   }
 
-  return { request, setRequest, addDrink };
+  return { request, setRequest, addDrink, clearRequest };
 }

@@ -5,6 +5,7 @@ import filesEndpoints from "./files";
 import usersEndpoints from "./users";
 
 import { tokenExpirationInterceptor } from "./tokenExpirationInterceptor";
+import requestsEndpoints from "./requests";
 
 type DrinkType = {
   uuid: string;
@@ -48,6 +49,7 @@ const endpoints = {
   ...drinksEndpoints,
   ...usersEndpoints,
   ...filesEndpoints,
+  ...requestsEndpoints,
 };
 
 export default endpoints;

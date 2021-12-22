@@ -21,6 +21,7 @@ import { NotAuthorized } from "./pages/NotAuthorized";
 import { MyAccount } from "./components/user/MyAccount";
 import { RequestProvider } from "./contexts/RequestContext";
 import { FinalizeRequest } from "./components/request/FinalizeRequest";
+import { RequestCreated } from "./components/request/RequestCreated";
 
 function App() {
   return (
@@ -123,6 +124,15 @@ function App() {
                   requiredPerms={{ type: "and", perms: ["isUser"] }}
                 >
                   <FinalizeRequest />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={routes.REQUEST_CREATED}
+              element={
+                <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+                  <RequestCreated />
                 </PrivateRoute>
               }
             />
