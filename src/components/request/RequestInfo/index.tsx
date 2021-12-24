@@ -6,15 +6,11 @@ import { useContext } from "react";
 import { RequestContext } from "src/contexts/RequestContext";
 import { Link } from "react-router-dom";
 import routes from "src/routes";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
+import { calculateDrinksPrice } from "src/utils/calculateDrinkPrice";
 
 export function RequestInfo() {
   const { request, clearRequest } = useContext(RequestContext);
-
-  function calculateRequestPrice() {
-    return request.drinks.reduce((total, { price }) => total + price, 0);
-  }
 
   function getDrinksContent() {
     const drinks = getDrinksGroupedByUUID(request);
@@ -67,7 +63,7 @@ export function RequestInfo() {
             </div>
 
             <p className={styles.requestInfoPrice}>
-              Preço estimado: R$ {formatDisplayPrice(calculateRequestPrice())}
+              Preço estimado: {calculateDrinksPrice(request.drinks)}
             </p>
           </Popover>
 

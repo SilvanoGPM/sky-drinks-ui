@@ -1,6 +1,6 @@
 import { CloseOutlined, MinusOutlined, PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import endpoints from "src/api/api";
 import { InputNumberSpinner } from "src/components/custom/InputNumberSpinner";
@@ -36,6 +36,8 @@ export function FinalizeRequest() {
 
   const { request, setRequest, clearRequest } = useContext(RequestContext);
 
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,6 +58,8 @@ export function FinalizeRequest() {
 
   async function createRequest() {
     try {
+      setLoading(true);
+
       const { uuid } = await endpoints.createRequest(request);
 
       navigate(`/${routes.REQUEST_CREATED}`, { state: { uuid } });
@@ -66,6 +70,8 @@ export function FinalizeRequest() {
         type: "warn",
         message: "Não foi possível finalizar o seu pedido.",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -164,6 +170,7 @@ export function FinalizeRequest() {
           size="large"
           type="primary"
           icon={<ShoppingCartOutlined />}
+          loading={loading}
         >
           Finalizar Pedido
         </Button>

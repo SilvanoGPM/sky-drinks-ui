@@ -155,7 +155,7 @@ export function ManageUsers() {
 
       <div className={styles.buttonContainer}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
-          Pesquisar Usuário
+          Pesquisar usuários
         </Button>
       </div>
 

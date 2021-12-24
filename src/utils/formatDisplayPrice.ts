@@ -1,5 +1,7 @@
 export function formatDisplayPrice(price: number) {
-  return price.toLocaleString("pt-BR", {
+  const formattedPrice = price.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
   });
+
+  return `R$ ${formattedPrice}`;
 }

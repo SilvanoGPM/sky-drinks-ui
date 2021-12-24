@@ -1,3 +1,5 @@
+import { randomItem } from "./randomItem";
+
 export function chooseRandomColor() {
   const colors = [
     '#eccc68',
@@ -11,7 +13,5 @@ export function chooseRandomColor() {
     '#7158e2',
   ];
 
-  const randomIndex = Math.floor(Math.random() * (colors.length - 1));
-
-  return colors[randomIndex];
+  return randomItem(colors);
 }

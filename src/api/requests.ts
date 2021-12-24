@@ -42,6 +42,18 @@ const requestsEndpoints = {
       throw new Error(details);
     }
   },
+
+  async getMyRequests(params: string, size: number = 6) {
+    try {
+      const { data } = await api.get(`/requests/all/search?size=${size}&${params}&sort=createdAt,desc`);
+      return data;
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar conectar no servidor.";
+      throw new Error(details);
+    }
+  },
 };
 
 export default requestsEndpoints;

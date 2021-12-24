@@ -31,7 +31,7 @@ export function RequestCreated() {
         title="Pedido realizado com sucesso!"
         subTitle={
           <>
-            <h3>Código do pedido: {location?.state?.uuid}</h3>
+            <h3>Código do pedido: {location.state.uuid}</h3>
             <p>
               Seu pedido foi realizado com sucesso, vá para o seus pedidos para
               verificar o status dele.
@@ -39,6 +39,9 @@ export function RequestCreated() {
           </>
         }
         extra={[
+          <Link key="view-request" to={`/${routes.VIEW_REQUEST.replace(":uuid", location.state.uuid)}`}>
+            <Button type="primary">Ver pedido</Button>
+          </Link>,
           <Link key="home" to={routes.HOME}>
             <Button>Voltar para a home</Button>
           </Link>,

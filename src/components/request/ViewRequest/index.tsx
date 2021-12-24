@@ -43,8 +43,10 @@ type RequestType = {
   createdAt: string;
   updatedAt: string;
   uuid: string;
+  finished: boolean;
   user: UserType;
   table?: Table;
+  totalPrice: number;
 };
 
 export function ViewRequest() {
@@ -117,15 +119,56 @@ export function ViewRequest() {
           </div>
 
           <div>
-            <h3>Código do pedido: {requestFound.uuid}</h3>
+            <Divider
+              style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+              orientation="left"
+            >
+              Geral
+            </Divider>
+
+            <h3>
+              Código do pedido:{" "}
+              <span className={styles.bold}>{requestFound.uuid}</span>
+            </h3>
             <p>
-              Pedido realizado em {formatDisplayDate(requestFound.createdAt)}
+              Usuário:{" "}
+              <span className={styles.bold}>
+                {requestFound.user.name} - {requestFound.user.email}
+              </span>
+            </p>
+            <div className={styles.status}>
+              <p>Status: </p>
+              {requestFound.finished ? (
+                <Badge status="success" text="Finalizado" />
+              ) : (
+                <Badge status="processing" text="Em preparo" />
+              )}
+            </div>
+            <p>
+              Pedido realizado em{" "}
+              <span className={styles.bold}>
+                {formatDisplayDate(requestFound.createdAt)}
+              </span>
             </p>
             <p>
-              Pedido atualizado em {formatDisplayDate(requestFound.updatedAt)}
+              Pedido atualizado em{" "}
+              <span className={styles.bold}>
+                {formatDisplayDate(requestFound.updatedAt)}
+              </span>
+            </p>
+            <p>
+              Preço estimado:{" "}
+              <span className={styles.bold}>
+                {formatDisplayPrice(requestFound.totalPrice)}
+              </span>
             </p>
 
-            <Divider orientation="left">Bebidas</Divider>
+            <Divider
+              style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+              orientation="left"
+            >
+              Bebidas
+            </Divider>
 
             <div>
               {Object.keys(getDrinksGroupedByUUID(requestFound)).map(

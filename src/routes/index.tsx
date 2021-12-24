@@ -20,6 +20,7 @@ const routes = {
   REQUEST_CREATED: "request/created",
   VIEW_REQUEST: "request/view/:uuid",
   FIND_REQUEST: "request/find/",
+  MY_REQUESTS: "my-requests",
 };
 
 export default routes;

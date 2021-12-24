@@ -43,6 +43,7 @@ export function FindRequest() {
           size="large"
           placeholder="Código do pedido"
           allowClear
+          enterButton
         />
       </div>
     </div>

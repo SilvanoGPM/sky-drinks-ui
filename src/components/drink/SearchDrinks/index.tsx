@@ -264,11 +264,11 @@ export function SearchDrinks() {
           </Form.Item>
 
           <Form.Item label="Preço" name="price">
-            <Slider range />
+            <Slider range tipFormatter={(value) => `R$ ${value}`} max={1000} />
           </Form.Item>
 
           <Form.Item label="Volume" name="volume">
-            <Slider range min={100} max={4000} />
+            <Slider range min={100} max={4000} tipFormatter={(value) => `${value}ml`} />
           </Form.Item>
 
           <Form.Item label="Adicionais" name="additional">
