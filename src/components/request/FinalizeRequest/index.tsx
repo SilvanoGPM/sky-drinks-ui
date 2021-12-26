@@ -163,6 +163,11 @@ export function FinalizeRequest() {
         })}
       </div>
 
+      <div className={styles.warnMessage}>
+        <p className={styles.bold}>Atenção:</p>
+        <p className={styles.italic}>Você pode pedir os adicionais na hora de pegar o pedido.</p>
+      </div>
+
       <div>
         <Button
           style={{ width: "100%" }}

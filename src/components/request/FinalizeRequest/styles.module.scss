@@ -58,3 +58,19 @@
     }
   }
 }
+
+.warnMessage {
+  margin-bottom: 1rem;
+
+  p {
+    margin: 0;
+  }
+
+  .bold {
+    font-weight: bold;
+  }
+
+  .italic {
+    font-style: italic;
+  }
+}
