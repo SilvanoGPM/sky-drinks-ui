@@ -58,12 +58,15 @@ export function CreateDrink() {
     try {
       setCreateLoading(true);
 
+      const additional = values.additional
+        ? values.additional.join(";").toLowerCase()
+        : "";
+
       const drink = await endpoints.createDrink({
         ...values,
+        volume: Math.round(values.volume),
         picture: image,
-        additional: values.additional
-          ? values.additional.join(";").toLowerCase()
-          : "",
+        additional,
       });
 
       showNotification({
@@ -189,7 +192,7 @@ export function CreateDrink() {
                   },
                 ]}
               >
-                <InputNumber addonBefore="R$" />
+                <InputNumber decimalSeparator="," addonBefore="R$" />
               </Form.Item>
 
               <Form.Item

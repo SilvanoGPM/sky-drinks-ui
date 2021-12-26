@@ -7,6 +7,7 @@ import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
+import { getStatusBadge } from "src/utils/getStatusBadge";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
@@ -38,12 +39,14 @@ type UserType = {
   cpf: string;
 };
 
+type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
+
 type RequestType = {
   drinks: DrinkType[];
   createdAt: string;
   updatedAt: string;
   uuid: string;
-  finished: boolean;
+  status: StatusType;
   user: UserType;
   table?: Table;
   totalPrice: number;
@@ -138,11 +141,7 @@ export function ViewRequest() {
             </p>
             <div className={styles.status}>
               <p>Status: </p>
-              {requestFound.finished ? (
-                <Badge status="success" text="Finalizado" />
-              ) : (
-                <Badge status="processing" text="Em preparo" />
-              )}
+              {getStatusBadge(requestFound.status)}
             </div>
             <p>
               Pedido realizado em{" "}

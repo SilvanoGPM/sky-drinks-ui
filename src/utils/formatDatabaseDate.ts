@@ -27,5 +27,5 @@ export function formatToDatabaseDate(date: Date) {
 }
 
 export function formatDisplayDate(date: string) {
-  return moment(date).locale("pt-br").format("DD [de] MMMM, yyyy");
+  return moment(date).locale("pt-br").format("DD [de] MMMM, yyyy [as] HH:mm");
 }

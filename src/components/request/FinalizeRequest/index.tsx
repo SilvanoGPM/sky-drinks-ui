@@ -1,7 +1,12 @@
-import { CloseOutlined, MinusOutlined, PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  CloseOutlined,
+  MinusOutlined,
+  PlusOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import { Button, Modal } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import endpoints from "src/api/api";
 import { InputNumberSpinner } from "src/components/custom/InputNumberSpinner";
 import { RequestContext } from "src/contexts/RequestContext";
@@ -135,7 +140,9 @@ export function FinalizeRequest() {
               className={styles.drink}
             >
               <div className={styles.info}>
-                <p className={styles.name}>{name}</p>
+                <Link to={routes.VIEW_DRINK.replace(":uuid", key)}>
+                  <p className={styles.name}>{name}</p>
+                </Link>
                 <p className={styles.price}>
                   R$ {formatDisplayPrice(price * length)}
                 </p>
@@ -165,7 +172,9 @@ export function FinalizeRequest() {
 
       <div className={styles.warnMessage}>
         <p className={styles.bold}>Atenção:</p>
-        <p className={styles.italic}>Você pode pedir os adicionais na hora de pegar o pedido.</p>
+        <p className={styles.italic}>
+          Você pode pedir os adicionais na hora de pegar o pedido.
+        </p>
       </div>
 
       <div>

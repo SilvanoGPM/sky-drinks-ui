@@ -32,6 +32,7 @@ import moment from "moment";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
+import { getStatusBadge } from "src/utils/getStatusBadge";
 
 type DrinkType = {
   uuid: string;
@@ -58,11 +59,13 @@ type UserType = {
   cpf: string;
 };
 
+type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
+
 type RequestType = {
   drinks: DrinkType[];
   createdAt: string;
   updatedAt: string;
-  finished: boolean;
+  status: StatusType;
   uuid: string;
   user: UserType;
   totalPrice: number;
@@ -77,7 +80,7 @@ type RequestSearchType = {
 };
 
 type RequestParams = {
-  finished: number;
+  status: number;
   drinkName: string;
   drinkDescription: string;
   createdAt?: string;
@@ -95,6 +98,8 @@ type PaginetedDataType = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+
+const status = ["PROCESSING", "FINISHED", "CANCELED"] as StatusType[];
 
 export function MyRequests() {
   useTitle("SkyDrinks - Meus pedidos");
@@ -173,7 +178,7 @@ export function MyRequests() {
   }
 
   function handleFinishForm(values: RequestSearchType) {
-    const { drinkDescription, drinkName, status: finished } = values;
+    const { drinkDescription, drinkName, status } = values;
 
     const [greaterThanOrEqualToTotalPrice, lessThanOrEqualToTotalPrice] =
       values.price;
@@ -185,7 +190,7 @@ export function MyRequests() {
     setParams({
       drinkDescription,
       drinkName,
-      finished,
+      status,
       lessThanOrEqualToTotalPrice,
       greaterThanOrEqualToTotalPrice,
       createdInDateOrAfter: values.createdAt
@@ -256,7 +261,7 @@ export function MyRequests() {
           hideOnSinglePage: true,
         }}
         renderItem={(request) => {
-          const { uuid, createdAt, finished, drinks, totalPrice } = request;
+          const { uuid, createdAt, status, drinks, totalPrice } = request;
           const { picture } = toFullPictureURI(drinks[0]);
 
           return (
@@ -300,11 +305,7 @@ export function MyRequests() {
               <div className={styles.listItemContent}>
                 <div className={styles.status}>
                   <p>Status: </p>
-                  {finished ? (
-                    <Badge status="success" text="Finalizado" />
-                  ) : (
-                    <Badge status="processing" text="Em preparo" />
-                  )}
+                  {getStatusBadge(status)}
                 </div>
                 <p className={styles.info}>Código do pedido: {uuid}</p>
                 <p className={styles.info}>
@@ -331,7 +332,6 @@ export function MyRequests() {
           layout="vertical"
           style={{ flex: 1 }}
           initialValues={{
-            status: "-1",
             price: [0, 200],
           }}
           name="search-requests"
@@ -345,10 +345,12 @@ export function MyRequests() {
           </Form.Item>
 
           <Form.Item label="Status do pedido" name="status">
-            <Select>
-              <Option value="-1">Ambos</Option>
-              <Option value="0">Em preparo</Option>
-              <Option value="1">Finalizado</Option>
+            <Select allowClear>
+              {status.map((value) => (
+                <Option key={value} value={value}>
+                {getStatusBadge(value)}
+              </Option>
+              ))}
             </Select>
           </Form.Item>
 
