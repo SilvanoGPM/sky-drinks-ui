@@ -26,8 +26,12 @@ const requestsEndpoints = {
     try {
       const { data } = await api.post("/requests/user", request);
       return data;
-    } catch (e) {
-      throw e;
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar finalizar o pedido.";
+
+      throw new Error(details);
     }
   },
 
@@ -45,7 +49,9 @@ const requestsEndpoints = {
 
   async getMyRequests(params: string, size: number = 6) {
     try {
-      const { data } = await api.get(`/requests/user/my-requests?size=${size}&${params}&sort=updatedAt,desc`);
+      const { data } = await api.get(
+        `/requests/user/my-requests?size=${size}&${params}&sort=updatedAt,desc`
+      );
       return data;
     } catch (e: any) {
       const details =
@@ -64,7 +70,7 @@ const requestsEndpoints = {
         "Aconteceu um erro ao tentar conectar no servidor.";
       throw new Error(details);
     }
-  }
+  },
 };
 
 export default requestsEndpoints;

@@ -8,8 +8,11 @@ import { Link } from "react-router-dom";
 import routes from "src/routes";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { calculateDrinksPrice } from "src/utils/calculateDrinkPrice";
+import { AuthContext } from "src/contexts/AuthContext";
+import { getUserPermissions } from "src/utils/getUserPermissions";
 
 export function RequestInfo() {
+  const { userInfo } = useContext(AuthContext);
   const { request, clearRequest } = useContext(RequestContext);
 
   function getDrinksContent() {
@@ -40,6 +43,8 @@ export function RequestInfo() {
       </div>
     );
   }
+
+  const permissions = getUserPermissions(userInfo.role);
 
   const containsRequest = request.drinks.length > 0;
   const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
@@ -76,7 +81,11 @@ export function RequestInfo() {
       ) : (
         <>
           <div className={styles.noRequest}>
-            <p>Nenhum pedido no momento</p>
+            {permissions.isUser || permissions.isGuest ? (
+              <p>Nenhum pedido no momento</p>
+            ) : (
+              <p className={styles.niceJob}>Bom trabalho!</p>
+            )}
           </div>
         </>
       )}

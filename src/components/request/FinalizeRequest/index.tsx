@@ -73,7 +73,7 @@ export function FinalizeRequest() {
     } catch (e: any) {
       showNotification({
         type: "warn",
-        message: "Não foi possível finalizar o seu pedido.",
+        message: e.message,
       });
     } finally {
       setLoading(false);

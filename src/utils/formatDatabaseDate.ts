@@ -1,4 +1,5 @@
 import moment from "moment";
+import "moment/locale/pt-br";
 
 function ofPattern(pattern: string, date: Date) {
   return pattern

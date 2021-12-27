@@ -5,13 +5,12 @@ import { Avatar, Divider, Tooltip } from "antd";
 import { useContext } from "react";
 import { AuthContext } from "src/contexts/AuthContext";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
-import moment from "moment";
-import "moment/locale/pt-br";
 import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import routes from "src/routes";
 import styles from "./styles.module.scss";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
+import { getUserAge } from "src/utils/getUserAge";
 
 export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");
@@ -38,7 +37,10 @@ export function MyAccount() {
           </Divider>
 
           <Tooltip title="Editar informações" className={styles.edit}>
-            <Link state={{ back: routes.MY_ACCOUNT }} to={routes.EDIT_USER.replace(":uuid", userInfo.uuid)}>
+            <Link
+              state={{ back: routes.MY_ACCOUNT }}
+              to={routes.EDIT_USER.replace(":uuid", userInfo.uuid)}
+            >
               <EditOutlined style={{ fontSize: "1rem" }} />
             </Link>
           </Tooltip>
@@ -60,7 +62,7 @@ export function MyAccount() {
           <p>
             Idade:{" "}
             <span className={styles.bold}>
-              {moment().diff(userInfo.birthDay, "years")} Anos
+              {getUserAge(userInfo.birthDay)} Anos
             </span>
           </p>
           <p>
