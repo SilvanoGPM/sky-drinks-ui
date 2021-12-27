@@ -25,6 +25,7 @@ import { RequestCreated } from "./components/request/RequestCreated";
 import { FindRequest } from "./components/request/FindRequest";
 import { ViewRequest } from "./components/request/ViewRequest";
 import { MyRequests } from "./components/request/MyRequests";
+import { ListImages } from "./components/drink/ListImages";
 
 function App() {
   return (
@@ -41,6 +42,17 @@ function App() {
               element={
                 <PrivateRoute>
                   <Logout />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={routes.LIST_IMAGES}
+              element={
+                <PrivateRoute
+                  requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                >
+                  <ListImages />
                 </PrivateRoute>
               }
             />

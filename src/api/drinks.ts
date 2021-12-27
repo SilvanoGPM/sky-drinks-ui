@@ -52,7 +52,6 @@ const drinksEndpoints = {
     }
   },
 
-
   async findDrinkByUUID(uuid?: string) {
     if (!uuid) {
       throw new Error("Passe um UUID para a pesquisa!");
@@ -104,7 +103,6 @@ const drinksEndpoints = {
       throw e;
     }
   },
-
 };
 
 export default drinksEndpoints;
