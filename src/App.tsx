@@ -55,7 +55,7 @@ function App() {
         <Route path={routes.HOME} element={<Home />}>
           <Route path={routes.HOME} element={<LatestDrinks />} />
           <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
-          <Route path={routes.SEARCH_DRINKS} element={<SearchDrinks />} />
+          <Route path={routes.SEARCH_DRINKS} key="search-drinks" element={<SearchDrinks />} />
 
           <Route
             path={routes.LOGOUT}

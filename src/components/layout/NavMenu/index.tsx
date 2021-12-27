@@ -38,13 +38,13 @@ const { SubMenu } = Menu;
 export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
   const { userInfo, authenticated } = useContext(AuthContext);
 
+  const location = useLocation();
+
   function closeMenu() {
     if (window.innerWidth <= 700) {
       setMenuShow(false);
     }
   }
-
-  const location = useLocation();
 
   const permissions = getUserPermissions(userInfo.role);
 
@@ -65,7 +65,7 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
       <Menu
         theme="dark"
-        defaultSelectedKeys={[
+        selectedKeys={[
           location.pathname,
           location.pathname.replace("/", ""),
         ]}
