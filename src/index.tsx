@@ -6,12 +6,18 @@ import pt_BR from "antd/lib/locale/pt_BR";
 import App from "./App";
 
 import "./index.scss";
+import { AuthProvider } from "./contexts/AuthContext";
+import { RequestProvider } from "./contexts/RequestContext";
 
 ReactDOM.render(
   <BrowserRouter>
-    <ConfigProvider locale={pt_BR}>
-      <App />
-    </ConfigProvider>
+    <AuthProvider>
+      <RequestProvider>
+        <ConfigProvider locale={pt_BR}>
+          <App />
+        </ConfigProvider>
+      </RequestProvider>
+    </AuthProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

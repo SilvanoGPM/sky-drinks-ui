@@ -19,6 +19,7 @@ type AuthContextProps = {
   userInfo: UserInfoProps;
   authenticated: boolean;
   authLoading: boolean;
+  token: string;
   setUserInfo: (userInfo: UserInfoProps) => void;
   setAuthenticated: (authenticated: boolean) => void;
   handleLogin: (values: LoginProps) => Promise<void>;

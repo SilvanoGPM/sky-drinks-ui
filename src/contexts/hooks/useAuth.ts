@@ -22,6 +22,7 @@ export function useAuth() {
   const [userInfo, setUserInfo] = useState<UserInfoProps>({} as UserInfoProps);
   const [authenticated, setAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     async function loadUserInfo() {
@@ -44,8 +45,9 @@ export function useAuth() {
     const userCredentialsSession = sessionStorage.getItem(USER_CREDENTIALS_KEY);
 
       if (userCredentialsLocal || userCredentialsSession) {
-        api.defaults.headers.common["Authorization"] =
-          JSON.parse(userCredentialsLocal || userCredentialsSession || "").token;
+        const { token } = JSON.parse(userCredentialsLocal || userCredentialsSession || "");
+        api.defaults.headers.common["Authorization"] = token;
+        setToken(token);
         loadUserInfo();
       } else {
         setAuthLoading(false);
@@ -68,6 +70,7 @@ export function useAuth() {
 
       const userInfo = await endpoints.getUserInfo();
 
+      setToken(token);
       setUserInfo(userInfo);
       setAuthenticated(true);
     } catch (e) {
@@ -79,6 +82,7 @@ export function useAuth() {
 
   function handleLogout() {
     setAuthenticated(false);
+    setToken("");
     localStorage.removeItem(USER_CREDENTIALS_KEY);
     sessionStorage.removeItem(USER_CREDENTIALS_KEY);
     api.defaults.headers.common["Authorization"] = "";
@@ -88,6 +92,7 @@ export function useAuth() {
     userInfo,
     authenticated,
     authLoading,
+    token,
     setUserInfo,
     setAuthenticated,
     handleLogin,
