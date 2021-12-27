@@ -51,7 +51,7 @@ export function RequestInfo() {
 
   return (
     <div className={`${styles.requestInfo}`}>
-      {containsRequest ? (
+      {containsRequest && permissions.isUser ? (
         <>
           <Popover
             trigger={popoverTrigger}
