@@ -1,4 +1,5 @@
 import {
+  CloseOutlined,
   DeleteOutlined,
   PaperClipOutlined,
   SearchOutlined,
@@ -16,12 +17,12 @@ import {
   Select,
   Slider,
   Popover,
+  Modal,
 } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
-import { AuthContext } from "src/contexts/AuthContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
@@ -98,13 +99,12 @@ type PaginetedDataType = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+const { confirm } = Modal;
 
 const status = ["PROCESSING", "FINISHED", "CANCELED"] as StatusType[];
 
 export function MyRequests() {
   useTitle("SkyDrinks - Meus pedidos");
-
-  const { userInfo } = useContext(AuthContext);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -112,7 +112,7 @@ export function MyRequests() {
 
   const [pagination, setPagination] = useState({
     page: 0,
-    size: 6,
+    size: 10,
   });
 
   const [data, setData] = useState<PaginetedDataType>({
@@ -126,7 +126,8 @@ export function MyRequests() {
     async function loadRequests() {
       try {
         const data = await endpoints.getMyRequests(
-          `userUUID=${userInfo.uuid}&${qs.stringify(params)}`
+          `page=${pagination.page}&${qs.stringify(params)}`,
+          pagination.size
         );
 
         setData(data);
@@ -143,9 +144,9 @@ export function MyRequests() {
     if (loading) {
       loadRequests();
     }
-  }, [loading, params, userInfo]);
+  }, [loading, params, pagination]);
 
-  function handleCopyDrinkUUID(uuid: string) {
+  function handleCopyRequestUUID(uuid: string) {
     return () => {
       navigator.clipboard.writeText(uuid);
 
@@ -153,6 +154,40 @@ export function MyRequests() {
         type: "success",
         message: "Código copiado com sucesso!",
         duration: 2,
+      });
+    };
+  }
+
+  function handleCancelRequest(uuid: string) {
+    async function cancelRequest() {
+      try {
+        await endpoints.cancelRequest(uuid);
+
+        const content = data.content.map((item) => {
+          if (item.uuid === uuid) {
+            const status: StatusType = "CANCELED";
+            return { ...item, status };
+          }
+
+          return item;
+        });
+
+        setData({ ...data, content });
+      } catch (e: any) {
+        showNotification({
+          type: "warn",
+          message: e.message,
+        });
+      }
+    }
+
+    return () => {
+      confirm({
+        title: "Deseja cancelar o pedido?",
+        content: "Depois de cancelado, o pedido não poderá ser finalizado!",
+        okText: "Sim",
+        cancelText: "Não",
+        onOk: cancelRequest,
       });
     };
   }
@@ -269,7 +304,7 @@ export function MyRequests() {
               key={uuid}
               actions={[
                 <Tooltip key="copy" title="Copiar código">
-                  <Button onClick={handleCopyDrinkUUID(uuid)}>
+                  <Button onClick={handleCopyRequestUUID(uuid)}>
                     <PaperClipOutlined />
                   </Button>
                 </Tooltip>,
@@ -285,6 +320,15 @@ export function MyRequests() {
                     <DrinkIcon />
                   </Button>
                 </Popover>,
+                ...(status === "PROCESSING"
+                  ? [
+                      <Tooltip key="cancel" title="Cancelar pedido">
+                        <Button onClick={handleCancelRequest(uuid)}>
+                          <CloseOutlined style={{ color: "#e74c3c" }} />
+                        </Button>
+                      </Tooltip>,
+                    ]
+                  : []),
               ]}
               extra={
                 <img
@@ -348,8 +392,8 @@ export function MyRequests() {
             <Select allowClear>
               {status.map((value) => (
                 <Option key={value} value={value}>
-                {getStatusBadge(value)}
-              </Option>
+                  {getStatusBadge(value)}
+                </Option>
               ))}
             </Select>
           </Form.Item>

@@ -87,6 +87,10 @@ export function NotificateRequestUpdates() {
 
         setTitle(`SkyDrinks - ${notificationMessage}`);
 
+        if (!playing) {
+          toggle();
+        }
+
         showNotification({
           type: "success",
           message: notificationMessage,

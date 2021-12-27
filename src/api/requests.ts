@@ -45,7 +45,7 @@ const requestsEndpoints = {
 
   async getMyRequests(params: string, size: number = 6) {
     try {
-      const { data } = await api.get(`/requests/all/search?size=${size}&${params}&sort=createdAt,desc`);
+      const { data } = await api.get(`/requests/user/my-requests?size=${size}&${params}&sort=updatedAt,desc`);
       return data;
     } catch (e: any) {
       const details =
@@ -54,6 +54,17 @@ const requestsEndpoints = {
       throw new Error(details);
     }
   },
+
+  async cancelRequest(uuid: string) {
+    try {
+      await api.patch(`/requests/cancel/all/${uuid}`);
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar conectar no servidor.";
+      throw new Error(details);
+    }
+  }
 };
 
 export default requestsEndpoints;
