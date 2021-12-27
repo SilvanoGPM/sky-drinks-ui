@@ -8,6 +8,7 @@ import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
+import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
@@ -75,36 +76,34 @@ export function ViewRequest() {
   }, [location, navigate]);
 
   useEffect(() => {
+    const uuid = params.uuid || "";
+
     async function loadRequest() {
-      try {
-        const request = await endpoints.findRequestByUUID(params.uuid || "");
-        setRequestFound(request);
-      } catch (e: any) {
+      if (isUUID(uuid)) {
+        try {
+          const request = await endpoints.findRequestByUUID(uuid);
+          setRequestFound(request);
+        } catch (e: any) {
+          showNotification({
+            type: "warn",
+            message: e.message,
+          });
+
+          redirect();
+        } finally {
+          setLoading(false);
+        }
+      } else {
         showNotification({
           type: "warn",
-          message: e.message,
+          message: "Pesquise por um código válido!",
         });
 
         redirect();
-      } finally {
-        setLoading(false);
       }
     }
 
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    const isUUID = uuidRegex.test(params.uuid || "");
-
-    if (!isUUID) {
-      showNotification({
-        type: "warn",
-        message: "Pesquise por um código válido!",
-      });
-
-      redirect();
-    }
-
-    if (loading && isUUID) {
+    if (loading) {
       loadRequest();
     }
 

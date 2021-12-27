@@ -7,7 +7,6 @@ import useDraggableScroll from "use-draggable-scroll";
 import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
-import routes from "src/routes";
 import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 import { formatDrinkVolume } from "src/utils/formatDrinkVolume";
 import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
@@ -17,6 +16,8 @@ import drinkPlaceholder from "src/assets/drink-placeholder.png";
 import { showNotification } from "src/utils/showNotification";
 import { RequestContext } from "src/contexts/RequestContext";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { isUUID } from "src/utils/isUUID";
+import routes from "src/routes";
 
 type DrinkType = {
   uuid: string;
@@ -41,7 +42,7 @@ export function DrinkView() {
 
   const params = useParams();
 
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
   const [loading, setLoading] = useState(true);
@@ -50,36 +51,46 @@ export function DrinkView() {
 
   useEffect(() => {
     async function findDrink() {
-      try {
-        const drinkFound = await endpoints.findDrinkByUUID(params.uuid);
-        setDrink(drinkFound);
-      } catch (exception: any) {
-        navigation(routes.HOME);
+      const uuid = params.uuid || "";
+
+      if (isUUID(uuid)) {
+        try {
+          const drinkFound = await endpoints.findDrinkByUUID(uuid);
+          setDrink(drinkFound);
+        } catch (exception: any) {
+          navigate(routes.HOME);
+
+          showNotification({
+            type: "warn",
+            message: "Visualização de Bebida",
+            description: exception.message,
+          });
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        navigate(routes.HOME);
 
         showNotification({
           type: "warn",
-          message: "Visualização de Bebida",
-          description: exception.message,
+          message: "Insira um código de uma bebida válida!",
         });
-
-        return;
       }
-
-      setLoading(false);
     }
 
     if (loading) {
       findDrink();
     }
-  }, [loading, params, navigation]);
+  }, [loading, params, navigate]);
 
   function addDrinkToRequest() {
     addDrink(drink);
   }
 
-  const picture = drink.picture && !drink.picture.endsWith('null')
-    ? drink.picture
-    : drinkPlaceholder;
+  const picture =
+    drink.picture && !drink.picture.endsWith("null")
+      ? drink.picture
+      : drinkPlaceholder;
 
   return (
     <section className={styles.container}>
@@ -139,7 +150,11 @@ export function DrinkView() {
               ))}
             </div>
 
-            <Button onClick={addDrinkToRequest} icon={<PlusOutlined />} type="primary">
+            <Button
+              onClick={addDrinkToRequest}
+              icon={<PlusOutlined />}
+              type="primary"
+            >
               Adicionar ao Pedido
             </Button>
           </div>

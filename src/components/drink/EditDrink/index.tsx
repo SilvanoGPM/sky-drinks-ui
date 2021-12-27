@@ -27,6 +27,7 @@ import routes from "src/routes";
 import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { useFavicon } from "src/hooks/useFavicon";
+import { isUUID } from "src/utils/isUUID";
 
 type DrinkToCreate = {
   volume: number;
@@ -68,20 +69,31 @@ export function EditDrink() {
   const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
+    const uuid = params.uuid || "";
+
     async function loadDrink() {
-      try {
-        const drink = await endpoints.findDrinkByUUID(params.uuid);
-        setDrink(drink);
-      } catch (e: any) {
+      if (isUUID(uuid)) {
+        try {
+          const drink = await endpoints.findDrinkByUUID(uuid);
+          setDrink(drink);
+        } catch (e: any) {
+          showNotification({
+            type: "warn",
+            message: "Atualização de Bebida",
+            description: e.message,
+          });
+
+          navigate(`/${routes.MANAGE_DRINKS}`);
+        } finally {
+          setDrinkLoading(false);
+        }
+      } else {
         showNotification({
           type: "warn",
-          message: "Atualização de Bebida",
-          description: e.message,
+          message: "Insira um código de bebida válido para ser atualizada.",
         });
 
         navigate(`/${routes.MANAGE_DRINKS}`);
-      } finally {
-        setDrinkLoading(false);
       }
     }
 
@@ -177,7 +189,7 @@ export function EditDrink() {
               </Upload>
             </Form.Item>
 
-            {(drink.picture && !drink.picture.endsWith("null") && !image) && (
+            {drink.picture && !drink.picture.endsWith("null") && !image && (
               <Form.Item wrapperCol={{ xs: { offset: 0 }, sm: { offset: 4 } }}>
                 <div className={styles.image}>
                   <div className={styles.info}>

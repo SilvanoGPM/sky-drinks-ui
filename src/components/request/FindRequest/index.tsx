@@ -2,6 +2,7 @@ import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
@@ -14,21 +15,16 @@ export function FindRequest() {
   const navigate = useNavigate();
 
   function handleSearch(uuid: string) {
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    const isUUID = uuidRegex.test(uuid || "");
-
-    if (isUUID) {
+    if (isUUID(uuid)) {
       navigate(`/${routes.VIEW_REQUEST.replace(":uuid", uuid)}`, {
         state: { path: routes.FIND_REQUEST },
       });
     } else {
       showNotification({
         type: "warn",
-        message: "Esse não é um código válido!"
+        message: "Esse não é um código válido!",
       });
     }
-
   }
 
   return (

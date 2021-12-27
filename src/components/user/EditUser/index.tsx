@@ -1,12 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Select,
-  Spin,
-} from "antd";
+import { Button, DatePicker, Form, Input, Select, Spin } from "antd";
 
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
@@ -22,6 +15,7 @@ import routes from "src/routes";
 import { cpfMask } from "src/utils/cpfMask";
 import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
@@ -72,26 +66,38 @@ export function EditUser() {
       navigate(routes.HOME, {
         state: { warnMessage: "Você não possui permissão!" },
       });
+
       return () => setInfoLoading(false);
     }
   }, [userInfo, params, navigate, permissions]);
 
   useEffect(() => {
+    const uuid = params.uuid || "";
+
     async function loadUser() {
-      try {
-        const user = await endpoints.findUserByUUID(params.uuid);
-        setUser(user);
-      } catch (e: any) {
+      if (isUUID(uuid)) {
+        try {
+          const user = await endpoints.findUserByUUID(uuid);
+          setUser(user);
+        } catch (e: any) {
+          showNotification({
+            type: "warn",
+            message: "Atualização de Usuário",
+            description: e.message,
+          });
+
+          navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
+        } finally {
+          setInfoLoading(false);
+        }
+      } else {
         showNotification({
           type: "warn",
-          message: "Atualização de Usuário",
-          description: e.message,
+          message: "Insira um código de usuário válido!",
         });
 
         navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
       }
-
-      setInfoLoading(false);
     }
 
     if (infoLoading) {
