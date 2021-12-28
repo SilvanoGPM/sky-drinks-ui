@@ -1,8 +1,9 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Button, Empty, Modal, Pagination, Tooltip } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
+import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
@@ -57,6 +58,8 @@ const { confirm } = Modal;
 export function ManageRequest() {
   useTitle("SkyDrinks - Gerenciar pedidos");
 
+  const { updateRequests, setUpdateRequests } = useContext(WebSocketContext);
+
   const [loading, setLoading] = useState(true);
 
   const [pagination, setPagination] = useState({
@@ -92,6 +95,13 @@ export function ManageRequest() {
       loadRequests();
     }
   }, [loading, pagination]);
+
+  useEffect(() => {
+    if (updateRequests) {
+      setUpdateRequests(false);
+      setLoading(true);
+    }
+  }, [updateRequests, pagination, setUpdateRequests]);
 
   function removeRequestOfState(uuid: string) {
     const content = data.content.filter((item) => item.uuid !== uuid);

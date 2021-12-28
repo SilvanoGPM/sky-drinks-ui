@@ -1,16 +1,16 @@
-import { Modal, Spin } from "antd";
+import { Button, Modal, notification, Spin } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
 import endpoints from "src/api/api";
 import { AuthContext } from "src/contexts/AuthContext";
+import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useAudio } from "src/hooks/useAudio";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getStatusBadge } from "src/utils/getStatusBadge";
-import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
 
@@ -65,6 +65,8 @@ const requestStatusChanged = {
 
 export function NotificateRequestUpdates() {
   const { userInfo, token } = useContext(AuthContext);
+  const { setUpdateRequests } = useContext(WebSocketContext);
+
   const { playing, toggle } = useAudio(
     `${process.env.PUBLIC_URL}/request-status-changed.wav`
   );
@@ -112,13 +114,17 @@ export function NotificateRequestUpdates() {
 
       if (location.pathname.includes(path)) {
         navigate(0);
-        return;
+      } else {
+        navigate(path);
       }
-
-      navigate(path);
 
       closeModal();
     };
+  }
+
+  function goToManageRequests() {
+    navigate(routes.MANAGE_REQUESTS);
+    notification.destroy();
   }
 
   useSubscription(
@@ -151,10 +157,27 @@ export function NotificateRequestUpdates() {
           toggle();
         }
 
-        showNotification({
+        const path = routes.MANAGE_REQUESTS;
+
+        const onPath = location.pathname.includes(path);
+
+        notification.open({
           type: "success",
           message: notificationMessage,
+          duration: onPath ? 2 : 0,
+          placement: "bottomRight",
+          description: !onPath ? (
+            <p style={{ textAlign: "right" }}>
+              <Button onClick={goToManageRequests} type="link">
+                Ver pedidos
+              </Button>
+            </p>
+          ) : undefined,
         });
+
+        if (onPath) {
+          setUpdateRequests(true);
+        }
       }
     },
     { Authorization: token }
@@ -177,7 +200,12 @@ export function NotificateRequestUpdates() {
           <div className={styles.requestInfo}>
             <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>
             <p>Criado em: {formatDisplayDate(request.createdAt)}</p>
-            <p>Status: <span className={styles.badge}>{getStatusBadge(request.status)}</span></p>
+            <p>
+              Status:{" "}
+              <span className={styles.badge}>
+                {getStatusBadge(request.status)}
+              </span>
+            </p>
             <p>Código: {request.uuid}</p>
           </div>
         ) : (

@@ -8,14 +8,17 @@ import App from "./App";
 import "./index.scss";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RequestProvider } from "./contexts/RequestContext";
+import { WebSocketProvider } from "./contexts/WebSocketContext";
 
 ReactDOM.render(
   <BrowserRouter>
     <AuthProvider>
       <RequestProvider>
-        <ConfigProvider locale={pt_BR}>
-          <App />
-        </ConfigProvider>
+        <WebSocketProvider>
+          <ConfigProvider locale={pt_BR}>
+            <App />
+          </ConfigProvider>
+        </WebSocketProvider>
       </RequestProvider>
     </AuthProvider>
   </BrowserRouter>,
