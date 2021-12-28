@@ -1,13 +1,16 @@
-import { Badge, Divider, Spin } from "antd";
-import { useCallback, useEffect, useState } from "react";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { Badge, Button, Divider, Modal, Spin } from "antd";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
+import { AuthContext } from "src/contexts/AuthContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
+import { getUserPermissions } from "src/utils/getUserPermissions";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 
@@ -53,8 +56,12 @@ type RequestType = {
   totalPrice: number;
 };
 
+const { confirm } = Modal;
+
 export function ViewRequest() {
   useTitle("SkyDrinks - Visualizar pedido");
+
+  const { userInfo } = useContext(AuthContext);
 
   const params = useParams();
 
@@ -110,6 +117,68 @@ export function ViewRequest() {
     return () => setLoading(false);
   }, [params, loading, navigate, location, redirect]);
 
+  function updateRequest(status: StatusType) {
+    setRequestFound({ ...requestFound, status });
+  }
+
+  function handleCancelRequest() {
+    async function cancelRequest() {
+      try {
+        await endpoints.cancelRequest(requestFound.uuid);
+
+        updateRequest("CANCELED");
+
+        showNotification({
+          type: "success",
+          message: "Pedido foi cancelado com sucesso!",
+        });
+      } catch (e: any) {
+        showNotification({
+          type: "warn",
+          message: e.message,
+        });
+      }
+    }
+
+    confirm({
+      title: "Deseja cancelar o pedido?",
+      content: "Depois de cancelado, o pedido não poderá ser finalizado!",
+      okText: "Sim",
+      cancelText: "Não",
+      onOk: cancelRequest,
+    });
+  }
+
+  function handleFinishRequest() {
+    async function finishRequest() {
+      try {
+        await endpoints.finishRequest(requestFound.uuid);
+
+        updateRequest("FINISHED");
+
+        showNotification({
+          type: "success",
+          message: "Pedido foi finalizado com sucesso!",
+        });
+      } catch (e: any) {
+        showNotification({
+          type: "warn",
+          message: e.message,
+        });
+      }
+    }
+
+    confirm({
+      title: "Deseja finlizar o pedido?",
+      content: "Depois de finalizado, o pedido não poderá ser cancelado!",
+      okText: "Sim",
+      cancelText: "Não",
+      onOk: finishRequest,
+    });
+  }
+
+  const permissions = getUserPermissions(userInfo.role);
+
   return (
     <div className={styles.container}>
       {loading ? (
@@ -121,6 +190,46 @@ export function ViewRequest() {
           </div>
 
           <div>
+            {requestFound.status === "PROCESSING" &&
+              (permissions.isBarmen ||
+                permissions.isWaiter ||
+                userInfo.uuid === requestFound.user.uuid) && (
+                <>
+                  <Divider
+                    style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+                    orientation="left"
+                  >
+                    Ações
+                  </Divider>
+
+                  <div className={styles.actions}>
+                    {(permissions.isBarmen || permissions.isWaiter) && (
+                      <Button
+                        onClick={handleFinishRequest}
+                        shape="round"
+                        size="large"
+                        icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
+                      >
+                        Finalizar pedido
+                      </Button>
+                    )}
+
+                    {(userInfo.uuid === requestFound.user.uuid ||
+                      permissions.isBarmen ||
+                      permissions.isWaiter) && (
+                      <Button
+                        onClick={handleCancelRequest}
+                        shape="round"
+                        size="large"
+                        icon={<CloseOutlined style={{ color: "#e74c3c" }} />}
+                      >
+                        Cancelar pedido
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
+
             <Divider
               style={{ fontSize: "1.5rem", margin: "2rem 0" }}
               orientation="left"
