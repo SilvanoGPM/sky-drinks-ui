@@ -48,7 +48,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
   const permissions = getUserPermissions(userInfo.role);
 
-  const userName = permissions.isGuest ? "Visitante" : userInfo.name.split(" ")[0];
+  const userName = permissions.isGuest
+    ? "Visitante"
+    : userInfo.name.split(" ")[0];
 
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
@@ -60,15 +62,14 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
       </div>
 
       <div className={styles.userInfo}>
-        <p>Seja bem vindo, <span title={userName}>{userName}</span></p>
+        <p>
+          Seja bem vindo, <span title={userName}>{userName}</span>
+        </p>
       </div>
 
       <Menu
         theme="dark"
-        selectedKeys={[
-          location.pathname,
-          location.pathname.replace("/", ""),
-        ]}
+        selectedKeys={[location.pathname, location.pathname.replace("/", "")]}
         className={styles.menu}
         mode="inline"
         onClick={closeMenu}
@@ -109,7 +110,7 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           )}
         </SubMenu>
 
-        {(permissions.isUser || permissions.isWaiter) && (
+        {!permissions.isGuest && (
           <SubMenu
             className={styles.subMenu}
             key="subRequests"
@@ -117,29 +118,36 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
             title="Pedidos"
           >
             {permissions.isUser && (
-              <>
-                <Menu.Item
-                  icon={<MyRequestsIcon style={{ fontSize: 25 }} />}
-                  key="my-requests"
-                >
-                  <Link to="my-requests">Meus Pedidos</Link>
-                </Menu.Item>
-
-                <Menu.Item
-                  icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
-                  key={routes.FIND_REQUEST}
-                >
-                  <Link to={routes.FIND_REQUEST}>Encontrar Pedido</Link>
-                </Menu.Item>
-              </>
+              <Menu.Item
+                icon={<MyRequestsIcon style={{ fontSize: 25 }} />}
+                key="my-requests"
+              >
+                <Link to="my-requests">Meus Pedidos</Link>
+              </Menu.Item>
             )}
 
-            {permissions.isWaiter && (
+            <Menu.Item
+              icon={<PerformRequestIcon style={{ fontSize: 25 }} />}
+              key={routes.FIND_REQUEST}
+            >
+              <Link to={routes.FIND_REQUEST}>Encontrar Pedido</Link>
+            </Menu.Item>
+
+            {(permissions.isWaiter || permissions.isBarmen) && (
               <Menu.Item
                 icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-                key="manage-requests"
+                key={routes.MANAGE_REQUESTS}
               >
-                <Link to="manage-requests">Gerenciar Pedidos</Link>
+                <Link to={routes.MANAGE_REQUESTS}>Gerenciar Pedidos</Link>
+              </Menu.Item>
+            )}
+
+            {(permissions.isWaiter || permissions.isBarmen) && (
+              <Menu.Item
+                icon={<SearchOutlined style={{ fontSize: 25 }} />}
+                key="requests/search"
+              >
+                <Link to={routes.MANAGE_REQUESTS}>Pesquisar Pedidos</Link>
               </Menu.Item>
             )}
           </SubMenu>
@@ -197,10 +205,10 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           {authenticated && (
             <Menu.Item
               icon={<LogoutOutlined style={{ fontSize: 25 }} />}
-              key="logout"
+              key={routes.LOGOUT}
               danger
             >
-              <Link to="/logout">Sair</Link>
+              <Link to={routes.LOGOUT}>Sair</Link>
             </Menu.Item>
           )}
         </SubMenu>

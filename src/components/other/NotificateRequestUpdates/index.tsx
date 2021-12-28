@@ -1,15 +1,67 @@
-import { Button, notification } from "antd";
-import { ArgsProps } from "antd/lib/notification";
-import { useContext, useState } from "react";
+import { Modal, Spin } from "antd";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
+import endpoints from "src/api/api";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useAudio } from "src/hooks/useAudio";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { formatDisplayDate } from "src/utils/formatDatabaseDate";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { getStatusBadge } from "src/utils/getStatusBadge";
 import { showNotification } from "src/utils/showNotification";
 
+import styles from "./styles.module.scss";
+
+type DrinkType = {
+  uuid: string;
+  volume: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  picture: string;
+  description: string;
+  price: number;
+  additional: string;
+  additionalList: string[];
+  alcoholic: boolean;
+};
+
+type UserType = {
+  uuid: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  email: string;
+  role: string;
+  birthDay: string;
+  cpf: string;
+};
+
+type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
+
+type RequestType = {
+  drinks: DrinkType[];
+  createdAt: string;
+  updatedAt: string;
+  status: StatusType;
+  uuid: string;
+  user: UserType;
+  totalPrice: number;
+};
+
 type RequestNotificationType = "FINISHED" | "CANCELED";
+
+const requestStatusChanged = {
+  FINISHED: {
+    title: "Seu pedido foi finalizado!",
+  },
+
+  CANCELED: {
+    title: "Seu pedido foi cancelado!",
+  },
+};
 
 export function NotificateRequestUpdates() {
   const { userInfo, token } = useContext(AuthContext);
@@ -17,18 +69,46 @@ export function NotificateRequestUpdates() {
     `${process.env.PUBLIC_URL}/request-status-changed.wav`
   );
 
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("SkyDrinks - Notificação");
 
+  const [modalInfo, setModalInfo] = useState({
+    title: "",
+    uuid: "",
+  });
+
+  const [request, setRequest] = useState<RequestType>({} as RequestType);
+
   useTitle(title);
+
+  useEffect(() => {
+    async function loadRequest() {
+      try {
+        const request = await endpoints.findRequestByUUID(modalInfo.uuid);
+        setRequest(request);
+      } catch (e: any) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (loading && modalInfo.uuid) {
+      loadRequest();
+    }
+  }, [loading, modalInfo]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  function closeModal() {
+    setVisible(false);
+  }
+
   function viewRequest(uuid: string) {
     return () => {
       const path = routes.VIEW_REQUEST.replace(":uuid", uuid);
-
-      notification.destroy();
 
       if (location.pathname.includes(path)) {
         navigate(0);
@@ -36,52 +116,32 @@ export function NotificateRequestUpdates() {
       }
 
       navigate(path);
+
+      closeModal();
     };
   }
-
-  const requestStatusChanged: { [key: string]: ArgsProps } = {
-    FINISHED: {
-      type: "success",
-      message: "Seu pedido foi finalizado!",
-    },
-
-    CANCELED: {
-      type: "info",
-      message: "Seu pedido foi cancelado!",
-    },
-  };
 
   useSubscription(
     [`/topic/updated/${userInfo.email}`, `/topic/finished/${userInfo.email}`],
     (message) => {
-      const fallback = () => ({ message: "???" });
-
       const body = JSON.parse(message.body);
 
       if (body.uuid) {
         const key = body.message as RequestNotificationType;
-        const content = requestStatusChanged[key] || fallback;
+        const { title } = requestStatusChanged[key];
 
         if (!playing) {
           toggle();
         }
 
-        const newTitle = content.message?.toString()
-          ? `SkyDrinks - ${content.message?.toString()}`
-          : title;
-
-        setTitle(newTitle);
-
-        notification.open({
-          ...content,
-          placement: "bottomRight",
-          duration: 0,
-          description: (
-            <Button type="primary" onClick={viewRequest(body.uuid)}>
-              Ver pedido
-            </Button>
-          ),
+        setModalInfo({
+          title,
+          uuid: body.uuid,
         });
+
+        setTitle(`SkyDrinks - ${title.toString()}`);
+        setLoading(true);
+        setVisible(true);
       } else if (body.message === "requests-changed") {
         const notificationMessage = "Aconteceu um alteração nos pedidos!";
 
@@ -100,5 +160,30 @@ export function NotificateRequestUpdates() {
     { Authorization: token }
   );
 
-  return <></>;
+  return (
+    <Modal
+      title={modalInfo.title}
+      cancelText="Fechar"
+      okText="Ver pedido"
+      onOk={viewRequest(modalInfo.uuid)}
+      onCancel={closeModal}
+      visible={visible}
+      destroyOnClose
+    >
+      <div className={styles.modalContainer}>
+        {loading ? (
+          <Spin />
+        ) : request.uuid ? (
+          <div className={styles.requestInfo}>
+            <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>
+            <p>Criado em: {formatDisplayDate(request.createdAt)}</p>
+            <p>Status: <span className={styles.badge}>{getStatusBadge(request.status)}</span></p>
+            <p>Código: {request.uuid}</p>
+          </div>
+        ) : (
+          <p>Não foi possível buscar as informações do pedido!</p>
+        )}
+      </div>
+    </Modal>
+  );
 }

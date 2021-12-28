@@ -24,6 +24,10 @@ export function RequestCreated() {
     }
   }, [navigate, location]);
 
+  function goBack() {
+    navigate(-2);
+  }
+
   return (
     <div>
       <Result
@@ -42,9 +46,7 @@ export function RequestCreated() {
           <Link key="view-request" to={`/${routes.VIEW_REQUEST.replace(":uuid", location.state.uuid)}`}>
             <Button type="primary">Ver pedido</Button>
           </Link>,
-          <Link key="home" to={routes.HOME}>
-            <Button>Voltar para a home</Button>
-          </Link>,
+          <Button onClick={goBack} key="back">Voltar</Button>,
         ]}
       />
     </div>

@@ -67,7 +67,33 @@ const requestsEndpoints = {
     } catch (e: any) {
       const details =
         e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar conectar no servidor.";
+        "Aconteceu um erro ao tentar cancelar o pedido.";
+      throw new Error(details);
+    }
+  },
+
+  async finishRequest(uuid: string) {
+    try {
+      await api.patch(`/requests/finish/all/${uuid}`);
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar finalizar o pedido.";
+      throw new Error(details);
+    }
+  },
+
+  async getProcessingRequests(page = 0, size = 10) {
+    try {
+      const { data } = await api.get(
+        `/requests/waiter-or-barmen/search?size=${size}&page=${page}&status=PROCESSING&sort=createdAt`
+      );
+
+      return data;
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar pesquisar no servidor.";
       throw new Error(details);
     }
   },

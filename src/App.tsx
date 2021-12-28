@@ -30,6 +30,7 @@ import { baseURL } from "./api/api";
 import React, { useContext } from "react";
 import { StompSessionProviderProps } from "react-stomp-hooks/dist/interfaces/StompSessionProviderProps";
 import { NotificateRequestUpdates } from "./components/other/NotificateRequestUpdates";
+import { ManageRequest } from "./components/request/ManageRequests";
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -55,7 +56,11 @@ function App() {
         <Route path={routes.HOME} element={<Home />}>
           <Route path={routes.HOME} element={<LatestDrinks />} />
           <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
-          <Route path={routes.SEARCH_DRINKS} key="search-drinks" element={<SearchDrinks />} />
+          <Route
+            path={routes.SEARCH_DRINKS}
+            key="search-drinks"
+            element={<SearchDrinks />}
+          />
 
           <Route
             path={routes.LOGOUT}
@@ -187,6 +192,17 @@ function App() {
             element={
               <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
                 <MyRequests />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.MANAGE_REQUESTS}
+            element={
+              <PrivateRoute
+                requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
+              >
+                <ManageRequest />
               </PrivateRoute>
             }
           />

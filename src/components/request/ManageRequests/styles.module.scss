@@ -1,0 +1,94 @@
+@import "../../../scss/variables";
+
+.container {
+  max-width: 700px;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.title {
+  font-size: 2.2rem;
+  text-decoration: underline;
+  text-align: center;
+}
+
+.card {
+  width: 200px;
+  background-color: #ffffff;
+  color: #000000;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  &Container {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    margin: 0 auto;
+    max-width: 900px;
+    justify-content: center;
+  }
+
+  &Content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &Title {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.1rem;
+  }
+
+  &Text {
+    margin: 0;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &Figure {
+    width: 100%;
+    height: 120px;
+    margin: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &Info {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &Actions {
+    margin-top: 0.5rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  @media screen and (max-width: $break1) {
+    width: 100%;
+    min-width: 200px;
+    max-width: 300px;
+  }
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

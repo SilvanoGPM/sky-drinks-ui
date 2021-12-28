@@ -21,6 +21,7 @@ const routes = {
   REQUEST_CREATED: "request/created",
   VIEW_REQUEST: "request/view/:uuid",
   FIND_REQUEST: "request/find/",
+  MANAGE_REQUESTS: "request/manage",
   MY_REQUESTS: "my-requests",
 };
 

@@ -1,3 +1,5 @@
+@import "../../../scss/variables";
+
 .container {
   width: 100%;
   max-width: 700px;
@@ -15,9 +17,29 @@
   display: flex;
   gap: 1rem;
 
+  @media screen and (max-width: $break1) {
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
   .info {
     flex: 1;
     min-width: 50%;
+
+    @media screen and (max-width: $break1) {
+      width: 100%;
+
+      .imageName {
+        text-align: center;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .badge {
+        width: 100%;
+        text-align: center;
+      }
+    }
   }
 }
 

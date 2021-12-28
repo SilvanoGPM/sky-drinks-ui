@@ -186,15 +186,22 @@ export function ListImages() {
               <List.Item actions={actions} className={styles.item}>
                 <Image src={picture} alt={image} width={100} height={100} />
                 <div className={styles.info}>
-                  <List.Item.Meta title={image} />
-                  {drinks.length > 0 ? (
-                    <Badge status="success" text="Essa imagem possuí bebida!" />
-                  ) : (
-                    <Badge
-                      status="error"
-                      text="Essa imagem não possuí bebida!"
-                    />
-                  )}
+                  <List.Item.Meta
+                    title={<p className={styles.imageName}>{image}</p>}
+                  />
+                  <div className={styles.badge}>
+                    {drinks.length > 0 ? (
+                      <Badge
+                        status="success"
+                        text="Essa imagem possuí bebida!"
+                      />
+                    ) : (
+                      <Badge
+                        status="error"
+                        text="Essa imagem não possuí bebida!"
+                      />
+                    )}
+                  </div>
                 </div>
               </List.Item>
             );
