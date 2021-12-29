@@ -145,9 +145,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
             {(permissions.isWaiter || permissions.isBarmen) && (
               <Menu.Item
                 icon={<SearchOutlined style={{ fontSize: 25 }} />}
-                key="requests/search"
+                key={routes.SEARCH_REQUESTS}
               >
-                <Link to={routes.MANAGE_REQUESTS}>Pesquisar Pedidos</Link>
+                <Link to={routes.SEARCH_REQUESTS}>Pesquisar Pedidos</Link>
               </Menu.Item>
             )}
           </SubMenu>

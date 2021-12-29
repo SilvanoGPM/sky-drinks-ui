@@ -31,6 +31,7 @@ import React, { useContext } from "react";
 import { StompSessionProviderProps } from "react-stomp-hooks/dist/interfaces/StompSessionProviderProps";
 import { NotificateRequestUpdates } from "./components/other/NotificateRequestUpdates";
 import { ManageRequest } from "./components/request/ManageRequests";
+import { SearchRequests } from "./components/request/SearchRequests";
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -203,6 +204,17 @@ function App() {
                 requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
               >
                 <ManageRequest />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.SEARCH_REQUESTS}
+            element={
+              <PrivateRoute
+                requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
+              >
+                <SearchRequests />
               </PrivateRoute>
             }
           />

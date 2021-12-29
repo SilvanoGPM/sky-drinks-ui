@@ -221,9 +221,22 @@ export function NotificateRequestUpdates() {
               </span>
             </p>
             <p>Código: {request.uuid}</p>
+
+            {request.status === "FINISHED" ? (
+              <p className={styles.bold}>Venha pegar seu pedido no balcão!</p>
+            ) : (
+              <p className={styles.bold}>
+                Venha até o balcão para mais informações sobre o cancelamento.
+              </p>
+            )}
           </div>
         ) : (
-          <p>Não foi possível buscar as informações do pedido!</p>
+          <>
+            <p>Não foi possível buscar as informações do pedido!</p>
+            <p className={styles.bold}>
+              Venha até o balcão para obter informações sobre o pedido.
+            </p>
+          </>
         )}
       </div>
     </Modal>

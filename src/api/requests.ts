@@ -47,11 +47,26 @@ const requestsEndpoints = {
     }
   },
 
-  async getMyRequests(params: string, size: number = 6) {
+  async getMyRequests(params: string, size: number = 10) {
     try {
       const { data } = await api.get(
         `/requests/user/my-requests?size=${size}&${params}&sort=updatedAt,desc`
       );
+      return data;
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar conectar no servidor.";
+      throw new Error(details);
+    }
+  },
+
+  async searchRequests(params: string, size: number = 10) {
+    try {
+      const { data } = await api.get(
+        `/requests/waiter-or-barmen/search?size=${size}&${params}`
+      );
+
       return data;
     } catch (e: any) {
       const details =
@@ -84,18 +99,7 @@ const requestsEndpoints = {
   },
 
   async getProcessingRequests(page = 0, size = 10) {
-    try {
-      const { data } = await api.get(
-        `/requests/waiter-or-barmen/search?size=${size}&page=${page}&status=PROCESSING&sort=createdAt`
-      );
-
-      return data;
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar pesquisar no servidor.";
-      throw new Error(details);
-    }
+    return this.searchRequests(`page=${page}&status=PROCESSING&sort=createdAt`)
   },
 };
 
