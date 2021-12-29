@@ -70,8 +70,16 @@ export function NotificateRequestUpdates() {
 
   const { createBrowsetNotification } = useBrowserNotification();
 
-  const { playing, toggle } = useAudio(
-    `${process.env.PUBLIC_URL}/request-status-changed.wav`
+  const { toggle: toggleRequestFinished } = useAudio(
+    `${process.env.PUBLIC_URL}/noises/request-finished.wav`
+  );
+
+  const { toggle: toggleRequestCanceled } = useAudio(
+    `${process.env.PUBLIC_URL}/noises/request-canceled.mp3`
+  );
+
+  const { toggle: toggleRequestsUpdated } = useAudio(
+    `${process.env.PUBLIC_URL}/noises/requests-updated.mp3`
   );
 
   const [visible, setVisible] = useState(false);
@@ -139,9 +147,10 @@ export function NotificateRequestUpdates() {
         const key = body.message as RequestNotificationType;
         const { title } = requestStatusChanged[key];
 
-        if (!playing) {
-          toggle();
-        }
+        const toggle =
+          key === "CANCELED" ? toggleRequestCanceled : toggleRequestFinished;
+
+        toggle();
 
         createBrowsetNotification(title);
 
@@ -158,9 +167,7 @@ export function NotificateRequestUpdates() {
 
         setTitle(`SkyDrinks - ${notificationMessage}`);
 
-        if (!playing) {
-          toggle();
-        }
+        toggleRequestsUpdated();
 
         const path = routes.MANAGE_REQUESTS;
 

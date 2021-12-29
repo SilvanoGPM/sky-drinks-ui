@@ -11,6 +11,10 @@ import { RequestProvider } from "./contexts/RequestContext";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
 import { BrowserPermissionsProvider } from "./contexts/BrowserPermissionsContext";
 
+// Disable async-validator pollution warning
+import Schema from 'async-validator';
+Schema.warning = function(){};
+
 ReactDOM.render(
   <BrowserRouter>
     <AuthProvider>
