@@ -90,3 +90,22 @@
     justify-content: center;
   }
 }
+
+.qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &Title {
+    font-size: 1.1rem;
+  }
+
+  &Warn {
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-style: italic;
+    max-width: 400px;
+    margin-top: 1rem;
+  }
+}

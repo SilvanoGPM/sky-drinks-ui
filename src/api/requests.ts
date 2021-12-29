@@ -99,7 +99,7 @@ const requestsEndpoints = {
   },
 
   async getProcessingRequests(page = 0, size = 10) {
-    return this.searchRequests(`page=${page}&status=PROCESSING&sort=createdAt`)
+    return this.searchRequests(`page=${page}&status=PROCESSING&sort=createdAt`, size)
   },
 };
 

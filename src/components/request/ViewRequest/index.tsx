@@ -3,6 +3,7 @@ import { Badge, Button, Divider, Modal, Spin } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
+import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
@@ -190,6 +191,22 @@ export function ViewRequest() {
           </div>
 
           <div>
+            {requestFound.status === "FINISHED" &&
+              userInfo.uuid === requestFound.user.uuid && (
+                <div className={styles.qrcode}>
+                  <p className={styles.qrcodeTitle}>QRCode do pedido:</p>
+
+                  <QRCodeGenerator text={window.location.href} />
+
+                  <p className={styles.qrcodeWarn}>
+                    Cuidado! Apenas compartilhe o QRCode do pedido com pessoas
+                    que você confia. Isso é o que garante para nossos
+                    funcionários que quem o possuí tem autorização para receber
+                    o pedido.
+                  </p>
+                </div>
+              )}
+
             {requestFound.status === "PROCESSING" &&
               (permissions.isBarmen ||
                 permissions.isWaiter ||

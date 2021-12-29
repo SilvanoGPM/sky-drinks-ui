@@ -223,10 +223,19 @@ export function NotificateRequestUpdates() {
             <p>Código: {request.uuid}</p>
 
             {request.status === "FINISHED" ? (
-              <p className={styles.bold}>Venha pegar seu pedido no balcão!</p>
+              <>
+                <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>
+                <p className={styles.bold}>
+                  Lembre-se de ir com o{" "}
+                  <span onClick={viewRequest(request.uuid)} className={styles.link}>
+                    QRCode do pedido
+                  </span>
+                  .
+                </p>
+              </>
             ) : (
               <p className={styles.bold}>
-                Venha até o balcão para mais informações sobre o cancelamento.
+                Vá até o balcão para mais informações sobre o cancelamento.
               </p>
             )}
           </div>
@@ -234,7 +243,7 @@ export function NotificateRequestUpdates() {
           <>
             <p>Não foi possível buscar as informações do pedido!</p>
             <p className={styles.bold}>
-              Venha até o balcão para obter informações sobre o pedido.
+              Vá até o balcão para obter informações sobre o pedido.
             </p>
           </>
         )}
