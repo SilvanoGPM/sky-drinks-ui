@@ -301,7 +301,7 @@ export function ViewRequest() {
                           <p className={styles.name}>{name}</p>
                         </Link>
                         <p className={styles.price}>
-                          R$ {formatDisplayPrice(price * length)}
+                          {formatDisplayPrice(price * length)}
                         </p>
                       </div>
 

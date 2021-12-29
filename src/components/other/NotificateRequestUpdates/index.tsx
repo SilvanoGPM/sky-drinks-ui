@@ -6,6 +6,7 @@ import endpoints from "src/api/api";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useAudio } from "src/hooks/useAudio";
+import { useBrowserNotification } from "src/hooks/useBrowserNotification";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
@@ -66,6 +67,8 @@ const requestStatusChanged = {
 export function NotificateRequestUpdates() {
   const { userInfo, token } = useContext(AuthContext);
   const { setUpdateRequests } = useContext(WebSocketContext);
+
+  const { createBrowsetNotification } = useBrowserNotification();
 
   const { playing, toggle } = useAudio(
     `${process.env.PUBLIC_URL}/request-status-changed.wav`
@@ -140,6 +143,8 @@ export function NotificateRequestUpdates() {
           toggle();
         }
 
+        createBrowsetNotification(title);
+
         setModalInfo({
           title,
           uuid: body.uuid,
@@ -160,6 +165,8 @@ export function NotificateRequestUpdates() {
         const path = routes.MANAGE_REQUESTS;
 
         const onPath = location.pathname.includes(path);
+
+        createBrowsetNotification(notificationMessage);
 
         notification.open({
           type: "success",

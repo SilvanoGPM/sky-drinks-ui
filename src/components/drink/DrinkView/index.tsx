@@ -18,6 +18,8 @@ import { RequestContext } from "src/contexts/RequestContext";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { isUUID } from "src/utils/isUUID";
 import routes from "src/routes";
+import { AuthContext } from "src/contexts/AuthContext";
+import { getUserPermissions } from "src/utils/getUserPermissions";
 
 type DrinkType = {
   uuid: string;
@@ -47,6 +49,7 @@ export function DrinkView() {
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
   const [loading, setLoading] = useState(true);
 
+  const { userInfo } = useContext(AuthContext);
   const { addDrink } = useContext(RequestContext);
 
   useEffect(() => {
@@ -92,6 +95,8 @@ export function DrinkView() {
       ? drink.picture
       : drinkPlaceholder;
 
+  const permissions = getUserPermissions(userInfo.role);
+
   return (
     <section className={styles.container}>
       {loading ? (
@@ -133,7 +138,7 @@ export function DrinkView() {
             <p>
               Preço:{" "}
               <span className={styles.bold}>
-                R$ {formatDisplayPrice(drink.price)}
+                {formatDisplayPrice(drink.price)}
               </span>
             </p>
 
@@ -153,6 +158,7 @@ export function DrinkView() {
             <Button
               onClick={addDrinkToRequest}
               icon={<PlusOutlined />}
+              disabled={!permissions.isUser}
               type="primary"
             >
               Adicionar ao Pedido

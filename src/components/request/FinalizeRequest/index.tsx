@@ -144,7 +144,7 @@ export function FinalizeRequest() {
                   <p className={styles.name}>{name}</p>
                 </Link>
                 <p className={styles.price}>
-                  R$ {formatDisplayPrice(price * length)}
+                  {formatDisplayPrice(price * length)}
                 </p>
                 <InputNumberSpinner
                   initialValue={length}

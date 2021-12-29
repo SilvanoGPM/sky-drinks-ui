@@ -43,10 +43,15 @@ export function RequestCreated() {
           </>
         }
         extra={[
-          <Link key="view-request" to={`/${routes.VIEW_REQUEST.replace(":uuid", location.state.uuid)}`}>
+          <Link
+            key="view-request"
+            to={`/${routes.VIEW_REQUEST.replace(":uuid", location.state.uuid)}`}
+          >
             <Button type="primary">Ver pedido</Button>
           </Link>,
-          <Button onClick={goBack} key="back">Voltar</Button>,
+          <Button onClick={goBack} key="back">
+            Voltar
+          </Button>,
         ]}
       />
     </div>

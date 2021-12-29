@@ -9,15 +9,18 @@ import "./index.scss";
 import { AuthProvider } from "./contexts/AuthContext";
 import { RequestProvider } from "./contexts/RequestContext";
 import { WebSocketProvider } from "./contexts/WebSocketContext";
+import { BrowserPermissionsProvider } from "./contexts/BrowserPermissionsContext";
 
 ReactDOM.render(
   <BrowserRouter>
     <AuthProvider>
       <RequestProvider>
         <WebSocketProvider>
-          <ConfigProvider locale={pt_BR}>
-            <App />
-          </ConfigProvider>
+          <BrowserPermissionsProvider>
+            <ConfigProvider locale={pt_BR}>
+              <App />
+            </ConfigProvider>
+          </BrowserPermissionsProvider>
         </WebSocketProvider>
       </RequestProvider>
     </AuthProvider>

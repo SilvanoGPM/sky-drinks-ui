@@ -22,6 +22,7 @@ import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useFavicon } from "src/hooks/useFavicon";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 
 type DrinkToCreate = {
   volume: number;
@@ -72,7 +73,7 @@ export function CreateDrink() {
       showNotification({
         type: "success",
         message: "Bebida adicionada com sucesso!",
-        description: `Nome: ${drink.name} / Preço: R$ ${drink.price}`,
+        description: `Nome: ${drink.name} / Preço: ${formatDisplayPrice(drink.price)}`,
       });
 
       setCreated(true);
