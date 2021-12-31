@@ -93,19 +93,19 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
           {permissions.isBarmen && (
             <Menu.Item
-              icon={<PictureOutlined style={{ fontSize: 25 }} />}
-              key={routes.LIST_IMAGES}
+              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              key={routes.MANAGE_DRINKS}
             >
-              <Link to={routes.LIST_IMAGES}>Listar Imagens</Link>
+              <Link to={routes.MANAGE_DRINKS}>Gerenciar Drinks</Link>
             </Menu.Item>
           )}
 
           {permissions.isBarmen && (
             <Menu.Item
-              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key={routes.MANAGE_DRINKS}
+              icon={<PictureOutlined style={{ fontSize: 25 }} />}
+              key={routes.LIST_IMAGES}
             >
-              <Link to={routes.MANAGE_DRINKS}>Gerenciar Drinks</Link>
+              <Link to={routes.LIST_IMAGES}>Listar Imagens</Link>
             </Menu.Item>
           )}
         </SubMenu>
@@ -162,9 +162,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           >
             <Menu.Item
               icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key="manage-tables"
+              key={routes.MANANGE_TABLES}
             >
-              <Link to="manage-tables">Gerenciar Mesas</Link>
+              <Link to={routes.MANANGE_TABLES}>Gerenciar Mesas</Link>
             </Menu.Item>
           </SubMenu>
         )}

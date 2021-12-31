@@ -32,6 +32,7 @@ import { StompSessionProviderProps } from "react-stomp-hooks/dist/interfaces/Sto
 import { NotificateRequestUpdates } from "./components/other/NotificateRequestUpdates";
 import { ManageRequest } from "./components/request/ManageRequests";
 import { SearchRequests } from "./components/request/SearchRequests";
+import { ManageTables } from "./components/table/ManageTables";
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -215,6 +216,17 @@ function App() {
                 requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
               >
                 <SearchRequests />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.MANANGE_TABLES}
+            element={
+              <PrivateRoute
+                requiredPerms={{ type: "and", perms: ["isWaiter"] }}
+              >
+                <ManageTables />
               </PrivateRoute>
             }
           />

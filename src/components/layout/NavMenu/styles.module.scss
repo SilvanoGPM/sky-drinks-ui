@@ -6,13 +6,17 @@
   &Wrapper {
     position: relative;
     overflow-y: auto;
-    width: 0;
+    width: $menuWidth;
     transition: 0.15s ease-in-out width;
     background-color: var(--navmenu-background);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+
+    @media screen and (max-width: $break1) {
+      width: 0;
+    }
 
     &.active {
       width: $menuWidth;
-      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
     }
 
     @media screen and (max-width: $break1) {

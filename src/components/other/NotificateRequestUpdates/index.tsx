@@ -139,7 +139,7 @@ export function NotificateRequestUpdates() {
   }
 
   useSubscription(
-    [`/topic/updated/${userInfo.email}`, `/topic/finished/${userInfo.email}`],
+    [`/topic/updated/${userInfo.email}`, `/topic/request-changed/${userInfo.email}`],
     (message) => {
       const body = JSON.parse(message.body);
 

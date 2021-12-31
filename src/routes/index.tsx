@@ -24,6 +24,8 @@ const routes = {
   MANAGE_REQUESTS: "request/manage",
   SEARCH_REQUESTS: "request/search",
   MY_REQUESTS: "my-requests",
+
+  MANANGE_TABLES: "table/manage",
 };
 
 export default routes;

@@ -89,7 +89,7 @@ const requestsEndpoints = {
 
   async finishRequest(uuid: string) {
     try {
-      await api.patch(`/requests/finish/all/${uuid}`);
+      await api.patch(`/requests/finish/waiter-or-barmen/${uuid}`);
     } catch (e: any) {
       const details =
         e?.response?.data?.details ||

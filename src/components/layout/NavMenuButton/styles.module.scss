@@ -5,7 +5,7 @@
   height: 40px;
   position: absolute;
   top: 15px;
-  right: 25px;
+  left: 10px;
   z-index: 101;
   cursor: pointer;
   border-color: #ffffff;
@@ -16,10 +16,15 @@
   border-radius: 50%;
   transition: 0.15s ease-in-out left;
   background: var(--navmenu-button-background);
+  display: none;
 
   &.active {
     left: $menuWidth - 25px;
     right: 0;
     background: var(--navmenu-button-background-active);
+  }
+
+  @media screen and (max-width: $break1) {
+    display: block;
   }
 }
