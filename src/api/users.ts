@@ -55,7 +55,7 @@ const usersEndpoints = {
 
   async searchUser(params: string, size = 6) {
     try {
-      const { data } = await api.get(`/users/search?size=${size}&${params}`);
+      const { data } = await api.get(`/users/admin/search?size=${size}&${params}`);
 
       return {
         totalElements: data.totalElements,
@@ -72,7 +72,7 @@ const usersEndpoints = {
     }
 
     try {
-      const response = await api.get(`/users/${uuid}`);
+      const response = await api.get(`/users/all/${uuid}`);
       return response.data;
     } catch (exception: any) {
       const details =

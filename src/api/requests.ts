@@ -64,7 +64,7 @@ const requestsEndpoints = {
   async searchRequests(params: string, size: number = 10) {
     try {
       const { data } = await api.get(
-        `/requests/waiter-or-barmen/search?size=${size}&${params}`
+        `/requests/staff/search?size=${size}&${params}`
       );
 
       return data;
@@ -78,7 +78,7 @@ const requestsEndpoints = {
 
   async cancelRequest(uuid: string) {
     try {
-      await api.patch(`/requests/cancel/all/${uuid}`);
+      await api.patch(`/requests/all/cancel/${uuid}`);
     } catch (e: any) {
       const details =
         e?.response?.data?.details ||
@@ -89,7 +89,7 @@ const requestsEndpoints = {
 
   async finishRequest(uuid: string) {
     try {
-      await api.patch(`/requests/finish/waiter-or-barmen/${uuid}`);
+      await api.patch(`/requests/staff/finish/${uuid}`);
     } catch (e: any) {
       const details =
         e?.response?.data?.details ||
