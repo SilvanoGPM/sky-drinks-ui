@@ -1,4 +1,4 @@
-import { Badge, Button, Popover, Tooltip } from "antd";
+import { Badge, Button, Modal, Popover, Tooltip } from "antd";
 import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import styles from "./styles.module.scss";
@@ -11,9 +11,20 @@ import { calculateDrinksPrice } from "src/utils/calculateDrinkPrice";
 import { AuthContext } from "src/contexts/AuthContext";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 
+const { confirm } = Modal;
+
 export function RequestInfo() {
   const { userInfo } = useContext(AuthContext);
   const { request, clearRequest } = useContext(RequestContext);
+
+  function handleClearRequest() {
+    confirm({
+      title: "Deseja mesmo limpar esse pedido?",
+      okText: "Sim",
+      cancelText: "Não",
+      onOk: clearRequest,
+    });
+  }
 
   function getDrinksContent() {
     const drinks = getDrinksGroupedByUUID(request);
@@ -35,7 +46,7 @@ export function RequestInfo() {
         <ul className={styles.drinksList}>{elements}</ul>
         <div className={styles.clearRequest}>
           <Tooltip title="Limpar Pedido" placement="bottom">
-            <Button onClick={clearRequest} shape="round">
+            <Button onClick={handleClearRequest} shape="round">
               <DeleteOutlined />
             </Button>
           </Tooltip>

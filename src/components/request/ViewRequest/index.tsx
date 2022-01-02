@@ -55,6 +55,12 @@ type RequestType = {
   user: UserType;
   table?: Table;
   totalPrice: number;
+  delivered: boolean;
+};
+
+type UpdatedRequest = {
+  status?: StatusType;
+  delivered?: boolean;
 };
 
 const { confirm } = Modal;
@@ -118,8 +124,8 @@ export function ViewRequest() {
     return () => setLoading(false);
   }, [params, loading, navigate, location, redirect]);
 
-  function updateRequest(status: StatusType) {
-    setRequestFound({ ...requestFound, status });
+  function updateRequest(request: UpdatedRequest) {
+    setRequestFound({ ...requestFound, ...request });
   }
 
   function handleCancelRequest() {
@@ -127,7 +133,7 @@ export function ViewRequest() {
       try {
         await endpoints.cancelRequest(requestFound.uuid);
 
-        updateRequest("CANCELED");
+        updateRequest({ status: "CANCELED" });
 
         showNotification({
           type: "success",
@@ -155,7 +161,7 @@ export function ViewRequest() {
       try {
         await endpoints.finishRequest(requestFound.uuid);
 
-        updateRequest("FINISHED");
+        updateRequest({ status: "FINISHED" });
 
         showNotification({
           type: "success",
@@ -171,14 +177,109 @@ export function ViewRequest() {
 
     confirm({
       title: "Deseja finlizar o pedido?",
-      content: "Depois de finalizado, o pedido não poderá ser cancelado!",
       okText: "Sim",
       cancelText: "Não",
       onOk: finishRequest,
     });
   }
 
+  function handleDeliverRequest() {
+    async function deliverRequest() {
+      try {
+        await endpoints.deliverRequest(requestFound.uuid);
+
+        updateRequest({ status: "FINISHED", delivered: true });
+
+        showNotification({
+          type: "success",
+          message: "Pedido foi entregue com sucesso!",
+        });
+      } catch (e: any) {
+        showNotification({
+          type: "warn",
+          message: e.message,
+        });
+      }
+    }
+
+    confirm({
+      title: "Deseja entregar o pedido?",
+      content: "Depois de entregado, o pedido não poderá ser cancelado!",
+      okText: "Sim",
+      cancelText: "Não",
+      onOk: deliverRequest,
+    });
+  }
+
   const permissions = getUserPermissions(userInfo.role);
+
+  function showActions() {
+    const { isBarmen, isWaiter } = permissions;
+    const isRequestOwner = userInfo.uuid === requestFound.user.uuid;
+
+    const hasPermission = isBarmen || isWaiter || isRequestOwner;
+
+    const ownerCannotCancel =
+      isRequestOwner && requestFound.status === "FINISHED";
+
+    const invalidFlags =
+      requestFound.status === "CANCELED" ||
+      !hasPermission ||
+      ownerCannotCancel ||
+      requestFound.delivered;
+
+    if (invalidFlags) {
+      return;
+    }
+
+    return (
+      <>
+        <Divider
+          style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+          orientation="left"
+        >
+          Ações
+        </Divider>
+
+        <div className={styles.actions}>
+          {(isBarmen || isWaiter) &&
+            requestFound.status === "FINISHED" &&
+            !requestFound.delivered && (
+              <Button
+                onClick={handleDeliverRequest}
+                shape="round"
+                size="large"
+                icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
+              >
+                Entregar pedido
+              </Button>
+            )}
+
+          {(isBarmen || isWaiter) && requestFound.status === "PROCESSING" && (
+            <Button
+              onClick={handleFinishRequest}
+              shape="round"
+              size="large"
+              icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
+            >
+              Finalizar pedido
+            </Button>
+          )}
+
+          {(isRequestOwner || isBarmen || isWaiter) && (
+            <Button
+              onClick={handleCancelRequest}
+              shape="round"
+              size="large"
+              icon={<CloseOutlined style={{ color: "#e74c3c" }} />}
+            >
+              Cancelar pedido
+            </Button>
+          )}
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -192,6 +293,7 @@ export function ViewRequest() {
 
           <div>
             {requestFound.status === "FINISHED" &&
+              !requestFound.delivered &&
               userInfo.uuid === requestFound.user.uuid && (
                 <div className={styles.qrcode}>
                   <p className={styles.qrcodeTitle}>QRCode do pedido:</p>
@@ -207,45 +309,7 @@ export function ViewRequest() {
                 </div>
               )}
 
-            {requestFound.status === "PROCESSING" &&
-              (permissions.isBarmen ||
-                permissions.isWaiter ||
-                userInfo.uuid === requestFound.user.uuid) && (
-                <>
-                  <Divider
-                    style={{ fontSize: "1.5rem", margin: "2rem 0" }}
-                    orientation="left"
-                  >
-                    Ações
-                  </Divider>
-
-                  <div className={styles.actions}>
-                    {(permissions.isBarmen || permissions.isWaiter) && (
-                      <Button
-                        onClick={handleFinishRequest}
-                        shape="round"
-                        size="large"
-                        icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
-                      >
-                        Finalizar pedido
-                      </Button>
-                    )}
-
-                    {(userInfo.uuid === requestFound.user.uuid ||
-                      permissions.isBarmen ||
-                      permissions.isWaiter) && (
-                      <Button
-                        onClick={handleCancelRequest}
-                        shape="round"
-                        size="large"
-                        icon={<CloseOutlined style={{ color: "#e74c3c" }} />}
-                      >
-                        Cancelar pedido
-                      </Button>
-                    )}
-                  </div>
-                </>
-              )}
+            {showActions()}
 
             <Divider
               style={{ fontSize: "1.5rem", margin: "2rem 0" }}
@@ -268,6 +332,16 @@ export function ViewRequest() {
               <p>Status: </p>
               {getStatusBadge(requestFound.status)}
             </div>
+
+            <p>
+              O pedido
+              <span className={styles.bold}>
+                {!requestFound.delivered
+                  ? " ainda não foi entregue."
+                  : " já foi entregado."}
+              </span>
+            </p>
+
             <p>
               Pedido realizado em{" "}
               <span className={styles.bold}>

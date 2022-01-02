@@ -1,4 +1,8 @@
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
 import { Button, Empty, Modal, Pagination, Tooltip } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -182,6 +186,10 @@ export function ManageRequest() {
     };
   }
 
+  function reloadRequests() {
+    setLoading(true);
+  }
+
   return (
     <div className={styles.container}>
       <div>
@@ -251,15 +259,27 @@ export function ManageRequest() {
             })}
           </ul>
 
-          <div className={styles.paginationContainer}>
-              <Pagination
-                defaultPageSize={pagination.size}
-                current={pagination.page + 1}
-                total={data.totalElements}
-                hideOnSinglePage
-                onChange={handlePaginationChange}
+          <div className={styles.refreshRequests}>
+            <Tooltip title="Recarrega os pedidos" placement="left">
+              <Button
+                style={{ minWidth: 50, minHeight: 50 }}
+                onClick={reloadRequests}
+                shape="circle"
+                type="ghost"
+                icon={<ReloadOutlined style={{ fontSize: 25 }} />}
               />
-            </div>
+            </Tooltip>
+          </div>
+
+          <div className={styles.paginationContainer}>
+            <Pagination
+              defaultPageSize={pagination.size}
+              current={pagination.page + 1}
+              total={data.totalElements}
+              hideOnSinglePage
+              onChange={handlePaginationChange}
+            />
+          </div>
         </>
       ) : (
         <Empty description="Nenhum pedido para gerenciar" />

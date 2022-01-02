@@ -50,6 +50,7 @@ type RequestType = {
   uuid: string;
   user: UserType;
   totalPrice: number;
+  delivered: boolean;
 };
 
 type RequestNotificationType = "FINISHED" | "CANCELED";
@@ -61,6 +62,10 @@ const requestStatusChanged = {
 
   CANCELED: {
     title: "Seu pedido foi cancelado!",
+  },
+
+  DELIVERED: {
+    title: "Pedido foi entregue!",
   },
 };
 
@@ -139,7 +144,10 @@ export function NotificateRequestUpdates() {
   }
 
   useSubscription(
-    [`/topic/updated/${userInfo.email}`, `/topic/request-changed/${userInfo.email}`],
+    [
+      `/topic/updated/${userInfo.email}`,
+      `/topic/request-changed/${userInfo.email}`,
+    ],
     (message) => {
       const body = JSON.parse(message.body);
 
@@ -213,27 +221,36 @@ export function NotificateRequestUpdates() {
         ) : request.uuid ? (
           <div className={styles.requestInfo}>
             <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>
-            <p>Criado em: {formatDisplayDate(request.createdAt)}</p>
+
             <p>
               Status:{" "}
               <span className={styles.badge}>
                 {getStatusBadge(request.status)}
               </span>
             </p>
-            <p>Código: {request.uuid}</p>
 
-            {request.status === "FINISHED" ? (
-              <>
-                <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>
-                <p className={styles.bold}>
-                  Lembre-se de ir com o{" "}
-                  <span onClick={viewRequest(request.uuid)} className={styles.link}>
-                    QRCode do pedido
-                  </span>
-                  .
-                </p>
-              </>
-            ) : (
+            <p>Pedido realizado em: {formatDisplayDate(request.createdAt)}</p>
+
+            {request.status === "FINISHED" &&
+              (request.delivered ? (
+                <p className={styles.bold}>Seu pedido foi entregue!</p>
+              ) : (
+                <>
+                  <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>
+                  <p className={styles.bold}>
+                    Lembre-se de ir com o{" "}
+                    <span
+                      onClick={viewRequest(request.uuid)}
+                      className={styles.link}
+                    >
+                      QRCode do pedido
+                    </span>
+                    .
+                  </p>
+                </>
+              ))}
+
+            {request.status === "CANCELED" && (
               <p className={styles.bold}>
                 Vá até o balcão para mais informações sobre o cancelamento.
               </p>

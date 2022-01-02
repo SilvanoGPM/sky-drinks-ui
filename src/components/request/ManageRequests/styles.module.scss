@@ -92,3 +92,13 @@
   justify-content: center;
   align-items: center;
 }
+
+.refreshRequests {
+  position: fixed,;
+  bottom: 30px;
+  right: 30px;
+
+  @media screen and (max-width: $break1) {
+    bottom: 90px;
+  }
+}

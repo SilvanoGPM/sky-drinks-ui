@@ -98,6 +98,17 @@ const requestsEndpoints = {
     }
   },
 
+  async deliverRequest(uuid: string) {
+    try {
+      await api.patch(`/requests/staff/deliver/${uuid}`);
+    } catch (e: any) {
+      const details =
+        e?.response?.data?.details ||
+        "Aconteceu um erro ao tentar entregar o pedido.";
+      throw new Error(details);
+    }
+  },
+
   async getProcessingRequests(page = 0, size = 10) {
     return this.searchRequests(`page=${page}&status=PROCESSING&sort=createdAt`, size)
   },
