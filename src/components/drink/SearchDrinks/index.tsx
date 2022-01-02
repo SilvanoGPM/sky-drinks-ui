@@ -180,7 +180,9 @@ export function SearchDrinks() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.buttonContainer}>
+      <h2 className={styles.title}>Pesquisar bebida</h2>
+
+      <div className={styles.fullButton}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
           Pesquise sua bebida
         </Button>
@@ -204,7 +206,7 @@ export function SearchDrinks() {
                   key={drink.uuid}
                   {...drink}
                   width={cardWidth}
-                  height={cardWidth + 50}
+                  imageHeight={cardWidth}
                   loading={loading}
                 />
               ))}
@@ -221,7 +223,7 @@ export function SearchDrinks() {
             </div>
           </>
         ) : (
-          <Empty description="Nenhum drink foi encontrado!" />
+          <Empty description="Nenhuma bebida foi encontrada!" />
         )}
       </div>
 

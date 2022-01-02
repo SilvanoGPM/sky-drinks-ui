@@ -32,7 +32,7 @@ const latestDrinksFake = Array(5)
   .map((drink, uuid) => ({ ...drink, uuid }));
 
 export function LatestDrinks() {
-  useTitle("SkyDrinks - Home");
+  useTitle("SkyDrinks - Últimas bebidas adicionadas");
 
   const drinksRef = useRef<HTMLUListElement>(null);
 
@@ -73,11 +73,15 @@ export function LatestDrinks() {
     if (loading) {
       loadLatestDrinks();
     }
+
+    return () => {
+      setLoading(false);
+    };
   }, [loading]);
 
   return (
-    <div className={styles.latest}>
-      <h2 className={styles.latestTitle}>Últimos Drinks Adicionados:</h2>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Últimas bebidas adicionadas:</h2>
 
       {Boolean(latestDrinks.length) ? (
         <ul
@@ -90,7 +94,7 @@ export function LatestDrinks() {
               {...props}
               key={props.uuid}
               width={260}
-              height={300}
+              imageHeight={260}
               loading={loading}
             />
           ))}

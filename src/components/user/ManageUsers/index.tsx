@@ -153,7 +153,7 @@ export function ManageUsers() {
     <div className={styles.container}>
       <h2 className={styles.title}>Gerenciar Usuários</h2>
 
-      <div className={styles.buttonContainer}>
+      <div className={styles.fullButton}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
           Pesquisar usuários
         </Button>
@@ -248,7 +248,7 @@ export function ManageUsers() {
         />
       </div>
 
-      <div className={styles.createUser}>
+      <div className={styles.bottomButton}>
         <Tooltip title="Criar novo usuário" placement="left">
           <Link to={routes.CREATE_USER}>
             <Button

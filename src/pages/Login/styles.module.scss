@@ -1,9 +1,9 @@
 @import "../../scss/variables";
+@import "../../scss/mixins";
 
 .container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include centeredElement();
+
   min-height: 100vh;
   background: #74ebd5;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
@@ -20,7 +20,7 @@
   box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
     rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     max-width: 400px;
     width: 100%;
   }
@@ -40,7 +40,7 @@
     height: 100%;
   }
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     display: none;
   }
 }

@@ -339,7 +339,7 @@ export function ManageTables() {
         <h2 className={styles.title}>Gerenciar Mesas</h2>
       </div>
 
-      <div className={styles.buttonContainer}>
+      <div className={styles.fullButton}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
           Pesquisar mesas
         </Button>
@@ -430,7 +430,7 @@ export function ManageTables() {
         />
       </div>
 
-      <div className={styles.createTable}>
+      <div className={styles.bottomButton}>
         <Tooltip title="Adicionar mesa" placement="left">
           <Button
             style={{ minWidth: 50, minHeight: 50 }}

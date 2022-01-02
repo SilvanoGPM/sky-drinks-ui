@@ -1,6 +1,9 @@
-@import '../../../scss/variables';
+@import "../../../scss/variables";
+@import "../../../scss/mixins";
 
 .menuToggle {
+  @include centeredElement();
+
   width: 40px;
   height: 40px;
   position: absolute;
@@ -9,9 +12,6 @@
   z-index: 101;
   cursor: pointer;
   border-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border: none;
   border-radius: 50%;
   transition: 0.15s ease-in-out left;
@@ -24,7 +24,7 @@
     background: var(--navmenu-button-background-active);
   }
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     display: block;
   }
 }

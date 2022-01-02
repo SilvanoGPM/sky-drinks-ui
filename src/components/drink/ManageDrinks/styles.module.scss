@@ -1,14 +1,12 @@
 @import "../../../scss/variables";
+@import "../../../scss/shared";
+@import "../../../scss/mixins";
 
 .container {
-  padding: 2rem;
-  display: flex;
+  @extend .container;
+  @include centeredElement();
+
   flex-direction: column;
-  max-width: 700px;
-  width: 100%;
-  margin: 0 auto;
-  align-items: center;
-  justify-content: center;
 }
 
 .search {
@@ -16,7 +14,6 @@
 }
 
 .drinks {
-
   &Wrapper {
     margin-top: 1rem;
   }
@@ -24,33 +21,12 @@
   &List {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.8rem;
   }
-
 }
 
 .paginationContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.createDrink {
-  position: fixed,;
-  bottom: 30px;
-  right: 30px;
-
-  @media screen and (max-width: $break1) {
-    bottom: 90px;
-  }
-}
-
-.buttonContainer {
-  width: 100%;
-
-  button {
-    width: 100%;
-  }
+  @include centeredElement();
 }

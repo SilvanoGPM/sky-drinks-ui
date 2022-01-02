@@ -259,7 +259,7 @@ export function ManageRequest() {
             })}
           </ul>
 
-          <div className={styles.refreshRequests}>
+          <div className={styles.bottomButton}>
             <Tooltip title="Recarrega os pedidos" placement="left">
               <Button
                 style={{ minWidth: 50, minHeight: 50 }}

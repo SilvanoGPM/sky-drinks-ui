@@ -215,9 +215,11 @@ export function ViewRequest() {
 
   function showActions() {
     const { isBarmen, isWaiter } = permissions;
+
+    const isStaff = isBarmen || isWaiter;
     const isRequestOwner = userInfo.uuid === requestFound.user.uuid;
 
-    const hasPermission = isBarmen || isWaiter || isRequestOwner;
+    const hasPermission = isStaff || isRequestOwner;
 
     const ownerCannotCancel =
       isRequestOwner && requestFound.status === "FINISHED";
@@ -242,7 +244,7 @@ export function ViewRequest() {
         </Divider>
 
         <div className={styles.actions}>
-          {(isBarmen || isWaiter) &&
+          {isStaff &&
             requestFound.status === "FINISHED" &&
             !requestFound.delivered && (
               <Button
@@ -255,7 +257,7 @@ export function ViewRequest() {
               </Button>
             )}
 
-          {(isBarmen || isWaiter) && requestFound.status === "PROCESSING" && (
+          {isStaff && requestFound.status === "PROCESSING" && (
             <Button
               onClick={handleFinishRequest}
               shape="round"
@@ -266,7 +268,7 @@ export function ViewRequest() {
             </Button>
           )}
 
-          {(isRequestOwner || isBarmen || isWaiter) && (
+          {hasPermission && (
             <Button
               onClick={handleCancelRequest}
               shape="round"

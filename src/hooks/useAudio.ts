@@ -2,6 +2,7 @@ import { useMemo, useEffect, useState } from "react";
 
 export function useAudio(url: string) {
   const audio = useMemo(() => new Audio(url), [url]);
+
   const [playing, setPlaying] = useState(false);
 
   const toggle = () => setPlaying(!playing);

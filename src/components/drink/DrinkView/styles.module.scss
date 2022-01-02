@@ -1,4 +1,5 @@
-@import '../../../scss/variables';
+@import "../../../scss/variables";
+@import "../../../scss/shared";
 
 .container {
   --height: 70vh;
@@ -8,7 +9,7 @@
   max-width: 900px;
   margin: 0 auto;
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     flex-direction: column;
     width: 100%;
     max-width: 100%;
@@ -26,7 +27,7 @@
   background-position: center center;
   background-size: contain;
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     width: 100%;
     max-width: 100%;
     min-height: 300px;
@@ -43,8 +44,4 @@
 
 .additional {
   margin-bottom: 1rem;
-}
-
-.bold {
-  font-weight: bold;
 }

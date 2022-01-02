@@ -151,9 +151,7 @@ export function EditDrink() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.titleContainer}>
-        <h1 className={styles.title}>Editar Bebida</h1>
-      </div>
+      <h2 className={styles.title}>Editar Bebida</h2>
 
       {drinkLoading ? (
         <div className={styles.loading}>

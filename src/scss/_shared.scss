@@ -1,0 +1,51 @@
+@import "./variables";
+@import "./mixins";
+
+.container {
+  max-width: 700px;
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.8rem;
+  text-decoration: underline;
+}
+
+.bottomButton {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+
+  @media #{$mq-medium} {
+    bottom: 90px;
+  }
+}
+
+.fullButton {
+  width: 100%;
+
+  button {
+    width: 100%;
+  }
+}
+
+.loading {
+  @include centeredElement();
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+%noWrapText {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

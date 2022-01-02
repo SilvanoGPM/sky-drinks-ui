@@ -18,7 +18,7 @@ type DrinkCardProps = {
   price: number;
   loading: boolean;
   width: string | number;
-  height: string | number;
+  imageHeight: string | number;
   showBuyAction?: boolean;
   moreActions?: React.ReactNode[];
 };
@@ -31,7 +31,7 @@ export function DrinkCard({
   picture,
   price,
   loading,
-  height,
+  imageHeight,
   width,
   showBuyAction = true,
   moreActions = [],
@@ -41,7 +41,7 @@ export function DrinkCard({
   function renderCover() {
     return (
       <Image
-        height={height}
+        height={imageHeight}
         width={width}
         alt={`Drink - ${name}`}
         src={picture && !picture.endsWith("null") ? picture : drinkPlaceholder}

@@ -1,4 +1,6 @@
 @import "../../../scss/variables";
+@import "../../../scss/shared";
+@import "../../../scss/mixins";
 
 .menu {
   width: 100%;
@@ -11,7 +13,7 @@
     background-color: var(--navmenu-background);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 
-    @media screen and (max-width: $break1) {
+    @media #{$mq-medium} {
       width: 0;
     }
 
@@ -19,7 +21,7 @@
       width: $menuWidth;
     }
 
-    @media screen and (max-width: $break1) {
+    @media #{$mq-medium} {
       position: fixed;
       top: 0;
       bottom: 0;
@@ -28,10 +30,8 @@
   }
 
   &Header {
+    @include centeredElement();
     height: $headerHeight;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     h2 {
       color: var(--navmenu-color);
@@ -54,19 +54,17 @@
 }
 
 .userInfo {
-  height: $headerHeight;
-  display: flex;
+  @include centeredElement();
+
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: $headerHeight;
   padding: 0.5rem 1rem;
 
   p {
+    @extend %noWrapText;
+
     color: var(--navmenu-color);
     margin: 0;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     font-size: 1rem;
     width: 100%;
     text-align: center;

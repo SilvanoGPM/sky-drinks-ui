@@ -1,17 +1,6 @@
 @import "../../../scss/variables";
-
-.container {
-  max-width: 700px;
-  width: 100%;
-  margin: 1rem auto;
-  padding: 1rem;
-}
-
-.title {
-  font-size: 2.2rem;
-  text-decoration: underline;
-  text-align: center;
-}
+@import "../../../scss/shared";
+@import "../../../scss/mixins";
 
 .card {
   width: 200px;
@@ -36,20 +25,17 @@
     flex-direction: column;
   }
 
-  &Title {
+  &Title, &Text {
+    @extend %noWrapText;
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  &Title {
     font-size: 1.1rem;
   }
 
   &Text {
-    margin: 0;
     font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &Figure {
@@ -72,15 +58,14 @@
   }
 
   &Actions {
+    @include centeredElement();
+
     margin-top: 0.5rem;
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 1rem;
   }
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     width: 100%;
     min-width: 200px;
     max-width: 300px;
@@ -88,17 +73,5 @@
 }
 
 .paginationContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.refreshRequests {
-  position: fixed,;
-  bottom: 30px;
-  right: 30px;
-
-  @media screen and (max-width: $break1) {
-    bottom: 90px;
-  }
+  @include centeredElement();
 }

@@ -1,8 +1,8 @@
+@import "../../../scss/shared";
+@import "../../../scss/mixins";
+
 .container {
-  margin: 0 auto;
-  max-width: 700px;
-  width: 100%;
-  padding: 1rem;
+  @extend .container;
   margin-top: 2rem;
 }
 
@@ -23,6 +23,8 @@
     color: #ffffff;
 
     &Wrapper {
+      @include centeredElement();
+
       background: #ffffff;
       position: absolute;
       width: 60px;
@@ -33,9 +35,6 @@
       top: -40px;
       transform: translateX(-50%);
       z-index: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     img {
@@ -51,11 +50,9 @@
 }
 
 .name {
+  @extend %noWrapText;
   margin: 0;
   font-size: 1.5rem;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .title {
@@ -81,8 +78,4 @@
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
   }
-}
-
-.bold {
-  font-weight: bold;
 }

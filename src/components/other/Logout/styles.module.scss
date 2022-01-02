@@ -1,22 +1,23 @@
-@import '../../../scss/variables';
+@import "../../../scss/variables";
+@import "../../../scss/mixins";
 
 .container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include centeredElement();
+
   min-height: calc(100vh - $headerHeight);
 }
 
 .card {
   padding: 1rem;
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
 }
 
 .buttons {
   display: flex;
   gap: 0.5rem;
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     flex-direction: column;
   }
 }

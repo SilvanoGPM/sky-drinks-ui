@@ -201,7 +201,7 @@ export function ManageDrinks() {
         <h2 className={styles.title}>Gerenciar Bebidas</h2>
       </div>
 
-      <div className={styles.buttonContainer}>
+      <div className={styles.fullButton}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
           Pesquisar bebida
         </Button>
@@ -221,7 +221,7 @@ export function ManageDrinks() {
                       showBuyAction={false}
                       key={drink.uuid}
                       width={cardWidth}
-                      height={cardWidth + 50}
+                      imageHeight={cardWidth}
                       loading={loading}
                       moreActions={[
                         <Tooltip title="Editar Bebida" key="edit-drink">
@@ -277,7 +277,7 @@ export function ManageDrinks() {
         )}
       </div>
 
-      <div className={styles.createDrink}>
+      <div className={styles.bottomButton}>
         <Tooltip title="Criar nova bebida" placement="left">
           <Link to={routes.CREATE_DRINK}>
             <Button

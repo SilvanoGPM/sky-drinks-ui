@@ -118,9 +118,7 @@ export function CreateDrink() {
         </div>
       ) : (
         <>
-          <div className={styles.titleContainer}>
-            <h1 className={styles.title}>Adicionar Bebida</h1>
-          </div>
+          <h2 className={styles.title}>Adicionar Bebida</h2>
 
           <div>
             <Form

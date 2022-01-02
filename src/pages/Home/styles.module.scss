@@ -11,7 +11,7 @@
   flex-direction: column;
   overflow-x: hidden;
 
-  @media screen and (max-width: $break1) {
+  @media #{$mq-medium} {
     flex: none;
     width: 100%;
   }
