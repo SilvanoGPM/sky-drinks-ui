@@ -1,7 +1,7 @@
 import { useTitle } from "src/hooks/useTitle";
 
 import avatar from "src/assets/avatar_white.png";
-import { Avatar, Divider, Tooltip } from "antd";
+import { Avatar, Divider, Switch, Tooltip } from "antd";
 import { useContext } from "react";
 import { AuthContext } from "src/contexts/AuthContext";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
@@ -11,11 +11,18 @@ import routes from "src/routes";
 import styles from "./styles.module.scss";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { getUserAge } from "src/utils/getUserAge";
+import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
 
 export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");
 
   const { userInfo } = useContext(AuthContext);
+  const {
+    notificationPermission,
+    requestNotificationPermission,
+    soundPermission,
+    toggleSoundPermission,
+  } = useContext(BrowserPermissionsContext);
 
   return (
     <div className={styles.container}>
@@ -77,6 +84,22 @@ export function MyAccount() {
               {formatDisplayDate(userInfo.updatedAt)}
             </span>
           </p>
+        </div>
+      </div>
+
+      <div>
+        <Divider orientation="left" style={{ fontSize: "1.5rem" }}>
+          Permissões
+        </Divider>
+
+        <div className={styles.perm}>
+          <p>Permitir sons:</p>
+          <Switch checked={soundPermission} onClick={toggleSoundPermission} />
+        </div>
+
+        <div className={styles.perm}>
+          <p>Permitir notificações:</p>
+          <Switch checked={notificationPermission === "granted"} onClick={requestNotificationPermission} />
         </div>
       </div>
     </div>

@@ -185,7 +185,7 @@ export function NotificateRequestUpdates() {
           setUpdateRequest(true);
         }
       } else if (body.message === "requests-changed") {
-        const notificationMessage = "Aconteceu um alteração nos pedidos!";
+        const notificationMessage = "Aconteceu uma alteração nos pedidos!";
 
         setTitle(`SkyDrinks - ${notificationMessage}`);
 
@@ -198,6 +198,7 @@ export function NotificateRequestUpdates() {
         createBrowsetNotification(notificationMessage);
 
         notification.open({
+          key: "UPDATED",
           type: "success",
           message: notificationMessage,
           duration: onPath ? 2 : 0,

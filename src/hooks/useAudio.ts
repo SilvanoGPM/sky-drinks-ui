@@ -1,6 +1,8 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useContext } from "react";
+import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
 
 export function useAudio(url: string) {
+  const { soundPermission } = useContext(BrowserPermissionsContext);
   const audio = useMemo(() => new Audio(url), [url]);
 
   const [playing, setPlaying] = useState(false);
@@ -8,8 +10,8 @@ export function useAudio(url: string) {
   const toggle = () => setPlaying(!playing);
 
   useEffect(() => {
-    playing ? audio.play() : audio.pause();
-  }, [playing, audio]);
+    playing && soundPermission ? audio.play() : audio.pause();
+  }, [playing, audio, soundPermission]);
 
   useEffect(() => {
     audio.addEventListener("ended", () => setPlaying(false));

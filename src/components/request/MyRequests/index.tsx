@@ -163,14 +163,7 @@ export function MyRequests() {
       try {
         await endpoints.cancelRequest(uuid);
 
-        const content = data.content.map((item) => {
-          if (item.uuid === uuid) {
-            const status: StatusType = "CANCELED";
-            return { ...item, status };
-          }
-
-          return item;
-        });
+        const content = data.content.filter((item) => item.uuid !== uuid);
 
         setData({ ...data, content });
       } catch (e: any) {
