@@ -36,6 +36,10 @@
     display: flex;
     gap: 0.2rem;
     align-items: center;
+
+    @media #{$mq-medium} {
+      justify-content: center;
+    }
   }
 
   &Price {
@@ -44,7 +48,6 @@
 }
 
 .drinks {
-
   &Item {
     display: flex;
     justify-content: space-between;
@@ -64,7 +67,6 @@
     max-height: 300px;
     overflow-y: auto;
   }
-
 }
 
 .clearRequest {

@@ -93,7 +93,8 @@ export function LatestDrinks() {
             <DrinkCard
               {...props}
               key={props.uuid}
-              width={260}
+              width="50%"
+              minWidth={260}
               imageHeight={260}
               loading={loading}
             />

@@ -18,6 +18,7 @@ type DrinkCardProps = {
   price: number;
   loading: boolean;
   width: string | number;
+  minWidth?: string | number;
   imageHeight: string | number;
   showBuyAction?: boolean;
   moreActions?: React.ReactNode[];
@@ -33,6 +34,7 @@ export function DrinkCard({
   loading,
   imageHeight,
   width,
+  minWidth = width,
   showBuyAction = true,
   moreActions = [],
 }: DrinkCardProps) {
@@ -42,7 +44,7 @@ export function DrinkCard({
     return (
       <Image
         height={imageHeight}
-        width={width}
+        width="100%"
         alt={`Drink - ${name}`}
         src={picture && !picture.endsWith("null") ? picture : drinkPlaceholder}
       />
@@ -70,7 +72,7 @@ export function DrinkCard({
     >
       <Card
         hoverable
-        style={{ minWidth: width, width }}
+        style={{ minWidth: minWidth, width }}
         actions={[
           <Tooltip title="Abrir Página" key="view-drink">
             <Link to={`${routes.VIEW_DRINK}`.replace(":uuid", uuid)}>

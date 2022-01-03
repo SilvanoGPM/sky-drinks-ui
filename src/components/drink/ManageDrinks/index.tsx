@@ -112,15 +112,19 @@ export function ManageDrinks() {
 
   function getPriceAndVolume(price: number[], volume: number[]) {
     return {
-      ...(form.isFieldTouched("volume") ? {
-        greaterThanOrEqualToVolume: volume[0],
-        lessThanOrEqualToVolume: volume[1],
-      } : {}),
+      ...(form.isFieldTouched("volume")
+        ? {
+            greaterThanOrEqualToVolume: volume[0],
+            lessThanOrEqualToVolume: volume[1],
+          }
+        : {}),
 
-      ...(form.isFieldTouched("price") ? {
-        greaterThanOrEqualToPrice: price[0],
-        lessThanOrEqualToPrice: price[1],
-      } : {})
+      ...(form.isFieldTouched("price")
+        ? {
+            greaterThanOrEqualToPrice: price[0],
+            lessThanOrEqualToPrice: price[1],
+          }
+        : {}),
     };
   }
 
@@ -261,12 +265,13 @@ export function ManageDrinks() {
 
                 <div className={styles.paginationContainer}>
                   <Pagination
-                    defaultPageSize={pagination.size}
-                    defaultCurrent={pagination.page + 1}
+                    pageSize={pagination.size}
                     current={pagination.page + 1}
                     total={data.totalElements}
                     hideOnSinglePage
                     onChange={handlePaginationChange}
+                    responsive
+                    showSizeChanger={false}
                   />
                 </div>
               </>

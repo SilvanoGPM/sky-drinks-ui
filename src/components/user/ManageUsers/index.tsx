@@ -1,5 +1,23 @@
-import { DeleteOutlined, EditOutlined, SearchOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Avatar, Button, DatePicker, Divider, Drawer, Form, Input, List, Pagination, Popconfirm, Select, Tooltip } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import {
+  Avatar,
+  Button,
+  DatePicker,
+  Divider,
+  Drawer,
+  Form,
+  Input,
+  List,
+  Pagination,
+  Popconfirm,
+  Select,
+  Tooltip,
+} from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import qs from "query-string";
@@ -8,7 +26,10 @@ import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
-import { formatBirthDayDate, formatDatabaseDate } from "src/utils/formatDatabaseDate";
+import {
+  formatBirthDayDate,
+  formatDatabaseDate,
+} from "src/utils/formatDatabaseDate";
 
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar.png";
@@ -65,7 +86,10 @@ export function ManageUsers() {
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await endpoints.searchUser(`page=${pagination.page}&${qs.stringify(params)}`, pagination.size);
+        const data = await endpoints.searchUser(
+          `page=${pagination.page}&${qs.stringify(params)}`,
+          pagination.size
+        );
         setData(data);
       } catch (e: any) {
         showNotification({
@@ -106,7 +130,9 @@ export function ManageUsers() {
     setParams({
       ...values,
       role: values?.role?.join(","),
-      birthDay: values.birthDay ? moment(values.birthDay._d).format("yyyy-MM-DD") : undefined,
+      birthDay: values.birthDay
+        ? moment(values.birthDay._d).format("yyyy-MM-DD")
+        : undefined,
     });
 
     setLoading(true);
@@ -166,12 +192,13 @@ export function ManageUsers() {
           footer={
             <div className={styles.pagination}>
               <Pagination
-                defaultPageSize={pagination.size}
-                defaultCurrent={pagination.page + 1}
+                pageSize={pagination.size}
                 current={pagination.page + 1}
                 total={data.totalElements}
                 hideOnSinglePage
                 onChange={handlePaginationChange}
+                responsive
+                showSizeChanger={false}
               />
             </div>
           }
@@ -220,9 +247,7 @@ export function ManageUsers() {
                 </p>
                 <p>
                   Tipo:{" "}
-                  <span className={styles.bold}>
-                    {formatDisplayRole(role)}
-                  </span>
+                  <span className={styles.bold}>{formatDisplayRole(role)}</span>
                 </p>
                 <p>
                   Data de nascimento:{" "}

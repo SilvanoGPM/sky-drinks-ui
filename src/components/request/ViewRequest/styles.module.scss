@@ -82,11 +82,12 @@
     font-size: 1.1rem;
   }
 
-  &Warn {
-    font-size: 0.8rem;
-    font-weight: bold;
-    font-style: italic;
-    max-width: 400px;
-    margin-top: 1rem;
-  }
+}
+
+.warnMessage {
+  font-size: 0.8rem;
+  font-weight: bold;
+  font-style: italic;
+  max-width: 400px;
+  margin-top: 1rem;
 }

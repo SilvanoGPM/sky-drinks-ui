@@ -214,11 +214,13 @@ export function SearchDrinks() {
 
             <div className={styles.paginationContainer}>
               <Pagination
-                defaultPageSize={pagination.size}
-                defaultCurrent={pagination.page + 1}
+                pageSize={pagination.size}
+                current={pagination.page + 1}
                 total={data.totalElements}
                 hideOnSinglePage
                 onChange={handlePaginationChange}
+                responsive
+                showSizeChanger={false}
               />
             </div>
           </>
@@ -270,7 +272,12 @@ export function SearchDrinks() {
           </Form.Item>
 
           <Form.Item label="Volume" name="volume">
-            <Slider range min={100} max={4000} tipFormatter={(value) => `${value}ml`} />
+            <Slider
+              range
+              min={100}
+              max={4000}
+              tipFormatter={(value) => `${value}ml`}
+            />
           </Form.Item>
 
           <Form.Item label="Adicionais" name="additional">

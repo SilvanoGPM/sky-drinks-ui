@@ -265,7 +265,7 @@ export function ManageRequest() {
                 style={{ minWidth: 50, minHeight: 50 }}
                 onClick={reloadRequests}
                 shape="circle"
-                type="ghost"
+                type="primary"
                 icon={<ReloadOutlined style={{ fontSize: 25 }} />}
               />
             </Tooltip>
@@ -273,11 +273,13 @@ export function ManageRequest() {
 
           <div className={styles.paginationContainer}>
             <Pagination
-              defaultPageSize={pagination.size}
+              pageSize={pagination.size}
               current={pagination.page + 1}
               total={data.totalElements}
               hideOnSinglePage
               onChange={handlePaginationChange}
+              responsive
+              showSizeChanger={false}
             />
           </div>
         </>

@@ -427,6 +427,8 @@ export function ManageTables() {
           total={data.totalElements}
           hideOnSinglePage
           onChange={handlePaginationChange}
+          responsive
+          showSizeChanger={false}
         />
       </div>
 

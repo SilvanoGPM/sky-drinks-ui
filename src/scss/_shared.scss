@@ -15,12 +15,13 @@
 }
 
 .bottomButton {
+  --pos: 30px;
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: var(--pos);
+  right: var(--pos);
 
   @media #{$mq-medium} {
-    bottom: 90px;
+    --pos: 10px;
   }
 }
 

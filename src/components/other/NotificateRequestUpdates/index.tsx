@@ -42,6 +42,11 @@ type UserType = {
 
 type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
 
+type TableType = {
+  number: number;
+  seats: number;
+};
+
 type RequestType = {
   drinks: DrinkType[];
   createdAt: string;
@@ -51,9 +56,12 @@ type RequestType = {
   user: UserType;
   totalPrice: number;
   delivered: boolean;
+  table: TableType;
 };
 
 type RequestNotificationType = "FINISHED" | "CANCELED";
+
+const publicPath = process.env.PUBLIC_URL;
 
 const requestStatusChanged = {
   FINISHED: {
@@ -71,20 +79,20 @@ const requestStatusChanged = {
 
 export function NotificateRequestUpdates() {
   const { userInfo, token } = useContext(AuthContext);
-  const { setUpdateRequests } = useContext(WebSocketContext);
+  const { setUpdateRequests, setUpdateRequest } = useContext(WebSocketContext);
 
   const { createBrowsetNotification } = useBrowserNotification();
 
-  const { toggle: toggleRequestFinished } = useAudio(
-    `${process.env.PUBLIC_URL}/noises/request-finished.wav`
+  const { toggle: toggleFinished } = useAudio(
+    `${publicPath}/noises/request-finished.wav`
   );
 
-  const { toggle: toggleRequestCanceled } = useAudio(
-    `${process.env.PUBLIC_URL}/noises/request-canceled.mp3`
+  const { toggle: toggleCanceled } = useAudio(
+    `${publicPath}/noises/request-canceled.mp3`
   );
 
-  const { toggle: toggleRequestsUpdated } = useAudio(
-    `${process.env.PUBLIC_URL}/noises/requests-updated.mp3`
+  const { toggle: toggleUpdated } = useAudio(
+    `${publicPath}/noises/requests-updated.mp3`
   );
 
   const [visible, setVisible] = useState(false);
@@ -155,8 +163,7 @@ export function NotificateRequestUpdates() {
         const key = body.message as RequestNotificationType;
         const { title } = requestStatusChanged[key];
 
-        const toggle =
-          key === "CANCELED" ? toggleRequestCanceled : toggleRequestFinished;
+        const toggle = key === "CANCELED" ? toggleCanceled : toggleFinished;
 
         toggle();
 
@@ -170,12 +177,19 @@ export function NotificateRequestUpdates() {
         setTitle(`SkyDrinks - ${title.toString()}`);
         setLoading(true);
         setVisible(true);
+
+        const path = routes.VIEW_REQUEST.replace(":uuid", body.uuid);
+        const onPath = location.pathname.includes(path);
+
+        if (onPath) {
+          setUpdateRequest(true);
+        }
       } else if (body.message === "requests-changed") {
         const notificationMessage = "Aconteceu um alteração nos pedidos!";
 
         setTitle(`SkyDrinks - ${notificationMessage}`);
 
-        toggleRequestsUpdated();
+        toggleUpdated();
 
         const path = routes.MANAGE_REQUESTS;
 
@@ -234,6 +248,22 @@ export function NotificateRequestUpdates() {
             {request.status === "FINISHED" &&
               (request.delivered ? (
                 <p className={styles.bold}>Seu pedido foi entregue!</p>
+              ) : request.table ? (
+                <>
+                  <p className={styles.bold}>
+                    Seu pedido será entregue na mesa n° {request.table.number}!
+                  </p>
+                  <p className={styles.bold}>
+                    Para confirmar o seu pedido, mostre seu{" "}
+                    <span
+                      onClick={viewRequest(request.uuid)}
+                      className={styles.link}
+                    >
+                      QRCode do pedido
+                    </span>{" "}
+                    para o garçom que for entregar.
+                  </p>
+                </>
               ) : (
                 <>
                   <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>

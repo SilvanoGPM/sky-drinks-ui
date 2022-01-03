@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
 import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
 import { AuthContext } from "src/contexts/AuthContext";
+import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
@@ -31,7 +32,10 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-type Table = {};
+type TableType = {
+  number: number;
+  seats: number;
+};
 
 type UserType = {
   uuid: string;
@@ -53,7 +57,7 @@ type RequestType = {
   uuid: string;
   status: StatusType;
   user: UserType;
-  table?: Table;
+  table?: TableType;
   totalPrice: number;
   delivered: boolean;
 };
@@ -69,6 +73,8 @@ export function ViewRequest() {
   useTitle("SkyDrinks - Visualizar pedido");
 
   const { userInfo } = useContext(AuthContext);
+  const { updateRequest: updateRequestView } =
+    useContext(WebSocketContext);
 
   const params = useParams();
 
@@ -123,6 +129,12 @@ export function ViewRequest() {
 
     return () => setLoading(false);
   }, [params, loading, navigate, location, redirect]);
+
+  useEffect(() => {
+    if (updateRequestView) {
+      setLoading(true);
+    }
+  }, [updateRequestView]);
 
   function updateRequest(request: UpdatedRequest) {
     setRequestFound({ ...requestFound, ...request });
@@ -222,7 +234,7 @@ export function ViewRequest() {
     const hasPermission = isStaff || isRequestOwner;
 
     const ownerCannotCancel =
-      isRequestOwner && requestFound.status === "FINISHED";
+      isRequestOwner && requestFound.status === "FINISHED" && !isStaff;
 
     const invalidFlags =
       requestFound.status === "CANCELED" ||
@@ -302,7 +314,7 @@ export function ViewRequest() {
 
                   <QRCodeGenerator text={window.location.href} />
 
-                  <p className={styles.qrcodeWarn}>
+                  <p className={styles.warnMessage}>
                     Cuidado! Apenas compartilhe o QRCode do pedido com pessoas
                     que você confia. Isso é o que garante para nossos
                     funcionários que quem o possuí tem autorização para receber
@@ -335,14 +347,25 @@ export function ViewRequest() {
               {getStatusBadge(requestFound.status)}
             </div>
 
-            <p>
-              O pedido
-              <span className={styles.bold}>
-                {!requestFound.delivered
-                  ? " ainda não foi entregue."
-                  : " já foi entregado."}
-              </span>
-            </p>
+            {requestFound.status === "FINISHED" && !requestFound.delivered && (
+              <p className={styles.warnMessage}>
+                {requestFound.table
+                  ? `Seu pedido será entregue na mesa n° ${requestFound.table?.number}!`
+                  : "Vá pegar seu pedido no balcão."}
+              </p>
+            )}
+
+            {requestFound.status === "CANCELED" && (
+              <p className={styles.warnMessage}>
+                Vá até o balcão para mais informações sobre o cancelamento.
+              </p>
+            )}
+
+            {requestFound.status === "FINISHED" && requestFound.delivered && (
+              <p className={styles.warnMessage}>
+                O pedido já foi entregado.
+              </p>
+            )}
 
             <p>
               Pedido realizado em{" "}

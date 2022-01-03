@@ -15,6 +15,7 @@ import routes from "src/routes";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { showNotification } from "src/utils/showNotification";
+import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";
 
@@ -39,7 +40,8 @@ const { confirm } = Modal;
 export function FinalizeRequest() {
   useTitle("SkyDrinks - Finalizar Pedido");
 
-  const { request, setRequest, clearRequest } = useContext(RequestContext);
+  const { request, setRequest, clearRequest, changeTable } =
+    useContext(RequestContext);
 
   const [loading, setLoading] = useState(false);
 
@@ -168,6 +170,11 @@ export function FinalizeRequest() {
             </div>
           );
         })}
+      </div>
+
+      <div className={styles.table}>
+        <p>Mesa em que você se encontra:</p>
+        <FetchTables defaultTable={request.table} onChange={changeTable} />
       </div>
 
       <div className={styles.warnMessage}>

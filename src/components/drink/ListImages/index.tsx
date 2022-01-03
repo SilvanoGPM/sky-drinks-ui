@@ -147,11 +147,12 @@ export function ListImages() {
           loading={loading}
           pagination={{
             current: pagination.page + 1,
-            defaultCurrent: pagination.page + 1,
-            defaultPageSize: pagination.size,
+            pageSize: pagination.size,
             onChange: handlePaginationChange,
             total: data.totalElements,
             hideOnSinglePage: true,
+            responsive: true,
+            showSizeChanger: false,
           }}
           dataSource={data.content}
           renderItem={({ drinks, image }) => {

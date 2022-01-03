@@ -19,11 +19,14 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-type Table = {};
+type TableType = {
+  uuid: string;
+  number: number;
+};
 
 type RequestType = {
   drinks: DrinkType[];
-  table?: Table;
+  table?: TableType;
 };
 
 type RequestContextProps = {
@@ -31,6 +34,7 @@ type RequestContextProps = {
   addDrink: (drink: DrinkType) => void;
   clearRequest: () => void;
   setRequest: (request: RequestType) => void;
+  changeTable: (table?: TableType) => void;
 };
 
 export const RequestContext = createContext<RequestContextProps>(

@@ -12,6 +12,18 @@ type TableToUpdate = {
 };
 
 const tablesEndpoints = {
+  async getAllTables(size = 100) {
+    try {
+      const { data } = await api.get(
+        `/tables/waiter?size=${size}&sort=number`
+      );
+      return data;
+    } catch (e: any) {
+      throw new Error("Aconteceu um erro ao tentar pegar as mesas!");
+    }
+  },
+
+
   async searchTables(params: string, size = 10) {
     try {
       const { data } = await api.get(

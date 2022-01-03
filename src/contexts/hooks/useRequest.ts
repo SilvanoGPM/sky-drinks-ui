@@ -19,11 +19,14 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-type Table = {};
+type TableType = {
+  uuid: string;
+  number: number;
+};
 
 type RequestType = {
   drinks: DrinkType[];
-  table?: Table;
+  table?: TableType;
 };
 
 export const REQUEST_KEY = "request";
@@ -128,5 +131,9 @@ export function useRequest() {
     }
   }
 
-  return { request, setRequest, addDrink, clearRequest };
+  function changeTable(table?: TableType) {
+    setRequest({ ...request, table });
+  }
+
+  return { request, setRequest, addDrink, clearRequest, changeTable };
 }
