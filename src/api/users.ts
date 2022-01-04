@@ -89,7 +89,8 @@ const usersEndpoints = {
   },
 
   async replaceUser(drink: UserToUpdate) {
-    await this.login(drink.email, drink.password);
+    const userFound = await this.findUserByUUID(drink.uuid);
+    await this.login(userFound.email, drink.password);
 
     const { newPassword, ...drinkToUpdate } = {
       ...drink,
@@ -97,6 +98,11 @@ const usersEndpoints = {
     };
 
     await api.put("/users/user", drinkToUpdate);
+  },
+
+  async toggleUserLockReqeusts(uuid: string) {
+    const { data } = await api.patch(`/users/admin/toggle-lock-requests/${uuid}`);
+    return data;
   },
 
   async deleteUser(uuid: string) {

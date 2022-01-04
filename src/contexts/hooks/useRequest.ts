@@ -64,35 +64,19 @@ export function useRequest() {
       message: "Bebida foi adicionada ao pedido com sucesso!",
       duration: 2,
     });
-
-    if (permissions.isUser) {
-      const userAge = getUserAge(userInfo.birthDay);
-      const isAlcoholicAndUserIsMinor = drink.alcoholic && userAge < MINORITY;
-
-      if (isAlcoholicAndUserIsMinor) {
-        showNotification({
-          type: "info",
-          message: `Usuário não possuí ${MINORITY} anos!`,
-          description: `É preciso ter ${MINORITY} anos ou mais para fazer o pedido de uma bebida alcoólica!`,
-          duration: 2,
-        });
-
-        return;
-      }
-    } else {
-      showNotification({
-        type: "info",
-        message: "Somente usuários podem realizar pedidos!",
-        duration: 2,
-      });
-    }
-  }
-
-  function clearRequest() {
-    setRequest({ drinks: [] });
   }
 
   function addDrink(drink: DrinkType) {
+    if (userInfo.lockRequests) {
+      showNotification({
+        type: "info",
+        message: "Seus pedidos foram temporariamente desabilitados!",
+        duration: 2,
+      });
+
+      return;
+    }
+
     if (permissions.isUser) {
       const userAge = getUserAge(userInfo.birthDay);
       const isAlcoholicAndUserIsMinor = drink.alcoholic && userAge < MINORITY;
@@ -129,6 +113,10 @@ export function useRequest() {
         duration: 2,
       });
     }
+  }
+
+  function clearRequest() {
+    setRequest({ drinks: [] });
   }
 
   function changeTable(table?: TableType) {

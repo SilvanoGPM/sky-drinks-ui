@@ -1,7 +1,9 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  LockOutlined,
   SearchOutlined,
+  UnlockOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
 import {
@@ -49,6 +51,8 @@ type FoundedUserType = {
   role: string;
   birthDay: string;
   cpf: string;
+  lockRequestsTimestamp: string;
+  lockRequests: boolean;
 };
 
 type PaginetedDataType = {
@@ -206,6 +210,39 @@ export function ManageUsers() {
     };
   }
 
+  function toggleLockRequests(uuid: string) {
+    return async () => {
+      try {
+        const { lockRequests, lockRequestsTimestamp } =
+          await endpoints.toggleUserLockReqeusts(uuid);
+
+        const content = data.content.map((item) => {
+          if (item.uuid === uuid) {
+            return { ...item, lockRequests, lockRequestsTimestamp };
+          }
+
+          return item;
+        });
+
+        const message = lockRequests
+          ? "Pedidos do usuário foram bloqueados!"
+          : "Pedidos do usuário foram desbloqueados!";
+
+        showNotification({
+          type: "success",
+          message,
+        });
+
+        setData({ ...data, content });
+      } catch {
+        showNotification({
+          type: "warn",
+          message: "Não foi possível alternar os pedidos do usuário.",
+        });
+      }
+    };
+  }
+
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
   const onBlur = trimInput(form);
 
@@ -245,25 +282,70 @@ export function ManageUsers() {
             createdAt,
             updatedAt,
             uuid,
+            lockRequests,
+            lockRequestsTimestamp,
           }) => (
             <List.Item
               className={styles.item}
               actions={[
-                <Tooltip title="Deletar Usuário" placement="bottom">
+                <Tooltip
+                  key="remove"
+                  title="Deletar usuário"
+                  placement="bottom"
+                >
                   <Popconfirm
-                    title="Deletar Usuário?"
+                    title="Deletar usuário?"
                     placement="top"
                     okText="Remover"
                     onConfirm={removeUser(uuid)}
                     cancelText="Cancelar"
                   >
-                    <DeleteOutlined />
+                    <Button
+                      shape="round"
+                      icon={<DeleteOutlined style={{ fontSize: 18 }} />}
+                    />
                   </Popconfirm>
                 </Tooltip>,
-                <Tooltip title="Editar Usuário" placement="bottom">
+                <Tooltip key="edit" title="Editar usuário" placement="bottom">
                   <Link to={routes.EDIT_USER.replace(":uuid", uuid)}>
-                    <EditOutlined style={{ color: "#8c8c8c" }} />
+                    <Button
+                      shape="round"
+                      icon={<EditOutlined style={{ fontSize: 18 }} />}
+                    />
                   </Link>
+                </Tooltip>,
+                <Tooltip
+                  key="block"
+                  title={
+                    lockRequests
+                      ? "Desbloquear pedidos do usuário"
+                      : "Bloquear pedidos do usuário"
+                  }
+                  placement="bottom"
+                >
+                  <Popconfirm
+                    title={
+                      lockRequests
+                        ? "Desbloquear pedidos do usuário?"
+                        : "Bloquear pedidos do usuário?"
+                    }
+                    onConfirm={toggleLockRequests(uuid)}
+                    placement="top"
+                    okText={lockRequests ? "Desbloquear" : "Bloquear"}
+                    cancelText="Cancelar"
+                  >
+                    {lockRequests ? (
+                      <Button
+                        shape="round"
+                        icon={<UnlockOutlined style={{ fontSize: 18 }} />}
+                      />
+                    ) : (
+                      <Button
+                        shape="round"
+                        icon={<LockOutlined style={{ fontSize: 18 }} />}
+                      />
+                    )}
+                  </Popconfirm>
                 </Tooltip>,
               ]}
             >
@@ -301,6 +383,15 @@ export function ManageUsers() {
                     {formatDatabaseDate(updatedAt)}
                   </span>
                 </p>
+
+                {lockRequests && (
+                  <p>
+                    Usuário bloqueado em:{" "}
+                    <span className={styles.bold}>
+                      {formatDatabaseDate(lockRequestsTimestamp)}
+                    </span>
+                  </p>
+                )}
               </div>
             </List.Item>
           )}
@@ -314,7 +405,7 @@ export function ManageUsers() {
               style={{ minWidth: 50, minHeight: 50 }}
               shape="circle"
               type="primary"
-              icon={<UserAddOutlined style={{ fontSize: 25 }} />}
+              icon={<UserAddOutlined style={{ fontSize: 18 }} />}
             />
           </Link>
         </Tooltip>

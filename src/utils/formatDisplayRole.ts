@@ -1,5 +1,11 @@
-export function formatDisplayRole(role: string = "") {
-  const lastRole = role.split(",").pop() || "";
+const roles = new Map<string, string>();
 
-  return lastRole.slice(0, 1).toUpperCase() + lastRole.slice(1).toLocaleLowerCase();
+roles.set("USER", "Usuário");
+roles.set("BARMEN", "Barmen");
+roles.set("WAITER", "Garçom");
+roles.set("ADMIN", "Admin");
+
+export function formatDisplayRole(role: string = "") {
+  const lastRole = role.split(",").pop()?.toUpperCase() || "";
+  return roles.has(lastRole) ? roles.get(lastRole) : "";
 }

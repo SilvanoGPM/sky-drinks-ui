@@ -9,12 +9,14 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import endpoints from "src/api/api";
 import { InputNumberSpinner } from "src/components/custom/InputNumberSpinner";
+import { AuthContext } from "src/contexts/AuthContext";
 import { RequestContext } from "src/contexts/RequestContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { handleError } from "src/utils/handleError";
+import { showNotification } from "src/utils/showNotification";
 import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";
@@ -39,6 +41,8 @@ const { confirm } = Modal;
 
 export function FinalizeRequest() {
   useTitle("SkyDrinks - Finalizar Pedido");
+
+  const { userInfo } = useContext(AuthContext);
 
   const { request, setRequest, clearRequest, changeTable } =
     useContext(RequestContext);
@@ -83,6 +87,15 @@ export function FinalizeRequest() {
   }
 
   function handleCreateRequest() {
+    if (userInfo.lockRequests) {
+      showNotification({
+        type: "info",
+        message: "Seus pedidos foram temporariamente desabilitados",
+      });
+
+      return;
+    }
+
     confirm({
       type: "success",
       title: "Realmente deseja realizar o pedido?",

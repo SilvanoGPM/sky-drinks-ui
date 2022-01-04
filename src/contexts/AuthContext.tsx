@@ -11,6 +11,8 @@ type UserInfoProps = {
   role: string;
   birthDay: string;
   cpf: string;
+  lockRequestsTimestamp: string;
+  lockRequests: boolean;
 };
 
 type LoginProps = { email: string; password: string; remember: boolean };
