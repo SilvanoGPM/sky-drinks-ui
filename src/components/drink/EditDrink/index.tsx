@@ -13,6 +13,7 @@ import {
   Form,
   Input,
   InputNumber,
+  Modal,
   Select,
   Spin,
   Switch,
@@ -28,6 +29,7 @@ import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { useFavicon } from "src/hooks/useFavicon";
 import { isUUID } from "src/utils/isUUID";
+import { trimInput } from "src/utils/trimInput";
 
 type DrinkToCreate = {
   volume: number;
@@ -52,6 +54,8 @@ type DrinkType = {
   additionalList: string[];
   alcoholic: boolean;
 };
+
+const { confirm } = Modal;
 
 export function EditDrink() {
   useTitle("SkyDrinks - Editar bebida");
@@ -102,33 +106,42 @@ export function EditDrink() {
     }
   }, [drinkLoading, params, navigate]);
 
-  async function handleFormFinish(values: DrinkToCreate) {
-    try {
-      setEditLoading(true);
+  function handleFormFinish(values: DrinkToCreate) {
+    async function update() {
+      try {
+        setEditLoading(true);
 
-      await endpoints.replaceDrink({
-        ...values,
-        uuid: params.uuid || "",
-        picture: image,
-        additional: values.additional
-          ? values.additional.join(";").toLowerCase()
-          : "",
-      });
+        await endpoints.replaceDrink({
+          ...values,
+          uuid: params.uuid || "",
+          picture: image || drink.picture.split("/").pop(),
+          additional: values.additional
+            ? values.additional.join(";").toLowerCase()
+            : "",
+        });
 
-      showNotification({
-        type: "success",
-        message: "Bebida atualizada com sucesso!",
-      });
+        showNotification({
+          type: "success",
+          message: "Bebida atualizada com sucesso!",
+        });
 
-      navigate(`/${routes.MANAGE_DRINKS}`);
-    } catch (e: any) {
-      showNotification({
-        type: "error",
-        message: "Aconteceu um erro ao tentar atualizar!",
-      });
-    } finally {
-      setEditLoading(false);
+        navigate(`/${routes.MANAGE_DRINKS}`);
+      } catch (e: any) {
+        showNotification({
+          type: "error",
+          message: "Aconteceu um erro ao tentar atualizar!",
+        });
+      } finally {
+        setEditLoading(false);
+      }
     }
+
+    confirm({
+      title: "Tem certeza que deseja atualizar essa bebida?",
+      okText: "Sim",
+      cancelText: "Não",
+      onOk: update,
+    });
   }
 
   function dummyRequest({ file, onSuccess }: any) {
@@ -148,6 +161,8 @@ export function EditDrink() {
 
     clearImage();
   }
+
+  const onBlur = trimInput(form);
 
   return (
     <div className={styles.container}>
@@ -211,6 +226,7 @@ export function EditDrink() {
             <Form.Item
               name="name"
               label="Nome"
+              hasFeedback
               rules={[
                 { required: true, message: "Insira o nome da bebida" },
                 {
@@ -220,11 +236,11 @@ export function EditDrink() {
                 },
               ]}
             >
-              <Input />
+              <Input onBlur={onBlur} />
             </Form.Item>
 
             <Form.Item name="description" label="Descrição">
-              <Input.TextArea />
+              <Input.TextArea onBlur={onBlur} />
             </Form.Item>
 
             <Form.Item
@@ -241,6 +257,7 @@ export function EditDrink() {
             <Form.Item
               name="price"
               label="Preço"
+              hasFeedback
               rules={[
                 {
                   type: "number",
@@ -254,13 +271,14 @@ export function EditDrink() {
                 },
               ]}
             >
-              <InputNumber addonBefore="R$" />
+              <InputNumber decimalSeparator="," addonBefore="R$" />
             </Form.Item>
 
             <Form.Item
               name="volume"
               label="Volume"
               tooltip="A quantidade em mililitros dessa bebida"
+              hasFeedback
               rules={[
                 { required: true, message: "Insira o volume da bebida" },
                 {

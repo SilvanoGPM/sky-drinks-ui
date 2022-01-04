@@ -42,7 +42,6 @@ export function Login() {
         message: e.message,
       });
     }
-
   }
 
   if (authenticated) {
@@ -65,8 +64,10 @@ export function Login() {
             initialValues={{ remember: true }}
           >
             <Form.Item
+              hasFeedback
               label="Email"
               name="email"
+              validateTrigger="onBlur"
               rules={[
                 {
                   required: true,
@@ -81,6 +82,7 @@ export function Login() {
             <Form.Item
               label="Senha"
               name="password"
+              hasFeedback
               rules={[{ required: true, message: "Insira sua senha!" }]}
             >
               <Input.Password />
@@ -111,10 +113,7 @@ export function Login() {
         </div>
 
         <figure className={styles.figure}>
-          <img
-            alt="login form"
-            src={loginImage}
-          />
+          <img alt="login form" src={loginImage} />
         </figure>
       </div>
     </div>

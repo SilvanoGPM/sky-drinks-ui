@@ -17,6 +17,7 @@ import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
+import { trimInput } from "src/utils/trimInput";
 
 import styles from "./styles.module.scss";
 
@@ -148,6 +149,8 @@ export function EditUser() {
     }
   }
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       <div className={styles.titleContainer}>
@@ -177,6 +180,7 @@ export function EditUser() {
             <Form.Item
               name="name"
               label="Nome"
+              hasFeedback
               rules={[
                 { required: true, message: "Insira o nome do usuário" },
                 {
@@ -186,24 +190,26 @@ export function EditUser() {
                 },
               ]}
             >
-              <Input />
+              <Input onBlur={onBlur} />
             </Form.Item>
 
             <Form.Item
               name="email"
               label="Email"
+              hasFeedback
               rules={[
                 { required: true, message: "Insira o email do usuário" },
                 { type: "email", message: "Insira um email válido" },
               ]}
             >
-              <Input />
+              <Input onBlur={onBlur} />
             </Form.Item>
 
             <Form.Item
               name="password"
               label="Senha"
               tooltip="Digite a senha para confimar as alterações"
+              hasFeedback
               rules={[{ required: true, message: "Insira a senha do usuário" }]}
             >
               <Input.Password />
@@ -213,6 +219,7 @@ export function EditUser() {
               name="newPassword"
               label="Nova senha"
               tooltip="Deixe em branco caso não queria alterar a senha"
+              hasFeedback
               rules={[
                 {
                   min: 8,
@@ -226,6 +233,7 @@ export function EditUser() {
             <Form.Item
               name="cpf"
               label="CPF"
+              hasFeedback
               rules={[
                 { required: true, message: "Insira o CPF do usuário" },
                 {
@@ -240,6 +248,7 @@ export function EditUser() {
             <Form.Item
               name="birthDay"
               label="Data de nascimento"
+              hasFeedback
               rules={[
                 {
                   required: true,
@@ -254,6 +263,7 @@ export function EditUser() {
               <Form.Item
                 name="role"
                 label="Tipo"
+                hasFeedback
                 rules={[
                   { required: true, message: "Escolha o tipo do usuário" },
                 ]}

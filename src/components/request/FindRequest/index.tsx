@@ -15,8 +15,10 @@ export function FindRequest() {
   const navigate = useNavigate();
 
   function handleSearch(uuid: string) {
-    if (isUUID(uuid)) {
-      navigate(`/${routes.VIEW_REQUEST.replace(":uuid", uuid)}`, {
+    const trimUUID = uuid.trim();
+
+    if (isUUID(trimUUID)) {
+      navigate(`/${routes.VIEW_REQUEST.replace(":uuid", trimUUID)}`, {
         state: { path: routes.FIND_REQUEST },
       });
     } else {

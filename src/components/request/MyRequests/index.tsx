@@ -34,6 +34,7 @@ import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
+import { trimInput } from "src/utils/trimInput";
 
 type DrinkType = {
   uuid: string;
@@ -259,6 +260,8 @@ export function MyRequests() {
   const imageWidth = window.innerWidth > 700 ? 200 : 100;
   const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       <div>
@@ -393,17 +396,28 @@ export function MyRequests() {
           </Form.Item>
 
           <Form.Item label="Preço" name="price">
-            <Slider range max={1000} tipFormatter={(value) => `R$ ${value}`} />
+            <Slider
+              range={{ draggableTrack: true }}
+              min={1}
+              max={1000}
+              tipFormatter={(value) => `R$ ${value}`}
+              marks={{
+                1: "R$ 1",
+                250: "R$ 250",
+                500: "R$ 500",
+                1000: "R$ 1000",
+              }}
+            />
           </Form.Item>
 
           <Divider orientation="left">Bebida</Divider>
 
           <Form.Item label="Nome da bebida" name="drinkName">
-            <Input placeholder="ex: Blood Mary" />
+            <Input onBlur={onBlur} placeholder="ex: Blood Mary" />
           </Form.Item>
 
           <Form.Item label="Descrição da bebida" name="drinkDescription">
-            <Input.TextArea placeholder="ex: Drink Refrescante" />
+            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
           </Form.Item>
 
           <Form.Item

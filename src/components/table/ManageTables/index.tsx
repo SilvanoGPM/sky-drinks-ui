@@ -485,7 +485,7 @@ export function ManageTables() {
 
           <Form.Item label="Assentos" name="seats">
             <Slider
-              range
+              range={{ draggableTrack: true }}
               min={1}
               max={50}
               tipFormatter={(value) =>

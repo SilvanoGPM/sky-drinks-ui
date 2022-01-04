@@ -34,6 +34,7 @@ import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
+import { trimInput } from "src/utils/trimInput";
 
 type DrinkType = {
   uuid: string;
@@ -282,6 +283,8 @@ export function SearchRequests() {
   const imageWidth = window.innerWidth > 700 ? 200 : 100;
   const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       <div>
@@ -416,31 +419,42 @@ export function SearchRequests() {
           </Form.Item>
 
           <Form.Item label="Preço" name="price">
-            <Slider range max={1000} tipFormatter={(value) => `R$ ${value}`} />
+            <Slider
+              range={{ draggableTrack: true }}
+              min={0}
+              max={1000}
+              tipFormatter={(value) => `R$ ${value}`}
+              marks={{
+                1: "R$ 1",
+                250: "R$ 250",
+                500: "R$ 500",
+                1000: "R$ 1000",
+              }}
+            />
           </Form.Item>
 
           <Divider orientation="left">Bebida</Divider>
 
           <Form.Item label="Nome da bebida" name="drinkName">
-            <Input placeholder="ex: Blood Mary" />
+            <Input onBlur={onBlur} placeholder="ex: Blood Mary" />
           </Form.Item>
 
           <Form.Item label="Descrição da bebida" name="drinkDescription">
-            <Input.TextArea placeholder="ex: Drink Refrescante" />
+            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
           </Form.Item>
 
           <Divider orientation="left">Usuário</Divider>
 
           <Form.Item label="Nome do usuário" name="userName">
-            <Input placeholder="ex: Roger" />
+            <Input onBlur={onBlur} placeholder="ex: Roger" />
           </Form.Item>
 
           <Form.Item label="Email do usuário" name="userEmail">
-            <Input placeholder="ex: roger@mail.com" />
+            <Input onBlur={onBlur} placeholder="ex: roger@mail.com" />
           </Form.Item>
 
           <Form.Item label="CPF do usuário" name="userCpf">
-            <Input placeholder="ex: 660.382.138-99" />
+            <Input onBlur={onBlur} placeholder="ex: 660.382.138-99" />
           </Form.Item>
 
           <Form.Item

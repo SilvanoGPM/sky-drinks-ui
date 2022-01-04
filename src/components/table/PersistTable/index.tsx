@@ -60,11 +60,21 @@ export function PersistTable({
           seats,
         }}
       >
-        <Form.Item name="number" label="Número" rules={[{ required: true }]}>
+        <Form.Item
+          name="number"
+          label="Número"
+          hasFeedback
+          rules={[{ required: true }]}
+        >
           <InputNumber min={1} />
         </Form.Item>
 
-        <Form.Item name="seats" label="Assentos" rules={[{ required: true }]}>
+        <Form.Item
+          name="seats"
+          label="Assentos"
+          hasFeedback
+          rules={[{ required: true }]}
+        >
           <InputNumber min={1} max={50} />
         </Form.Item>
       </Form>

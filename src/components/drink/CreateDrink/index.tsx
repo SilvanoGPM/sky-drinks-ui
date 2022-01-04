@@ -23,6 +23,7 @@ import { showNotification } from "src/utils/showNotification";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useFavicon } from "src/hooks/useFavicon";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { trimInput } from "src/utils/trimInput";
 
 type DrinkToCreate = {
   volume: number;
@@ -98,6 +99,8 @@ export function CreateDrink() {
     setImage(undefined);
   }
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       {created ? (
@@ -148,8 +151,10 @@ export function CreateDrink() {
               <Form.Item
                 name="name"
                 label="Nome"
+                hasFeedback
+                validateTrigger="onBlur"
                 rules={[
-                  { required: true, message: "Insira o nome da bebida" },
+                  { required: true, message: "Insira o nome da bebida", whitespace: false },
                   {
                     min: 3,
                     max: 100,
@@ -157,11 +162,11 @@ export function CreateDrink() {
                   },
                 ]}
               >
-                <Input />
+                <Input onBlur={onBlur} />
               </Form.Item>
 
               <Form.Item name="description" label="Descrição">
-                <Input.TextArea />
+                <Input.TextArea onBlur={onBlur} />
               </Form.Item>
 
               <Form.Item
@@ -178,6 +183,7 @@ export function CreateDrink() {
               <Form.Item
                 name="price"
                 label="Preço"
+                hasFeedback
                 rules={[
                   {
                     type: "number",
@@ -198,6 +204,7 @@ export function CreateDrink() {
                 name="volume"
                 label="Volume"
                 tooltip="A quantidade em mililitros dessa bebida"
+                hasFeedback
                 rules={[
                   { required: true, message: "Insira o volume da bebida" },
                   {

@@ -23,6 +23,7 @@ import endpoints from "src/api/api";
 
 import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
+import { trimInput } from "src/utils/trimInput";
 
 type SearchDrinkForm = {
   name: string;
@@ -178,6 +179,8 @@ export function SearchDrinks() {
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
   const cardWidth = window.innerWidth <= 400 ? 280 : 200;
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Pesquisar bebida</h2>
@@ -252,11 +255,11 @@ export function SearchDrinks() {
           <Divider orientation="left">Geral</Divider>
 
           <Form.Item label="Nome" name="name">
-            <Input placeholder="ex: Blood Mary" />
+            <Input onBlur={onBlur} placeholder="ex: Blood Mary" />
           </Form.Item>
 
           <Form.Item label="Descrição" name="description">
-            <Input.TextArea placeholder="ex: Drink Refrescante" />
+            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
           </Form.Item>
 
           <Form.Item label="Tipo da bebida" name="alcoholic">
@@ -268,15 +271,31 @@ export function SearchDrinks() {
           </Form.Item>
 
           <Form.Item label="Preço" name="price">
-            <Slider range tipFormatter={(value) => `R$ ${value}`} max={1000} />
+            <Slider
+              range={{ draggableTrack: true }}
+              tipFormatter={(value) => `R$ ${value}`}
+              min={1}
+              max={1000}
+              marks={{
+                1: "R$ 1",
+                250: "R$ 250",
+                500: "R$ 500",
+                1000: "R$ 1000",
+              }}
+            />
           </Form.Item>
 
           <Form.Item label="Volume" name="volume">
             <Slider
-              range
+              range={{ draggableTrack: true }}
               min={100}
               max={4000}
               tipFormatter={(value) => `${value}ml`}
+              marks={{
+                100: "100 ml",
+                2000: "2000 ml",
+                4000: "4000 ml",
+              }}
             />
           </Form.Item>
 

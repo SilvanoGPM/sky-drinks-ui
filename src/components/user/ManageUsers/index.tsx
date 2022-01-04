@@ -38,6 +38,7 @@ import { formatDisplayRole } from "src/utils/formatDisplayRole";
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { showNotification } from "src/utils/showNotification";
+import { trimInput } from "src/utils/trimInput";
 
 type FoundedUserType = {
   uuid: string;
@@ -174,6 +175,7 @@ export function ManageUsers() {
   }
 
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
+  const onBlur = trimInput(form);
 
   return (
     <div className={styles.container}>
@@ -304,7 +306,7 @@ export function ManageUsers() {
           <Divider orientation="left">Geral</Divider>
 
           <Form.Item label="Nome" name="name">
-            <Input placeholder="ex: Roger" />
+            <Input onBlur={onBlur} placeholder="ex: Roger" />
           </Form.Item>
 
           <Form.Item label="Cargo" name="role">

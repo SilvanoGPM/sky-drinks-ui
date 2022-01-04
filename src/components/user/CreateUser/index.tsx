@@ -12,6 +12,7 @@ import routes from "src/routes";
 import { cpfMask } from "src/utils/cpfMask";
 import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
 import { showNotification } from "src/utils/showNotification";
+import { trimInput } from "src/utils/trimInput";
 
 import styles from "./styles.module.scss";
 
@@ -84,6 +85,8 @@ export function CreateUser() {
     }
   }
 
+  const onBlur = trimInput(form);
+
   return (
     <div className={styles.container}>
       {created ? (
@@ -120,6 +123,7 @@ export function CreateUser() {
               <Form.Item
                 name="name"
                 label="Nome"
+                hasFeedback
                 rules={[
                   { required: true, message: "Insira o nome do usuário" },
                   {
@@ -129,23 +133,25 @@ export function CreateUser() {
                   },
                 ]}
               >
-                <Input />
+                <Input onBlur={onBlur} />
               </Form.Item>
 
               <Form.Item
                 name="email"
                 label="Email"
+                hasFeedback
                 rules={[
                   { required: true, message: "Insira o email do usuário" },
                   { type: "email", message: "Insira um email válido" },
                 ]}
               >
-                <Input />
+                <Input onBlur={onBlur} />
               </Form.Item>
 
               <Form.Item
                 name="password"
                 label="Senha"
+                hasFeedback
                 rules={[
                   {
                     required: true,
@@ -163,6 +169,7 @@ export function CreateUser() {
               <Form.Item
                 name="confirm"
                 label="Confirmar Senha"
+                hasFeedback
                 rules={[
                   { required: true, message: "Confirme a senha do usuário" },
                   ({ getFieldValue }) => ({
@@ -184,6 +191,7 @@ export function CreateUser() {
               <Form.Item
                 name="cpf"
                 label="CPF"
+                hasFeedback
                 rules={[
                   { required: true, message: "Insira o CPF do usuário" },
                   {
@@ -201,6 +209,7 @@ export function CreateUser() {
               <Form.Item
                 name="birthDay"
                 label="Data de nascimento"
+                hasFeedback
                 rules={[
                   {
                     required: true,
@@ -214,6 +223,7 @@ export function CreateUser() {
               <Form.Item
                 name="role"
                 label="Tipo"
+                hasFeedback
                 rules={[
                   { required: true, message: "Escolha o tipo do usuário" },
                 ]}
