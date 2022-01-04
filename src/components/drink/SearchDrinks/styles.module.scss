@@ -41,3 +41,8 @@
 .drawer {
   width: 500px;
 }
+
+.loading {
+  @extend .loading;
+  margin-top: 1rem;
+}

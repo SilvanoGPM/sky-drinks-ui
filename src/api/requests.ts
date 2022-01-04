@@ -1,3 +1,5 @@
+import qs from "query-string";
+
 import { api } from "./api";
 
 type DrinkType = {
@@ -14,103 +16,82 @@ type DrinkType = {
   alcoholic: boolean;
 };
 
-type Table = {};
+type Table = {
+  uuid: string;
+};
 
 type RequestToCreate = {
   drinks: DrinkType[];
   table?: Table;
 };
 
+type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
+
+type RequestSearchParams = {
+  status?: StatusType;
+  drinkName?: string;
+  drinkDescription?: string;
+  createdAt?: string;
+  createdInDateOrAfter?: string;
+  createdInDateOrBefore?: string;
+  price?: number;
+  lessThanOrEqualToTotalPrice?: number;
+  greaterThanOrEqualToTotalPrice?: number;
+  sort?: string;
+  page?: number;
+  size?: number;
+};
+
 const requestsEndpoints = {
   async createRequest(request: RequestToCreate) {
-    try {
-      const { data } = await api.post("/requests/user", request);
-      return data;
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar finalizar o pedido.";
-
-      throw new Error(details);
-    }
+    const { data } = await api.post("/requests/user", request);
+    return data;
   },
 
   async findRequestByUUID(uuid: string) {
-    try {
-      const { data } = await api.get(`/requests/${uuid}`);
-      return data;
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar conectar no servidor.";
-      throw new Error(details);
-    }
+    const { data } = await api.get(`/requests/${uuid}`);
+    return data;
   },
 
-  async getMyRequests(params: string, size: number = 10) {
-    try {
-      const { data } = await api.get(
-        `/requests/user/my-requests?size=${size}&${params}&sort=updatedAt,desc`
-      );
-      return data;
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar conectar no servidor.";
-      throw new Error(details);
-    }
+  async searchRequests(
+    params: RequestSearchParams = {} as RequestSearchParams
+  ) {
+    const searchParams = qs.stringify(params);
+
+    const { data } = await api.get(`/requests/staff/search?${searchParams}`);
+
+    return data;
   },
 
-  async searchRequests(params: string, size: number = 10) {
-    try {
-      const { data } = await api.get(
-        `/requests/staff/search?size=${size}&${params}`
-      );
+  async getMyRequests(params: RequestSearchParams = {} as RequestSearchParams) {
+    const searchParams = qs.stringify(params);
 
-      return data;
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar conectar no servidor.";
-      throw new Error(details);
-    }
-  },
+    const { data } = await api.get(
+      `/requests/user/my-requests?${searchParams}`
+    );
 
-  async cancelRequest(uuid: string) {
-    try {
-      await api.patch(`/requests/all/cancel/${uuid}`);
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar cancelar o pedido.";
-      throw new Error(details);
-    }
-  },
-
-  async finishRequest(uuid: string) {
-    try {
-      await api.patch(`/requests/staff/finish/${uuid}`);
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar finalizar o pedido.";
-      throw new Error(details);
-    }
-  },
-
-  async deliverRequest(uuid: string) {
-    try {
-      await api.patch(`/requests/staff/deliver/${uuid}`);
-    } catch (e: any) {
-      const details =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar entregar o pedido.";
-      throw new Error(details);
-    }
+    return data;
   },
 
   async getProcessingRequests(page = 0, size = 10) {
-    return this.searchRequests(`page=${page}&status=PROCESSING&sort=createdAt`, size)
+    return this.searchRequests({
+      status: "PROCESSING",
+      sort: "createdAt",
+      page,
+      size,
+    });
+  },
+
+  async cancelRequest(uuid: string) {
+    await api.patch(`/requests/all/cancel/${uuid}`);
+  },
+
+  async finishRequest(uuid: string) {
+    await api.patch(`/requests/staff/finish/${uuid}`);
+  },
+
+  async deliverRequest(uuid: string) {
+    await api.patch(`/requests/staff/deliver/${uuid}`);
   },
 };
 

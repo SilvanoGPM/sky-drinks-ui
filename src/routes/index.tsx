@@ -17,15 +17,15 @@ const routes = {
   EDIT_USER: "/users/edit/:uuid",
   MY_ACCOUNT: "my-account",
 
-  FINALIZE_REQUEST: "request/finish",
-  REQUEST_CREATED: "request/created",
-  VIEW_REQUEST: "request/view/:uuid",
-  FIND_REQUEST: "request/find/",
-  MANAGE_REQUESTS: "request/manage",
-  SEARCH_REQUESTS: "request/search",
+  FINALIZE_REQUEST: "requests/finish",
+  REQUEST_CREATED: "requests/created",
+  VIEW_REQUEST: "requests/view/:uuid",
+  FIND_REQUEST: "requests/find/",
+  MANAGE_REQUESTS: "requests/manage",
+  SEARCH_REQUESTS: "requests/search",
   MY_REQUESTS: "my-requests",
 
-  MANANGE_TABLES: "table/manage",
+  MANANGE_TABLES: "tables/manage",
 };
 
 export default routes;

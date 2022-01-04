@@ -38,15 +38,6 @@ export function toFullPictureURI(drink: DrinkType) {
 tokenExpirationInterceptor();
 
 const endpoints = {
-  async getTables() {
-    try {
-      const response = await api.get("/tables/waiter");
-      console.log(response);
-    } catch (e) {
-      console.log(e);
-    }
-  },
-
   ...drinksEndpoints,
   ...usersEndpoints,
   ...filesEndpoints,

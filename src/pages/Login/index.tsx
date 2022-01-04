@@ -12,6 +12,7 @@ import styles from "./styles.module.scss";
 import loginImage from "src/assets/login-image.jpg";
 import { showNotification } from "src/utils/showNotification";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
+import { handleError } from "src/utils/handleError";
 
 type LoginValues = {
   email: string;
@@ -36,11 +37,13 @@ export function Login() {
         type: "success",
         message: "Login efetuado com sucesso!",
       });
-    } catch (e: any) {
-      showNotification({
-        type: "error",
-        message: e.message,
+    } catch (error: any) {
+      handleError({
+        error,
+        fallback: "Não foi possível efetuar o login",
       });
+    } finally {
+
     }
   }
 

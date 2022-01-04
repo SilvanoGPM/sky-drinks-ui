@@ -1,3 +1,5 @@
+import qs from "query-string";
+
 import { api } from "./api";
 
 type TableToCreate = {
@@ -11,72 +13,47 @@ type TableToUpdate = {
   number: number;
 };
 
+type TableSearchParams = {
+  greaterThanOrEqualToSeats?: number;
+  lessThanOrEqualToSeats?: number;
+  occupied?: number;
+  page?: number;
+  size?: number;
+};
+
 const tablesEndpoints = {
-  async getAllTables(size = 100) {
-    try {
-      const { data } = await api.get(
-        `/tables/waiter?size=${size}&sort=number`
-      );
-      return data;
-    } catch (e: any) {
-      throw new Error("Aconteceu um erro ao tentar pegar as mesas!");
-    }
-  },
-
-
-  async searchTables(params: string, size = 10) {
-    try {
-      const { data } = await api.get(
-        `/tables/waiter/search?size=${size}&${params}`
-      );
-      return data;
-    } catch (e: any) {
-      throw new Error("Aconteceu um erro ao tentar pesquisar as mesas!");
-    }
-  },
-
-  async toggleTableOccupied(uuid: string) {
-    try {
-      const { data } = await api.patch(
-        `/tables/waiter/switch-occupied/${uuid}`
-      );
-      return data;
-    } catch (e: any) {
-      throw new Error(
-        "Aconteceu um erro ao tentar inverter a ocupação da mesa!"
-      );
-    }
-  },
-
   async createTable(table: TableToCreate) {
-    try {
-      const { data } = await api.post("/tables/waiter/", table);
-      return data;
-    } catch (e: any) {
-      throw new Error(
-        "Aconteceu um erro ao tentar criar mesa!"
-      );
-    }
+    const { data } = await api.post("/tables/waiter/", table);
+
+    return data;
+  },
+
+  async getAllTables(size = 100) {
+    const { data } = await api.get(`/tables/waiter?size=${size}&sort=number`);
+
+    return data;
+  },
+
+  async searchTables(params: TableSearchParams) {
+    const searchParams = qs.stringify(params);
+
+    const { data } = await api.get(`/tables/waiter/search?${searchParams}`);
+
+    return data;
   },
 
   async updateTable(table: TableToUpdate) {
-    try {
-      await api.put("/tables/waiter/", table);
-    } catch (e: any) {
-      throw new Error(
-        "Aconteceu um erro ao tentar atualizar mesa!"
-      );
-    }
+    await api.put("/tables/waiter/", table);
+  },
+
+  async toggleTableOccupied(uuid: string) {
+    const { data } = await api.patch(`/tables/waiter/switch-occupied/${uuid}`);
+
+    return data;
   },
 
   async deleteTable(uuid: string) {
-    try {
-      await api.delete(`/tables/waiter/${uuid}`);
-    } catch (e: any) {
-      throw new Error(
-        "Aconteceu um erro ao tentar remover mesa!"
-      );
-    }
+    await api.delete(`/tables/waiter/${uuid}`);
   },
 };
 

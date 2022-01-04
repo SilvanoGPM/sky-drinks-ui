@@ -17,6 +17,7 @@ export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");
 
   const { userInfo } = useContext(AuthContext);
+
   const {
     notificationPermission,
     requestNotificationPermission,

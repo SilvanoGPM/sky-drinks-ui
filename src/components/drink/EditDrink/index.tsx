@@ -30,6 +30,7 @@ import { showNotification } from "src/utils/showNotification";
 import { useFavicon } from "src/hooks/useFavicon";
 import { isUUID } from "src/utils/isUUID";
 import { trimInput } from "src/utils/trimInput";
+import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 
 type DrinkToCreate = {
   volume: number;
@@ -80,11 +81,13 @@ export function EditDrink() {
         try {
           const drink = await endpoints.findDrinkByUUID(uuid);
           setDrink(drink);
-        } catch (e: any) {
-          showNotification({
-            type: "warn",
-            message: "Atualização de Bebida",
-            description: e.message,
+        } catch (error: any) {
+          const description = getFieldErrorsDescription(error);
+
+          handleError({
+            error,
+            description,
+            fallback: "Não foi possível encontrar bebida",
           });
 
           navigate(`/${routes.MANAGE_DRINKS}`);

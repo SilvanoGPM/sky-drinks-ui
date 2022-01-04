@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import qs from "query-string";
 
 import {
@@ -13,6 +13,7 @@ import {
   Drawer,
   Empty,
   Pagination,
+  Spin,
 } from "antd";
 
 import { DrinkCard } from "../DrinkCard";
@@ -22,10 +23,10 @@ import { pluralize } from "src/utils/pluralize";
 import endpoints from "src/api/api";
 
 import styles from "./styles.module.scss";
-import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
+import { handleError } from "src/utils/handleError";
 
-type SearchDrinkForm = {
+type SearchDrinkType = {
   name: string;
   description: string;
   alcoholic: string;
@@ -39,13 +40,10 @@ type SearchParameters = {
   description?: string;
   additional?: string;
   alcoholic?: string;
-  price?: string | number;
-  greaterThanOrEqualToPrice?: string | number;
-  lessThanOrEqualToPrice?: string | number;
-  volume?: string | number;
-  greaterThanOrEqualToVolume?: string | number;
-  lessThanOrEqualToVolume?: string | number;
-  page: number;
+  greaterThanOrEqualToPrice?: number;
+  lessThanOrEqualToPrice?: number;
+  greaterThanOrEqualToVolume?: number;
+  lessThanOrEqualToVolume?: number;
 };
 
 type FoundedDrinkType = {
@@ -65,12 +63,19 @@ const { Option } = Select;
 export function SearchDrinks() {
   useTitle("SkyDrinks - Pesquisar bebidas");
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
+
+  const location = useLocation();
+
+  const [params, setParams] = useState<SearchParameters>(
+    {} as SearchParameters
+  );
 
   const [form] = Form.useForm();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [creatingURL, setCreatingURL] = useState(true);
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -83,31 +88,91 @@ export function SearchDrinks() {
   });
 
   useEffect(() => {
-    const params = searchParams.toString();
+    const search = qs.parse(location.search);
 
-    if (params) {
-      searchDrinks(params);
-      const objectParams = qs.parse(params);
+    function getParameter(param: string, mapper: Function = String) {
+      const value = search[param];
+      return value ? mapper(value) : undefined;
+    }
+
+    if (location.search && creatingURL) {
+      setCreatingURL(false);
+
+      setParams({
+        name: getParameter("name"),
+        description: getParameter("description"),
+        additional: getParameter("additional"),
+        alcoholic: getParameter("alcoholic"),
+        greaterThanOrEqualToPrice: getParameter(
+          "greaterThanOrEqualToPrice",
+          Number
+        ),
+        lessThanOrEqualToPrice: getParameter("lessThanOrEqualToPrice", Number),
+        greaterThanOrEqualToVolume: getParameter(
+          "greaterThanOrEqualToVolume",
+          Number
+        ),
+        lessThanOrEqualToVolume: getParameter(
+          "lessThanOrEqualToVolume",
+          Number
+        ),
+      });
+
       setPagination((pagination) => ({
         ...pagination,
-        page: Number(objectParams.page),
+        page: getParameter("page", Number),
       }));
     }
-  }, [searchParams]);
+
+    setLoading(true);
+  }, [location, creatingURL]);
+
+  useEffect(() => {
+    async function loadDrinks() {
+      try {
+        const { page, size } = pagination;
+
+        const data = await endpoints.searchDrink({
+          ...params,
+          page,
+          size,
+        });
+
+        setSearchParams(
+          qs.stringify({
+            ...params,
+            page,
+          })
+        );
+
+        setData(data);
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível pesquisar as bebidas",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (loading) {
+      loadDrinks();
+    }
+  }, [loading, pagination, params, setSearchParams]);
+
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
 
   function clearForm() {
     form.resetFields();
   }
 
   function handlePaginationChange(page: number) {
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
-    });
+    setPagination((pagination) => ({ ...pagination, page: page - 1 }));
 
-    const objectParams = qs.parse(searchParams.toString());
-    objectParams.page = (page - 1).toString();
-
-    makeSearch(qs.stringify(objectParams));
+    setLoading(true);
   }
 
   function openDrawer() {
@@ -118,62 +183,40 @@ export function SearchDrinks() {
     setDrawerVisible(false);
   }
 
-  async function searchDrinks(params: string) {
-    setLoading(true);
+  function getPriceAndVolume(price: number[], volume: number[]) {
+    return {
+      ...(form.isFieldTouched("volume")
+        ? {
+            greaterThanOrEqualToVolume: volume[0],
+            lessThanOrEqualToVolume: volume[1],
+          }
+        : {}),
 
-    try {
-      const drinks = await endpoints.searchDrink(params);
-      setData(drinks);
-    } catch (e: any) {
-      showNotification({
-        type: "warn",
-        message: "Pesquisar Bebidas",
-        description: e.message,
-      });
-    }
-
-    setLoading(false);
+      ...(form.isFieldTouched("price")
+        ? {
+            greaterThanOrEqualToPrice: price[0],
+            lessThanOrEqualToPrice: price[1],
+          }
+        : {}),
+    };
   }
 
-  function makeSearch(params: string) {
-    setSearchParams(params);
+  function handleFormFinish(values: SearchDrinkType) {
+    const { name, description, additional, alcoholic, price, volume } = values;
+
+    const params: SearchParameters = {
+      name,
+      description,
+      alcoholic,
+      additional: additional?.join(";"),
+      ...getPriceAndVolume(price, volume),
+    };
+
     closeDrawer();
-  }
 
-  function handleFormFinish(values: SearchDrinkForm) {
-    const searchObject = {
-      name: values.name || undefined,
-      description: values.description || undefined,
-      additional: values.additional ? values.additional.join(";") : undefined,
-      alcoholic: values.alcoholic,
-      page: 0,
-    } as SearchParameters;
-
-    if (form.isFieldTouched("volume")) {
-      const [minVolume, maxVolume] = values.volume;
-
-      if (minVolume === maxVolume) {
-        searchObject.volume = minVolume;
-      } else {
-        searchObject.greaterThanOrEqualToVolume = minVolume;
-        searchObject.lessThanOrEqualToVolume = maxVolume;
-      }
-    }
-
-    if (form.isFieldTouched("price")) {
-      const [minPrice, maxPrice] = values.price;
-
-      if (minPrice === maxPrice) {
-        searchObject.price = minPrice;
-      } else {
-        searchObject.greaterThanOrEqualToPrice = minPrice;
-        searchObject.lessThanOrEqualToPrice = maxPrice;
-      }
-    }
-
-    const params = qs.stringify(searchObject);
-
-    makeSearch(params);
+    setPagination({ ...pagination, page: 0 });
+    setParams(params);
+    setLoading(true);
   }
 
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
@@ -186,51 +229,62 @@ export function SearchDrinks() {
       <h2 className={styles.title}>Pesquisar bebida</h2>
 
       <div className={styles.fullButton}>
-        <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
+        <Button
+          type="primary"
+          loading={loading}
+          icon={<SearchOutlined />}
+          onClick={openDrawer}
+        >
           Pesquise sua bebida
         </Button>
       </div>
 
-      <div className={styles.drinksWrapper}>
-        {data.content.length !== 0 ? (
-          <>
-            <h2 className={styles.drinksFounded}>
-              {data.totalElements}{" "}
-              {pluralize(
-                data.totalElements,
-                "Bebida encontrada",
-                "Bebidas encontradas"
-              )}
-              :
-            </h2>
-            <ul className={styles.drinksList}>
-              {data.content.map((drink) => (
-                <DrinkCard
-                  key={drink.uuid}
-                  {...drink}
-                  width={cardWidth}
-                  imageHeight={cardWidth}
-                  loading={loading}
-                />
-              ))}
-            </ul>
+      {loading ? (
+        <div className={styles.loading}>
+          <Spin />
+        </div>
+      ) : (
+        <div className={styles.drinksWrapper}>
+          {data.content.length !== 0 ? (
+            <>
+              <h2 className={styles.drinksFounded}>
+                {data.totalElements}{" "}
+                {pluralize(
+                  data.totalElements,
+                  "Bebida encontrada",
+                  "Bebidas encontradas"
+                )}
+                :
+              </h2>
+              <ul className={styles.drinksList}>
+                {data.content.map((drink) => (
+                  <DrinkCard
+                    key={drink.uuid}
+                    {...drink}
+                    width={cardWidth}
+                    imageHeight={cardWidth}
+                    loading={loading}
+                  />
+                ))}
+              </ul>
 
-            <div className={styles.paginationContainer}>
-              <Pagination
-                pageSize={pagination.size}
-                current={pagination.page + 1}
-                total={data.totalElements}
-                hideOnSinglePage
-                onChange={handlePaginationChange}
-                responsive
-                showSizeChanger={false}
-              />
-            </div>
-          </>
-        ) : (
-          <Empty description="Nenhuma bebida foi encontrada!" />
-        )}
-      </div>
+              <div className={styles.paginationContainer}>
+                <Pagination
+                  pageSize={pagination.size}
+                  current={pagination.page + 1}
+                  total={data.totalElements}
+                  hideOnSinglePage
+                  onChange={handlePaginationChange}
+                  responsive
+                  showSizeChanger={false}
+                />
+              </div>
+            </>
+          ) : (
+            <Empty description="Nenhuma bebida foi encontrada!" />
+          )}
+        </div>
+      )}
 
       <Drawer
         width={drawerWidth}
@@ -259,7 +313,10 @@ export function SearchDrinks() {
           </Form.Item>
 
           <Form.Item label="Descrição" name="description">
-            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
+            <Input.TextArea
+              onBlur={onBlur}
+              placeholder="ex: Drink Refrescante"
+            />
           </Form.Item>
 
           <Form.Item label="Tipo da bebida" name="alcoholic">

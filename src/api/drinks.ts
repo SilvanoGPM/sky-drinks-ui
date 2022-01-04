@@ -1,3 +1,5 @@
+import qs from "query-string";
+
 import { api, toFullPictureURI } from "./api";
 import filesEndpoints from "./files";
 
@@ -22,86 +24,70 @@ type DrinkToUpdate = {
   alcoholic: boolean;
 };
 
+type DrinkSearchParams = {
+  name?: string;
+  description?: string;
+  additional?: string;
+  alcoholic?: string;
+  greaterThanOrEqualToPrice?: number;
+  lessThanOrEqualToPrice?: number;
+  greaterThanOrEqualToVolume?: number;
+  lessThanOrEqualToVolume?: number;
+  page?: number;
+  size?: number;
+};
+
 const drinksEndpoints = {
   async createDrink(drink: DrinkToCreate) {
-    try {
-      const { picture } = drink;
+    const { picture } = drink;
 
-      if (picture && picture instanceof File) {
-        const image = await filesEndpoints.uploadImage(picture);
-        drink.picture = image.data.fileName;
-      }
-
-      const response = await api.post("/drinks/barmen", drink);
-      return response.data;
-    } catch (e: any) {
-      throw e;
+    if (picture && picture instanceof File) {
+      const image = await filesEndpoints.uploadImage(picture);
+      drink.picture = image.data.fileName;
     }
+
+    const response = await api.post("/drinks/barmen", drink);
+    return response.data;
   },
 
-  async searchDrink(params: string, size = 6) {
-    try {
-      const { data } = await api.get(`/drinks/search?size=${size}&${params}`);
+  async searchDrink(params: DrinkSearchParams) {
+    const searchParams = qs.stringify(params);
 
-      return {
-        totalElements: data.totalElements,
-        content: data.content.map(toFullPictureURI),
-      };
-    } catch (exception: any) {
-      throw new Error("Aconteceu um erro ao tentar conectar no servidor.");
-    }
+    const { data } = await api.get(`/drinks/search?${searchParams}`);
+
+    return {
+      totalElements: data.totalElements,
+      content: data.content.map(toFullPictureURI),
+    };
   },
 
-  async findDrinkByUUID(uuid?: string) {
-    if (!uuid) {
-      throw new Error("Passe um UUID para a pesquisa!");
-    }
+  async findDrinkByUUID(uuid: string) {
+    const { data } = await api.get(`/drinks/${uuid}`);
 
-    try {
-      const response = await api.get(`/drinks/${uuid}`);
-
-      return toFullPictureURI(response.data);
-    } catch (exception: any) {
-      const details =
-        exception?.response?.data?.details ||
-        "Aconteceu um erro ao tentar conectar no servidor.";
-      throw new Error(details);
-    }
+    return toFullPictureURI(data);
   },
 
   async getLatestDrinks(size: number = 5) {
-    try {
-      const response = await api.get(
-        `/drinks?size=${size}&page=0&sort=createdAt,desc`
-      );
+    const { data } = await api.get(
+      `/drinks?size=${size}&page=0&sort=createdAt,desc`
+    );
 
-      return response.data.content.map(toFullPictureURI);
-    } catch (exception) {
-      throw new Error("Aconteceu um erro ao tentar conectar no servidor.");
-    }
+    return data.content.map(toFullPictureURI);
   },
 
   async replaceDrink(drink: DrinkToUpdate) {
-    try {
-      const { picture } = drink;
+    const { picture } = drink;
 
-      if (picture && picture instanceof File) {
-        const image = await filesEndpoints.uploadImage(picture);
-        drink.picture = image.data.fileName;
-      }
-
-      await api.put("/drinks/barmen", drink);
-    } catch (e: any) {
-      throw e;
+    if (picture && picture instanceof File) {
+      const image = await filesEndpoints.uploadImage(picture);
+      drink.picture = image.data.fileName;
     }
+
+    await api.put("/drinks/barmen", drink);
   },
 
   async deleteDrink(uuid: string) {
-    try {
-      await api.delete(`/drinks/barmen/${uuid}`);
-    } catch (e: any) {
-      throw e;
-    }
+    await api.delete(`/drinks/barmen/${uuid}`);
   },
 };
 

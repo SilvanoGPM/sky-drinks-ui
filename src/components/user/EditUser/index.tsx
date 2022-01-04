@@ -15,6 +15,7 @@ import routes from "src/routes";
 import { cpfMask } from "src/utils/cpfMask";
 import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
@@ -80,11 +81,10 @@ export function EditUser() {
         try {
           const user = await endpoints.findUserByUUID(uuid);
           setUser(user);
-        } catch (e: any) {
-          showNotification({
-            type: "warn",
-            message: "Atualização de Usuário",
-            description: e.message,
+        } catch (error: any) {
+          handleError({
+            error,
+            fallback: "Não foi possível encontrar o usuário pelo UUID",
           });
 
           navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
@@ -132,17 +132,14 @@ export function EditUser() {
       });
 
       navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
-    } catch (e: any) {
-      const errors = e?.response?.data?.fieldErrors;
+    } catch (error: any) {
+      const description = getFieldErrorsDescription(error);
 
-      const message = e?.response?.data?.details || e.message;
-
-      const description = errors ? Object.values(errors).flat().join("\n") : "";
-
-      showNotification({
-        type: "error",
-        message,
+      handleError({
+        error,
+        title: error.login ? "Senha incorreta!" : undefined,
         description,
+        fallback: "Não foi possível editar o usuário",
       });
     } finally {
       setEditLoading(false);

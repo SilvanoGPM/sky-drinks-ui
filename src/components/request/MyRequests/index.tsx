@@ -27,7 +27,6 @@ import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { showNotification } from "src/utils/showNotification";
-import qs from "query-string";
 import styles from "./styles.module.scss";
 import moment from "moment";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
@@ -35,6 +34,7 @@ import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
 import { trimInput } from "src/utils/trimInput";
+import { handleError } from "src/utils/handleError";
 
 type DrinkType = {
   uuid: string;
@@ -74,7 +74,7 @@ type RequestType = {
 };
 
 type RequestSearchType = {
-  status: number;
+  status: StatusType;
   createdAt: any;
   drinkName: string;
   drinkDescription: string;
@@ -82,7 +82,7 @@ type RequestSearchType = {
 };
 
 type RequestParams = {
-  status: number;
+  status: StatusType;
   drinkName: string;
   drinkDescription: string;
   createdAt?: string;
@@ -126,16 +126,20 @@ export function MyRequests() {
   useEffect(() => {
     async function loadRequests() {
       try {
-        const data = await endpoints.getMyRequests(
-          `page=${pagination.page}&${qs.stringify(params)}`,
-          pagination.size
-        );
+        const { page, size } = pagination;
+
+        const data = await endpoints.getMyRequests({
+          ...params,
+          sort: "updatedAt,desc",
+          page,
+          size,
+        });
 
         setData(data);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível pesquisar os pedidos",
         });
       } finally {
         setLoading(false);
@@ -167,10 +171,10 @@ export function MyRequests() {
         const content = data.content.filter((item) => item.uuid !== uuid);
 
         setData({ ...data, content });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível cancelar pedido",
         });
       }
     }
@@ -417,7 +421,10 @@ export function MyRequests() {
           </Form.Item>
 
           <Form.Item label="Descrição da bebida" name="drinkDescription">
-            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
+            <Input.TextArea
+              onBlur={onBlur}
+              placeholder="ex: Drink Refrescante"
+            />
           </Form.Item>
 
           <Form.Item

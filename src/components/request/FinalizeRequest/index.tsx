@@ -14,7 +14,7 @@ import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
-import { showNotification } from "src/utils/showNotification";
+import { handleError } from "src/utils/handleError";
 import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";
@@ -72,10 +72,10 @@ export function FinalizeRequest() {
       navigate(`/${routes.REQUEST_CREATED}`, { state: { uuid } });
 
       clearRequest();
-    } catch (e: any) {
-      showNotification({
-        type: "warn",
-        message: e.message,
+    } catch (error: any) {
+      handleError({
+        error,
+        fallback: "Não foi possível finalizar o pedido",
       });
     } finally {
       setLoading(false);

@@ -11,6 +11,7 @@ import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { handleError } from "src/utils/handleError";
 import { pluralize } from "src/utils/pluralize";
 import { showNotification } from "src/utils/showNotification";
 import styles from "./styles.module.scss";
@@ -85,10 +86,10 @@ export function ManageRequest() {
         );
 
         setData(data);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível carregar pedidos",
         });
       } finally {
         setLoading(false);
@@ -129,10 +130,10 @@ export function ManageRequest() {
           type: "success",
           message: "Pedido foi cancelado com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível cancelar pedido",
         });
       }
     }
@@ -167,10 +168,10 @@ export function ManageRequest() {
           type: "success",
           message: "Pedido foi finalizado com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível finalizar pedido",
         });
       }
     }

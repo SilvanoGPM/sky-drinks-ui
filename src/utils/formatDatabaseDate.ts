@@ -1,16 +1,9 @@
 import moment from "moment";
+
 import "moment/locale/pt-br";
 
-function ofPattern(pattern: string, date: Date) {
-  return pattern
-    .replace("y", `${date.getFullYear().toString().padStart(2, "0")}`)
-    .replace("m", `${date.getMonth().toString().padStart(2, "0")}`)
-    .replace("d", `${date.getDate().toString().padStart(2, "0")}`);
-}
-
 export function formatDatabaseDate(dateStr: string) {
-  const date = new Date(dateStr);
-  return ofPattern("d/m/y", date);
+  return moment(dateStr).format("DD/MM/yyyy");
 }
 
 export function getBirthDayDate(dateStr: string, monthMinus = false) {
@@ -20,11 +13,11 @@ export function getBirthDayDate(dateStr: string, monthMinus = false) {
 }
 
 export function formatBirthDayDate(dateStr: string) {
-  return ofPattern("d/m/y", getBirthDayDate(dateStr));
+  return moment(dateStr).format("DD/MM/yyyy");
 }
 
 export function formatToDatabaseDate(date: Date) {
-  return ofPattern("y-m-d", date);
+  return moment(date).format("yyyy-MM-DD");
 }
 
 export function formatDisplayDate(date: string) {

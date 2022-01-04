@@ -21,9 +21,9 @@ import { TableIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
 import { pluralize } from "src/utils/pluralize";
 import { showNotification } from "src/utils/showNotification";
-import qs from "query-string";
 import styles from "./styles.module.scss";
 import { PersistTable } from "../PersistTable";
+import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 
 type TableType = {
   uuid: string;
@@ -93,18 +93,18 @@ export function ManageTables() {
 
   useEffect(() => {
     async function loadTables() {
+      const { page, size } = pagination;
+
       try {
-        const data = await endpoints.searchTables(
-          `${qs.stringify(params)}&page=${pagination.page}`,
-          pagination.size
-        );
+        const data = await endpoints.searchTables({
+          ...params,
+          page,
+          size,
+        });
 
         setData(data);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
-        });
+      } catch (error: any) {
+        handleError({ error, fallback: "Não foi possível carregar as mesas" });
       } finally {
         setLoading(false);
       }
@@ -143,10 +143,10 @@ export function ManageTables() {
           type: "success",
           message: "Mesa removida com sucesso",
         });
-      } catch (e: any) {
+      } catch {
         showNotification({
           type: "warn",
-          message: e.message,
+          message: "Não foi possível remover mesa",
         });
       } finally {
         setRemoveTableLoading(false);
@@ -195,10 +195,10 @@ export function ManageTables() {
           message,
           duration: 2,
         });
-      } catch (e: any) {
+      } catch {
         showNotification({
           type: "warn",
-          message: e.message,
+          message: "Não foi possível alternar ocupação da mesa",
         });
       }
     }
@@ -282,10 +282,13 @@ export function ManageTables() {
       });
 
       closePersistTable();
-    } catch (e: any) {
-      showNotification({
-        type: "warn",
-        message: e.message,
+    } catch (error: any) {
+      const description = getFieldErrorsDescription(error);
+
+      handleError({
+        error,
+        description,
+        fallback: "Não foi criar mesa",
       });
     } finally {
       setPersistTableLoading(false);
@@ -321,10 +324,13 @@ export function ManageTables() {
       });
 
       closePersistTable();
-    } catch (e: any) {
-      showNotification({
-        type: "warn",
-        message: e.message,
+    } catch (error: any) {
+      const description = getFieldErrorsDescription(error);
+
+      handleError({
+        error,
+        description,
+        fallback: "Não foi atualizar mesa",
       });
     } finally {
       setPersistTableLoading(false);

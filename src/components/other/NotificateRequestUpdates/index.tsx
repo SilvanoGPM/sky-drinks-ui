@@ -113,8 +113,6 @@ export function NotificateRequestUpdates() {
       try {
         const request = await endpoints.findRequestByUUID(modalInfo.uuid);
         setRequest(request);
-      } catch (e: any) {
-        console.log(e);
       } finally {
         setLoading(false);
       }

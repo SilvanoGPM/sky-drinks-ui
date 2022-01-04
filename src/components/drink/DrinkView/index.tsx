@@ -20,6 +20,7 @@ import { isUUID } from "src/utils/isUUID";
 import routes from "src/routes";
 import { AuthContext } from "src/contexts/AuthContext";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import { handleError } from "src/utils/handleError";
 
 type DrinkType = {
   uuid: string;
@@ -60,14 +61,10 @@ export function DrinkView() {
         try {
           const drinkFound = await endpoints.findDrinkByUUID(uuid);
           setDrink(drinkFound);
-        } catch (exception: any) {
-          navigate(routes.HOME);
+        } catch (error: any) {
+          handleError({ error, fallback: "Não foi possível encontrar bebida" })
 
-          showNotification({
-            type: "warn",
-            message: "Visualização de Bebida",
-            description: exception.message,
-          });
+          navigate(routes.HOME);
         } finally {
           setLoading(false);
         }

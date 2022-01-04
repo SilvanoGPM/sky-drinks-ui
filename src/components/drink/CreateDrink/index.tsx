@@ -24,6 +24,7 @@ import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useFavicon } from "src/hooks/useFavicon";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { trimInput } from "src/utils/trimInput";
+import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 
 type DrinkToCreate = {
   volume: number;
@@ -74,14 +75,19 @@ export function CreateDrink() {
       showNotification({
         type: "success",
         message: "Bebida adicionada com sucesso!",
-        description: `Nome: ${drink.name} / Preço: ${formatDisplayPrice(drink.price)}`,
+        description: `Nome: ${drink.name} / Preço: ${formatDisplayPrice(
+          drink.price
+        )}`,
       });
 
       setCreated(true);
-    } catch (e: any) {
-      showNotification({
-        type: "error",
-        message: "Aconteceu um erro ao tentar criar bebida!",
+    } catch (error: any) {
+      const description = getFieldErrorsDescription(error);
+
+      handleError({
+        error,
+        description,
+        fallback: "Aconteceu um erro ao tentar criar bebida!",
       });
 
       form.resetFields();
@@ -154,7 +160,11 @@ export function CreateDrink() {
                 hasFeedback
                 validateTrigger="onBlur"
                 rules={[
-                  { required: true, message: "Insira o nome da bebida", whitespace: false },
+                  {
+                    required: true,
+                    message: "Insira o nome da bebida",
+                    whitespace: false,
+                  },
                   {
                     min: 3,
                     max: 100,

@@ -21,7 +21,6 @@ import {
   Spin,
   Tooltip,
 } from "antd";
-import qs from "query-string";
 
 import { useTitle } from "src/hooks/useTitle";
 import { DrinkCard } from "../DrinkCard";
@@ -32,6 +31,7 @@ import routes from "src/routes";
 import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
+import { handleError } from "src/utils/handleError";
 
 type FoundedDrinkType = {
   uuid: string;
@@ -92,14 +92,19 @@ export function ManageDrinks() {
   useEffect(() => {
     async function loadDrinks() {
       try {
-        const data = await endpoints.searchDrink(
-          `${qs.stringify(params)}&page=${pagination.page}`
-        );
+        const { page, size } = pagination;
+
+        const data = await endpoints.searchDrink({
+          ...params,
+          page,
+          size,
+        });
+
         setData(data);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível pesquisar as bebidas",
         });
       } finally {
         setLoading(false);
@@ -188,7 +193,7 @@ export function ManageDrinks() {
           type: "success",
           message: "Bebida foi removida com sucesso",
         });
-      } catch (e: any) {
+      } catch {
         showNotification({
           type: "error",
           message: "Aconteceu um erro ao tentar deletar a bebida",
@@ -325,7 +330,10 @@ export function ManageDrinks() {
           </Form.Item>
 
           <Form.Item label="Descrição" name="description">
-            <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
+            <Input.TextArea
+              onBlur={onBlur}
+              placeholder="ex: Drink Refrescante"
+            />
           </Form.Item>
 
           <Form.Item label="Tipo da bebida" name="alcoholic">

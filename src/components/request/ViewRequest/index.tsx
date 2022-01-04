@@ -13,6 +13,7 @@ import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+import { handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
 
@@ -103,10 +104,10 @@ export function ViewRequest() {
         try {
           const request = await endpoints.findRequestByUUID(uuid);
           setRequestFound(request);
-        } catch (e: any) {
-          showNotification({
-            type: "warn",
-            message: e.message,
+        } catch (error: any) {
+          handleError({
+            error,
+            fallback: "Não foi possível carregar o pedido",
           });
 
           redirect();
@@ -151,10 +152,10 @@ export function ViewRequest() {
           type: "success",
           message: "Pedido foi cancelado com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível cancelar o pedido",
         });
       }
     }
@@ -179,10 +180,10 @@ export function ViewRequest() {
           type: "success",
           message: "Pedido foi finalizado com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível finalizar o pedido",
         });
       }
     }
@@ -206,10 +207,10 @@ export function ViewRequest() {
           type: "success",
           message: "Pedido foi entregue com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível entregar o pedido",
         });
       }
     }

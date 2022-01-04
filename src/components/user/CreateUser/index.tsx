@@ -11,6 +11,7 @@ import routes from "src/routes";
 
 import { cpfMask } from "src/utils/cpfMask";
 import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
+import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 
@@ -66,20 +67,11 @@ export function CreateUser() {
       });
 
       setCreated(true);
-    } catch (e: any) {
-      const errors = e?.response?.data?.fieldErrors;
+    } catch (error: any) {
+      const description = getFieldErrorsDescription(error);
+      const fallback = "Aconteceu um erro ao tentar criar o usuário";
 
-      const message =
-        e?.response?.data?.details ||
-        "Aconteceu um erro ao tentar criar o usuário";
-
-      const description = errors ? Object.values(errors).flat().join("\n") : "";
-
-      showNotification({
-        type: "error",
-        message,
-        description,
-      });
+      handleError({ error, fallback, description });
     } finally {
       setCreateLoading(false);
     }

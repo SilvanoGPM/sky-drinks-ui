@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import endpoints, { api } from "src/api/api";
-import { showNotification } from "src/utils/showNotification";
+import { handleError } from "src/utils/handleError";
 
 type UserInfoProps = {
   uuid: string;
@@ -31,10 +31,10 @@ export function useAuth() {
 
         setUserInfo(userInfo);
         setAuthenticated(true);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível carregar informação do usuário",
         });
       } finally {
         setAuthLoading(false);
@@ -44,14 +44,16 @@ export function useAuth() {
     const userCredentialsLocal = localStorage.getItem(USER_CREDENTIALS_KEY);
     const userCredentialsSession = sessionStorage.getItem(USER_CREDENTIALS_KEY);
 
-      if (userCredentialsLocal || userCredentialsSession) {
-        const { token } = JSON.parse(userCredentialsLocal || userCredentialsSession || "");
-        api.defaults.headers.common["Authorization"] = token;
-        setToken(token);
-        loadUserInfo();
-      } else {
-        setAuthLoading(false);
-      }
+    if (userCredentialsLocal || userCredentialsSession) {
+      const { token } = JSON.parse(
+        userCredentialsLocal || userCredentialsSession || ""
+      );
+      api.defaults.headers.common["Authorization"] = token;
+      setToken(token);
+      loadUserInfo();
+    } else {
+      setAuthLoading(false);
+    }
 
     return () => setAuthLoading(false);
   }, []);
@@ -73,8 +75,6 @@ export function useAuth() {
       setToken(token);
       setUserInfo(userInfo);
       setAuthenticated(true);
-    } catch (e) {
-      throw e;
     } finally {
       setAuthLoading(false);
     }

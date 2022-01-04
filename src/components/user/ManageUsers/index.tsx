@@ -20,7 +20,6 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import qs from "query-string";
 
 import { useTitle } from "src/hooks/useTitle";
 
@@ -39,6 +38,7 @@ import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
+import { handleError } from "src/utils/handleError";
 
 type FoundedUserType = {
   uuid: string;
@@ -58,8 +58,18 @@ type PaginetedDataType = {
 
 type SearchUserType = {
   name: string;
+  email: string;
+  cpf: string;
   role: string[];
   birthDay: any;
+};
+
+type UserSearchParams = {
+  name?: string;
+  email?: string;
+  cpf?: string;
+  role?: string;
+  birthDay?: string;
 };
 
 const { Option } = Select;
@@ -72,7 +82,9 @@ export function ManageUsers() {
   const [loading, setLoading] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState<UserSearchParams>(
+    {} as UserSearchParams
+  );
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -87,15 +99,35 @@ export function ManageUsers() {
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await endpoints.searchUser(
-          `page=${pagination.page}&${qs.stringify(params)}`,
-          pagination.size
-        );
-        setData(data);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+        const { page, size } = pagination;
+
+        if (params.email) {
+          const content = await endpoints.findUserByEmail(params.email);
+
+          setData({
+            totalElements: content ? 1 : 0,
+            content: [content],
+          });
+        } else if (params.cpf) {
+          const content = await endpoints.findUserByCPF(params.cpf);
+
+          setData({
+            totalElements: content ? 1 : 0,
+            content: [content],
+          });
+        } else {
+          const data = await endpoints.searchUser({
+            ...params,
+            page,
+            size,
+          });
+
+          setData(data);
+        }
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível pesquisar os usuários",
         });
       } finally {
         setLoading(false);
@@ -165,10 +197,10 @@ export function ManageUsers() {
           type: "success",
           message: "Usuário foi removido com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "error",
-          message: "Aconteceu um erro ao tentar remover usuário",
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Aconteceu um erro ao tentar remover usuário",
         });
       }
     };
@@ -309,11 +341,19 @@ export function ManageUsers() {
             <Input onBlur={onBlur} placeholder="ex: Roger" />
           </Form.Item>
 
+          <Form.Item label="Email" name="email">
+            <Input onBlur={onBlur} placeholder="ex: roger@mail.com" />
+          </Form.Item>
+
+          <Form.Item label="CPF" name="cpf">
+            <Input onBlur={onBlur} />
+          </Form.Item>
+
           <Form.Item label="Cargo" name="role">
             <Select mode="multiple">
-              <Option value="USER">User</Option>
+              <Option value="USER">Usuário</Option>
               <Option value="BARMEN">Barmen</Option>
-              <Option value="WAITER">Waiter</Option>
+              <Option value="WAITER">Garçom</Option>
               <Option value="ADMIN">Admin</Option>
             </Select>
           </Form.Item>

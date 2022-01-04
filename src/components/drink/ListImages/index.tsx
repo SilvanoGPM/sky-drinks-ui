@@ -6,6 +6,7 @@ import endpoints, { toFullPictureURI } from "src/api/api";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { handleError } from "src/utils/handleError";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
@@ -97,11 +98,8 @@ export function ListImages() {
           type: "success",
           message: "Imagem foi removida com sucesso!",
         });
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
-        });
+      } catch (error: any) {
+        handleError({ error, fallback: "Não foi possível encontrar as imagens" });
       } finally {
         setLoadingDelete(false);
       }

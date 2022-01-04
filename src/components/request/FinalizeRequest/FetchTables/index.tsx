@@ -1,7 +1,7 @@
 import { Select, Spin } from "antd";
 import { useEffect, useState } from "react";
 import endpoints from "src/api/api";
-import { showNotification } from "src/utils/showNotification";
+import { handleError } from "src/utils/handleError";
 
 const { Option } = Select;
 
@@ -24,10 +24,10 @@ export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
       try {
         const data = await endpoints.getAllTables();
         setTables(data.content);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível carregar mesas",
         });
       } finally {
         setLoading(false);
@@ -58,9 +58,7 @@ export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
       onChange={handleChange}
       defaultValue={defaultTable ? String(defaultTable.number) : "null"}
     >
-      <Option value="null">
-        Nenhuma
-      </Option>
+      <Option value="null">Nenhuma</Option>
       {tables.map(({ number }) => (
         <Option key={number} value={String(number)}>
           Mesa n° {number}

@@ -13,6 +13,7 @@ import drinkPlaceholder from "src/assets/drink-placeholder.png";
 import { showNotification } from "src/utils/showNotification";
 import routes from "src/routes";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
+import { handleError } from "src/utils/handleError";
 
 type LatestDrinkType = {
   uuid: string;
@@ -57,11 +58,10 @@ export function LatestDrinks() {
         }
 
         setLatestDrinks(drinks);
-      } catch (e: any) {
-        showNotification({
-          type: "warn",
-          message: "Últimas Bebidas",
-          description: e.message,
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível pegar as últimas bebidas",
         });
 
         setLatestDrinks([]);
