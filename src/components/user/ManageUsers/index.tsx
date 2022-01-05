@@ -66,6 +66,7 @@ type SearchUserType = {
   cpf: string;
   role: string[];
   birthDay: any;
+  lockRequests: number;
 };
 
 type UserSearchParams = {
@@ -74,6 +75,7 @@ type UserSearchParams = {
   cpf?: string;
   role?: string;
   birthDay?: string;
+  lockRequests?: number;
 };
 
 const { Option } = Select;
@@ -172,6 +174,7 @@ export function ManageUsers() {
         : undefined,
     });
 
+    closeDrawer();
     setLoading(true);
   }
 
@@ -425,6 +428,7 @@ export function ManageUsers() {
           style={{ flex: 1 }}
           name="search-users"
           autoComplete="off"
+          initialValues={{ lockRequests: "-1" }}
         >
           <Divider orientation="left">Geral</Divider>
 
@@ -446,6 +450,14 @@ export function ManageUsers() {
               <Option value="BARMEN">Barmen</Option>
               <Option value="WAITER">Garçom</Option>
               <Option value="ADMIN">Admin</Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Bloqueamento de pedidos" name="lockRequests">
+            <Select>
+              <Option value="1">Bloqueados</Option>
+              <Option value="0">Não bloqueados</Option>
+              <Option value="-1">Ambos</Option>
             </Select>
           </Form.Item>
 

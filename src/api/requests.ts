@@ -87,6 +87,16 @@ const requestsEndpoints = {
     });
   },
 
+  async getMyTopFiveDrinks() {
+    const { data } = await api.get("/requests/user/top-five-drinks");
+    return data;
+  },
+
+  async getTotalOfDrinksGroupedByAlcoholic() {
+    const { data } = await api.get("/requests/user/total-of-drinks-alcoholic");
+    return data;
+  },
+
   async cancelRequest(uuid: string) {
     await api.patch(`/requests/all/cancel/${uuid}`);
   },

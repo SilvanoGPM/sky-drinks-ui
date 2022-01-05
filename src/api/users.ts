@@ -30,6 +30,7 @@ type UserSearchParams = {
   birthDay?: string;
   page?: number;
   size?: number;
+  lockRequests?: number;
 };
 
 const usersEndpoints = {
