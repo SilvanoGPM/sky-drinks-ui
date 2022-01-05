@@ -48,6 +48,7 @@ export function FinalizeRequest() {
     useContext(RequestContext);
 
   const [loading, setLoading] = useState(false);
+  const [allBlocked, setAllBlocked] = useState(false);
 
   const navigate = useNavigate();
 
@@ -60,6 +61,18 @@ export function FinalizeRequest() {
       });
     }
   }, [request, navigate]);
+
+  useEffect(() => {
+    async function loadAllBlocked() {
+      try {
+        const allBlocked = await endpoints.getAllBlocked();
+
+        setAllBlocked(allBlocked);
+      } catch {}
+    }
+
+    loadAllBlocked();
+  }, []);
 
   function requestGroupedToArray(requestGrouped: RequestGrouped) {
     return Object.keys(requestGrouped).reduce((arr, key) => {
@@ -106,6 +119,12 @@ export function FinalizeRequest() {
   }
 
   const drinksGrouped = getDrinksGroupedByUUID(request);
+
+  const lockFinishRequestsMessage = userInfo.lockRequests
+    ? "Seus pedidos foram temporariamente bloqueados."
+    : allBlocked
+    ? "Todos os pedidos foram temporariamente bloqueados."
+    : "";
 
   return (
     <div className={styles.container}>
@@ -195,11 +214,16 @@ export function FinalizeRequest() {
         <p className={styles.italic}>
           Você pode pedir os adicionais na hora de pegar o pedido.
         </p>
+
+        {Boolean(lockFinishRequestsMessage) && (
+          <p className={styles.lockRequests}>{lockFinishRequestsMessage}</p>
+        )}
       </div>
 
       <div>
         <Button
           style={{ width: "100%" }}
+          disabled={userInfo.lockRequests || allBlocked}
           onClick={handleCreateRequest}
           size="large"
           type="primary"

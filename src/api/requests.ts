@@ -53,6 +53,11 @@ const requestsEndpoints = {
     return data;
   },
 
+  async getAllBlocked() {
+    const { data } = await api.get("/requests/admin/all-blocked");
+    return data;
+  },
+
   async searchRequests(
     params: RequestSearchParams = {} as RequestSearchParams
   ) {
@@ -93,6 +98,11 @@ const requestsEndpoints = {
   async deliverRequest(uuid: string) {
     await api.patch(`/requests/staff/deliver/${uuid}`);
   },
+
+  async toggleBlockAllRequests() {
+    const { data } = await api.patch("/requests/admin/toggle-all-blocked");
+    return data;
+  }
 };
 
 export default requestsEndpoints;

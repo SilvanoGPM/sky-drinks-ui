@@ -75,3 +75,16 @@
 .paginationContainer {
   @include centeredElement();
 }
+
+.blockRequests {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d9d9d9;
+
+  p {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    font-style: italic;
+  }
+}
