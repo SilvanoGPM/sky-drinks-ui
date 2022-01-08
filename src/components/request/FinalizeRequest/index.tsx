@@ -74,6 +74,10 @@ export function FinalizeRequest() {
     loadAllBlocked();
   }, []);
 
+  useEffect(() => {
+    return () => setLoading(false);
+  }, []);
+
   function requestGroupedToArray(requestGrouped: RequestGrouped) {
     return Object.keys(requestGrouped).reduce((arr, key) => {
       return [...arr, ...requestGrouped[key]];

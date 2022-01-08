@@ -12,6 +12,8 @@ import styles from "./styles.module.scss";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { getUserAge } from "src/utils/getUserAge";
 import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
+import { Statistics } from "./statistics";
+import { getUserPermissions } from "src/utils/getUserPermissions";
 
 export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");
@@ -24,6 +26,8 @@ export function MyAccount() {
     soundPermission,
     toggleSoundPermission,
   } = useContext(BrowserPermissionsContext);
+
+  const permissions = getUserPermissions(userInfo.role);
 
   return (
     <div className={styles.container}>
@@ -88,6 +92,8 @@ export function MyAccount() {
         </div>
       </div>
 
+      {permissions.isUser && <Statistics />}
+
       <div>
         <Divider orientation="left" style={{ fontSize: "1.5rem" }}>
           Permissões
@@ -100,7 +106,10 @@ export function MyAccount() {
 
         <div className={styles.perm}>
           <p>Permitir notificações:</p>
-          <Switch checked={notificationPermission === "granted"} onClick={requestNotificationPermission} />
+          <Switch
+            checked={notificationPermission === "granted"}
+            onClick={requestNotificationPermission}
+          />
         </div>
       </div>
     </div>

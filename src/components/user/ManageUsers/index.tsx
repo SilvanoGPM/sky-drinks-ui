@@ -94,7 +94,7 @@ export function ManageUsers() {
 
   const [pagination, setPagination] = useState({
     page: 0,
-    size: 2,
+    size: 10,
   });
 
   const [data, setData] = useState<PaginetedDataType>({

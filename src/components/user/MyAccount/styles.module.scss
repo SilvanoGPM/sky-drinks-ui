@@ -1,3 +1,4 @@
+@import "../../../scss/variables";
 @import "../../../scss/shared";
 @import "../../../scss/mixins";
 
@@ -78,15 +79,37 @@
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
   }
+
+  @media #{$mq-medium} {
+    padding-left: 0;
+  }
 }
 
 .perm {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-left: 2rem;
 
   p {
     font-size: 1.2rem;
     margin: 0;
   }
+
+  @media #{$mq-medium} {
+    padding-left: 0;
+  }
+}
+
+.chart {
+  @include centeredElement();
+
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 3rem;
+}
+
+.noRequests {
+  text-align: center;
 }
