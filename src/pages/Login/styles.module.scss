@@ -4,11 +4,19 @@
 .container {
   @include centeredElement();
 
+  padding: 1rem;
   min-height: 100vh;
-  background: #74ebd5;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+  background: #74ebd5; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #acb6e5,
+    #74ebd5
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #acb6e5,
+    #74ebd5
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .formContainer {
@@ -20,20 +28,26 @@
   box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
     rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
 
+  min-width: 700px;
+
   @media #{$mq-medium} {
     max-width: 400px;
+    min-width: 0;
     width: 100%;
   }
 }
 
 .form {
   flex: 1;
-  padding: 1rem;
 }
 
 .figure {
   flex: 1.5;
+  width: 100%;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   img {
     width: 100%;
@@ -45,6 +59,38 @@
   }
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 1rem;
+
+  @media #{$mq-medium} {
+    justify-content: space-between;
+    background-color: #1890ff;
+    color: #ffffff;
+    overflow: hidden;
+  }
+}
+
+.curve {
+  display: none;
+
+  @media #{$mq-medium} {
+    display: block;
+    margin-bottom: -1px;
+  }
+}
+
 .title {
   text-align: center;
+  color: inherit;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
 }

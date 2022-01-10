@@ -93,7 +93,7 @@ export function RequestInfo() {
         <>
           <div className={styles.noRequest}>
             {permissions.isUser || permissions.isGuest ? (
-              <p>Nenhum pedido no momento</p>
+              <p>{permissions.isUser ? "Nenhum pedido no momento" : "Faça login para realizar pedidos"}</p>
             ) : (
               <p className={styles.niceJob}>Bom trabalho!</p>
             )}

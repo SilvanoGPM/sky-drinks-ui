@@ -54,7 +54,7 @@ const requestsEndpoints = {
   },
 
   async getAllBlocked() {
-    const { data } = await api.get("/requests/admin/all-blocked");
+    const { data } = await api.get("/requests/all/all-blocked");
     return data;
   },
 

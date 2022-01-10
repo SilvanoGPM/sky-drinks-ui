@@ -1,6 +1,11 @@
-import { useContext } from "react";
-import { LoginOutlined } from "@ant-design/icons";
-import { Input, Form, Button, Checkbox } from "antd";
+import { useContext, useState } from "react";
+import {
+  LockOutlined,
+  LoginOutlined,
+  MailOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Input, Form, Button, Checkbox, Spin } from "antd";
 import { Navigate, useLocation } from "react-router-dom";
 
 import { AuthContext } from "src/contexts/AuthContext";
@@ -27,6 +32,8 @@ export function Login() {
 
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);
 
+  const [loadingImage, setLoadingImage] = useState(true);
+
   useFlashNotification(routes.LOGIN);
 
   async function handleFormLogin(values: LoginValues) {
@@ -42,9 +49,11 @@ export function Login() {
         error,
         fallback: "Não foi possível efetuar o login",
       });
-    } finally {
-
     }
+  }
+
+  function endImageLoad() {
+    setLoadingImage(false);
   }
 
   if (authenticated) {
@@ -56,11 +65,24 @@ export function Login() {
     <div className={styles.container}>
       <div className={styles.formContainer}>
         <div className={styles.form}>
-          <h1 className={styles.title}>Seja bem vindo!</h1>
+          <div className={styles.header}>
+            <div className={styles.icon}>
+              <UserOutlined />
+            </div>
 
-          <h2 className={styles.subtitle}>Login</h2>
+            <h1 className={styles.title}>Login</h1>
+
+            <svg className={styles.curve} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+              <path
+                fill="#ffffff"
+                fillOpacity="1"
+                d="M0,96L80,80C160,64,320,32,480,58.7C640,85,800,171,960,181.3C1120,192,1280,128,1360,96L1440,64L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
+              ></path>
+            </svg>
+          </div>
 
           <Form
+            style={{ padding: "1rem" }}
             name="login"
             layout="vertical"
             onFinish={handleFormLogin}
@@ -79,7 +101,7 @@ export function Login() {
                 },
               ]}
             >
-              <Input placeholder="joao@mail.com" />
+              <Input prefix={<MailOutlined />} placeholder="joao@mail.com" />
             </Form.Item>
 
             <Form.Item
@@ -88,7 +110,7 @@ export function Login() {
               hasFeedback
               rules={[{ required: true, message: "Insira sua senha!" }]}
             >
-              <Input.Password />
+              <Input.Password prefix={<LockOutlined />} />
             </Form.Item>
 
             <Form.Item name="remember" valuePropName="checked">
@@ -108,6 +130,7 @@ export function Login() {
                 htmlType="submit"
                 loading={authLoading}
                 shape="round"
+                size="large"
               >
                 Entrar
               </Button>
@@ -116,7 +139,8 @@ export function Login() {
         </div>
 
         <figure className={styles.figure}>
-          <img alt="login form" src={loginImage} />
+          {loadingImage && <Spin />}
+          <img alt="" src={loginImage} onLoad={endImageLoad} />
         </figure>
       </div>
     </div>

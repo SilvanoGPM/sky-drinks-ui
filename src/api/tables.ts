@@ -29,7 +29,7 @@ const tablesEndpoints = {
   },
 
   async getAllTables(size = 100) {
-    const { data } = await api.get(`/tables/waiter?size=${size}&sort=number`);
+    const { data } = await api.get(`/tables/all?size=${size}&sort=number`);
 
     return data;
   },

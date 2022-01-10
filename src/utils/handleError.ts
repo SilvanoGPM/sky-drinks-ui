@@ -21,7 +21,10 @@ export function handleError({
   description = "",
 }: HandleErrorProps) {
   const details = error?.response?.data?.details || error.message || fallback;
-  const message = details.length >= maxDetailsChars ? fallback : details;
+  const message =
+    details.length >= maxDetailsChars || details.includes("is undefined")
+      ? fallback
+      : details;
 
   showNotification({
     type: "warn",

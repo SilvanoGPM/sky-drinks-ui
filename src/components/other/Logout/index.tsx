@@ -10,11 +10,13 @@ import routes from "src/routes";
 
 import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
+import { RequestContext } from "src/contexts/RequestContext";
 
 export function Logout() {
   useTitle("SkyDrinks - Sair");
 
   const { handleLogout } = useContext(AuthContext);
+  const { clearRequest, request } = useContext(RequestContext);
 
   const navigate = useNavigate();
 
@@ -23,8 +25,8 @@ export function Logout() {
   }
 
   function logout() {
+    clearRequest();
     handleLogout();
-
 
     navigate(routes.LOGIN);
 
@@ -38,6 +40,10 @@ export function Logout() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h2>Você quer mesmo sair?</h2>
+
+        {Boolean(request.drinks.length) && (
+          <p className={styles.warn}>Seu pedido não foi efetuado, logo, será perdido caso você deslogue.</p>
+        )}
 
         <div className={styles.buttons}>
           <Button
