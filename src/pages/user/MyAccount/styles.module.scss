@@ -1,0 +1,115 @@
+@import "src/scss/variables";
+@import "src/scss/shared";
+@import "src/scss/mixins";
+
+.container {
+  @extend .container;
+  margin-top: 2rem;
+}
+
+.myAccount {
+  background: #74ebd5;
+  background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);
+  background: linear-gradient(to right, #ACB6E5, #74ebd5);
+  padding: 1rem;
+  position: relative;
+
+  .avatar {
+    background: #74ebd5;
+    background: -webkit-linear-gradient(to right, #ACB6E5, #74ebd5);
+    background: linear-gradient(to right, #ACB6E5, #74ebd5);
+    width: 100%;
+    height: 100%;
+    padding: 0.8rem;
+    color: #ffffff;
+
+    &Wrapper {
+      @include centeredElement();
+
+      background: #ffffff;
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      padding: 0.2rem;
+      border-radius: 50%;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  h2, h3 {
+    color: #ffffff;
+    text-align: center;
+  }
+}
+
+.name {
+  @extend %noWrapText;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.divider {
+  position: relative;
+
+  .edit {
+    position: absolute;
+    top: 7px;
+    right: 30px;
+  }
+}
+
+.info {
+  padding-left: 2rem;
+  position: relative;
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  @media #{$mq-medium} {
+    padding-left: 0;
+  }
+}
+
+.perm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 2rem;
+
+  p {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  @media #{$mq-medium} {
+    padding-left: 0;
+  }
+}
+
+.chart {
+  @include centeredElement();
+
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  margin-bottom: 3rem;
+}
+
+.noRequests {
+  text-align: center;
+}

@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import { NavMenu } from "src/components/layout/NavMenu";
 import { NavMenuButton } from "src/components/layout/NavMenuButton";
-import { RequestInfo } from "src/components/request/RequestInfo";
+import { RequestInfo } from "src/pages/request/RequestInfo";
 
 import styles from "./styles.module.scss";
 

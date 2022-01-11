@@ -37,6 +37,7 @@ type RequestSearchParams = {
   price?: number;
   lessThanOrEqualToTotalPrice?: number;
   greaterThanOrEqualToTotalPrice?: number;
+  delivered?: number;
   sort?: string;
   page?: number;
   size?: number;
