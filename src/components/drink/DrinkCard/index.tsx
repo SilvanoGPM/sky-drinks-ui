@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import routes from "src/routes";
 
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import drinkErrorImage from "src/assets/imageError.png";
 import { showNotification } from "src/utils/showNotification";
 import endpoints from "src/api/api";
 import { useContext } from "react";
@@ -46,7 +47,8 @@ export function DrinkCard({
         height={imageHeight}
         width="100%"
         alt={`Drink - ${name}`}
-        src={picture && !picture.endsWith("null") ? picture : drinkPlaceholder}
+        onError={(event) => event.currentTarget.src = drinkErrorImage}
+        src={picture && !picture.endsWith("null") ? `${picture}s` : drinkPlaceholder}
       />
     );
   }
