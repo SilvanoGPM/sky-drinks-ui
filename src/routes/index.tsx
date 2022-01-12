@@ -26,6 +26,8 @@ const routes = {
   MY_REQUESTS: "my-requests",
 
   MANANGE_TABLES: "tables/manage",
+
+  DASHBOARD: "dashboard",
 };
 
 export default routes;

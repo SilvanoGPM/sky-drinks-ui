@@ -1,0 +1,44 @@
+@import "src/scss/shared";
+
+.loading {
+  @extend .loading;
+  height: 100%;
+}
+
+.revenues {
+  max-width: 400px;
+  width: 100%;
+  margin: 1rem auto;
+}
+
+.requestDataChart {
+  margin-top: 3rem;
+}
+
+.requestDataInfo {
+  margin-top: 1rem;
+}
+
+.dataOfDrinks {
+  margin-bottom: 3rem;
+
+  &Container {
+    margin-top: 3rem;
+  }
+}
+
+.selectMonth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+
+  p {
+    margin: 0;
+  }
+
+  .select {
+    max-width: 200px;
+    flex-basis: 50%;
+  }
+}

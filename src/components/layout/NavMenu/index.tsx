@@ -4,6 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import {
   AppstoreOutlined,
+  AreaChartOutlined,
+  DashboardOutlined,
   HomeOutlined,
   LoginOutlined,
   LogoutOutlined,
@@ -169,6 +171,28 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           </SubMenu>
         )}
 
+        {permissions.isAdmin && (
+          <SubMenu
+            className={styles.subMenu}
+            key="subDashboard"
+            icon={<DashboardOutlined style={{ fontSize: 25 }} />}
+            title="Dashboard"
+          >
+            <Menu.Item
+              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              key={routes.MANAGE_USERS}
+            >
+              <Link to={routes.MANAGE_USERS}>Gerenciar Usuários</Link>
+            </Menu.Item>
+            <Menu.Item
+              icon={<AreaChartOutlined style={{ fontSize: 25 }} />}
+              key={routes.DASHBOARD}
+            >
+              <Link to={routes.DASHBOARD}>Gráficos</Link>
+            </Menu.Item>
+          </SubMenu>
+        )}
+
         <SubMenu
           className={styles.subMenu}
           key="subAccount"
@@ -190,15 +214,6 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
               key={routes.MY_ACCOUNT}
             >
               <Link to={routes.MY_ACCOUNT}>Minha Conta</Link>
-            </Menu.Item>
-          )}
-
-          {permissions.isAdmin && (
-            <Menu.Item
-              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key={routes.MANAGE_USERS}
-            >
-              <Link to={routes.MANAGE_USERS}>Gerenciar Usuários</Link>
             </Menu.Item>
           )}
 

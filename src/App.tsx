@@ -33,6 +33,7 @@ import { NotificateRequestUpdates } from "./components/other/NotificateRequestUp
 import { ManageRequest } from "./pages/request/ManageRequests";
 import { SearchRequests } from "./pages/request/SearchRequests";
 import { ManageTables } from "./pages/table/ManageTables";
+import { Dashboard } from "./pages/Dashboard";
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -227,6 +228,15 @@ function App() {
                 requiredPerms={{ type: "and", perms: ["isWaiter"] }}
               >
                 <ManageTables />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.DASHBOARD}
+            element={
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+                <Dashboard />
               </PrivateRoute>
             }
           />
