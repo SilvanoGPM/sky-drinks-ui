@@ -52,7 +52,7 @@ export function Logout() {
             size="large"
             style={{
               color: "#ffffff",
-              outline: "none",
+              borderColor: "#e74c3c",
               backgroundColor: "#e74c3c",
             }}
           >

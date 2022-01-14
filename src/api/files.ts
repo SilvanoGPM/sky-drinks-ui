@@ -12,6 +12,18 @@ const filesEndpoints = {
     });
   },
 
+  async uploadMultipleImages(pictures: File[]) {
+    const formData = new FormData();
+
+    pictures.forEach((picture) => formData.append("files", picture));
+
+    return api.post("/files/barmen/multiple-images", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
   async getAllImages(page = 0, size = 10) {
     const { data } = await api.get(`/files?page=${page}&size=${size}`);
 
