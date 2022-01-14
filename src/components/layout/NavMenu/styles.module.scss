@@ -8,14 +8,10 @@
   &Wrapper {
     position: relative;
     overflow-y: auto;
-    width: $menuWidth;
     transition: 0.15s ease-in-out width;
     background-color: var(--navmenu-background);
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
-
-    @media #{$mq-medium} {
-      width: 0;
-    }
+    width: 0;
 
     &.active {
       width: $menuWidth;
@@ -44,6 +40,10 @@
 
       svg {
         margin-right: 0.5rem;
+      }
+
+      a {
+        color: inherit;
       }
     }
   }

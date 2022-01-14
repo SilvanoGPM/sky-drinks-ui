@@ -18,7 +18,6 @@ import {
   Popconfirm,
   Select,
   Slider,
-  Spin,
   Tooltip,
 } from "antd";
 
@@ -32,6 +31,7 @@ import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
+import { Loading } from "src/components/layout/Loading";
 
 type FoundedDrinkType = {
   uuid: string;
@@ -221,7 +221,7 @@ export function ManageDrinks() {
 
       <div className={styles.drinksWrapper}>
         {loading ? (
-          <Spin />
+          <Loading />
         ) : (
           <>
             {data.content.length !== 0 ? (

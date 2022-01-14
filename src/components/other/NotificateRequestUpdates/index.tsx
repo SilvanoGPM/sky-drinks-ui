@@ -1,8 +1,9 @@
-import { Button, Modal, notification, Spin } from "antd";
+import { Button, Modal, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
 import endpoints from "src/api/api";
+import { Loading } from "src/components/layout/Loading";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useAudio } from "src/hooks/useAudio";
@@ -230,7 +231,7 @@ export function NotificateRequestUpdates() {
     >
       <div className={styles.modalContainer}>
         {loading ? (
-          <Spin />
+          <Loading />
         ) : request.uuid ? (
           <div className={styles.requestInfo}>
             <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>

@@ -1,6 +1,7 @@
-import { Select, Spin } from "antd";
+import { Select } from "antd";
 import { useEffect, useState } from "react";
 import endpoints from "src/api/api";
+import { Loading } from "src/components/layout/Loading";
 import { handleError } from "src/utils/handleError";
 
 const { Option } = Select;
@@ -51,7 +52,7 @@ export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
   }
 
   return loading ? (
-    <Spin />
+    <Loading />
   ) : (
     <Select
       style={{ width: "50%" }}

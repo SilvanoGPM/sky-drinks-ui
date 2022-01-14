@@ -14,15 +14,16 @@ import {
   Input,
   InputNumber,
   Modal,
+  Radio,
+  RadioChangeEvent,
   Select,
-  Spin,
   Switch,
   Upload,
 } from "antd";
 
 import { useTitle } from "src/hooks/useTitle";
 
-import endpoints from "src/api/api";
+import endpoints, { imageToFullURI } from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
@@ -31,6 +32,8 @@ import { useFavicon } from "src/hooks/useFavicon";
 import { isUUID } from "src/utils/isUUID";
 import { trimInput } from "src/utils/trimInput";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
+import { Loading } from "src/components/layout/Loading";
+import { normalizeImage } from "src/utils/imageUtils";
 
 type DrinkToCreate = {
   volume: number;
@@ -57,6 +60,7 @@ type DrinkType = {
 };
 
 const { confirm } = Modal;
+const { Option } = Select;
 
 export function EditDrink() {
   useTitle("SkyDrinks - Editar bebida");
@@ -68,10 +72,16 @@ export function EditDrink() {
 
   const params = useParams();
 
-  const [image, setImage] = useState<File>();
+  const [image, setImage] = useState<File | string>();
+  const [images, setImages] = useState<string[]>([]);
+
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
+
   const [drinkLoading, setDrinkLoading] = useState(true);
+  const [imagesLoading, setImagesLoading] = useState(true);
   const [editLoading, setEditLoading] = useState(false);
+
+  const [useExistsImage, setUseExistsImage] = useState(false);
 
   useEffect(() => {
     const uuid = params.uuid || "";
@@ -108,6 +118,34 @@ export function EditDrink() {
       loadDrink();
     }
   }, [drinkLoading, params, navigate]);
+
+  useEffect(() => {
+    async function loadImages() {
+      try {
+        const files = await endpoints.getAllImagesWithoutPagination();
+
+        setImages(files);
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível carregar as imagens das bebidas",
+        });
+      } finally {
+        setImagesLoading(false);
+      }
+    }
+
+    if (imagesLoading) {
+      loadImages();
+    }
+  }, [imagesLoading]);
+
+  useEffect(() => {
+    return () => {
+      setDrinkLoading(false);
+      setImagesLoading(false);
+    };
+  }, []);
 
   function handleFormFinish(values: DrinkToCreate) {
     async function update() {
@@ -165,6 +203,14 @@ export function EditDrink() {
     clearImage();
   }
 
+  function handleSelectChange(value: string) {
+    setImage(normalizeImage(value));
+  }
+
+  function handleRadioChange(event: RadioChangeEvent) {
+    setUseExistsImage(event.target.value);
+  }
+
   const onBlur = trimInput(form);
 
   return (
@@ -172,11 +218,22 @@ export function EditDrink() {
       <h2 className={styles.title}>Editar Bebida</h2>
 
       {drinkLoading ? (
-        <div className={styles.loading}>
-          <Spin />
-        </div>
+        <Loading />
       ) : (
         <div>
+          <div className={styles.selectImage}>
+            <Radio.Group
+              value={useExistsImage}
+              options={[
+                { label: "Imagem já existente", value: true },
+                { label: "Upar imagem", value: false },
+              ]}
+              onChange={handleRadioChange}
+              optionType="button"
+              buttonStyle="solid"
+            />
+          </div>
+
           <Form
             form={form}
             onFinish={handleFormFinish}
@@ -192,20 +249,43 @@ export function EditDrink() {
             layout="horizontal"
             name="create-drink"
           >
-            <Form.Item name="picture" label="Imagem" valuePropName="fileLists">
-              <Upload
-                maxCount={1}
-                accept="image/png, image/jpeg"
-                onRemove={clearImage}
-                name="picture"
-                listType="picture"
-                customRequest={dummyRequest}
-              >
-                <Button icon={<UploadOutlined />}>Atualizar Imagem</Button>
-              </Upload>
+            <Form.Item
+              name="picture"
+              label="Imagem"
+              {...(!useExistsImage ? { valuePropName: "fileLists" } : {})}
+            >
+              {useExistsImage ? (
+                <Select
+                  onChange={handleSelectChange}
+                  loading={imagesLoading}
+                  disabled={imagesLoading}
+                  size="large"
+                  allowClear
+                >
+                  {images.map((image) => (
+                    <Option key={image} value={image}>
+                      <div className={styles.imageItem}>
+                        <img alt={image} src={imageToFullURI(image)} />
+                        <p title={image}>{image}</p>
+                      </div>
+                    </Option>
+                  ))}
+                </Select>
+              ) : (
+                <Upload
+                  maxCount={1}
+                  accept="image/png, image/jpeg"
+                  onRemove={clearImage}
+                  name="picture"
+                  listType="picture"
+                  customRequest={dummyRequest}
+                >
+                  <Button icon={<UploadOutlined />}>Atualizar Imagem</Button>
+                </Upload>
+              )}
             </Form.Item>
 
-            {drink.picture && !drink.picture.endsWith("null") && !image && (
+            {drink.picture && !drink.picture.endsWith("null") && !image && !useExistsImage && (
               <Form.Item wrapperCol={{ xs: { offset: 0 }, sm: { offset: 4 } }}>
                 <div className={styles.image}>
                   <div className={styles.info}>

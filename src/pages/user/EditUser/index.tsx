@@ -1,11 +1,12 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, Select, Spin } from "antd";
+import { Button, DatePicker, Form, Input, Select } from "antd";
 
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints from "src/api/api";
+import { Loading } from "src/components/layout/Loading";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useFavicon } from "src/hooks/useFavicon";
 
@@ -155,9 +156,7 @@ export function EditUser() {
       </div>
 
       {infoLoading ? (
-        <div className={styles.loading}>
-          <Spin />
-        </div>
+        <Loading />
       ) : (
         <div>
           <Form

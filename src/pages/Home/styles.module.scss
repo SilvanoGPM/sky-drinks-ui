@@ -5,11 +5,12 @@
   height: 100vh;
 }
 
-.drinksContainer {
+.contentContainer {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  position: relative;
 
   @media #{$mq-medium} {
     flex: none;

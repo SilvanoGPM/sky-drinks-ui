@@ -1,6 +1,6 @@
-import { Card, Col, Divider, Empty, Modal, Row, Statistic } from "antd";
+import { Descriptions, Empty, Modal } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import endpoints from "src/api/api";
 import routes from "src/routes";
 
@@ -19,8 +19,12 @@ import { Doughnut } from "react-chartjs-2";
 
 import styles from "./styles.module.scss";
 import { handleError } from "src/utils/handleError";
-import { sum } from "src/utils/sum";
+import { isUUID } from "src/utils/isUUID";
+import { showNotification } from "src/utils/showNotification";
 import { Loading } from "src/components/layout/Loading";
+import { formatDisplayRole } from "src/utils/formatDisplayRole";
+import { getUserAge } from "src/utils/getUserAge";
+import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 
 type TopFiveDrinkType = {
   drinkUUID: string;
@@ -28,9 +32,17 @@ type TopFiveDrinkType = {
   total: number;
 };
 
-type TotalDrinkType = {
-  alcoholic: boolean;
-  total: number;
+type UserProps = {
+  uuid: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  email: string;
+  role: string;
+  birthDay: string;
+  cpf: string;
+  lockRequestsTimestamp: string;
+  lockRequests: boolean;
 };
 
 ChartJS.register(
@@ -45,59 +57,78 @@ ChartJS.register(
 
 const { confirm } = Modal;
 
-export function Statistics() {
-  const [loadingTopFive, setLoadingTopFive] = useState(true);
+export function UserMetrics() {
   const [topFiveDrinks, setTopFiveDrinks] = useState<TopFiveDrinkType[]>([]);
+  const [user, setUser] = useState<UserProps>({} as UserProps);
 
-  const [loadingTotalDrinks, setLoadingTotalDrinks] = useState(true);
-  const [totalDrinks, setTotalDrinks] = useState<TotalDrinkType[]>([]);
+  const [topFiveLoading, setTopFiveLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(true);
 
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
+    const uuid = params.uuid || "";
+
+    if (!isUUID(uuid)) {
+      showNotification({
+        type: "warn",
+        message: "Código de usuário inválido!",
+      });
+
+      navigate(-1);
+    }
+  }, [params, navigate]);
+
+  useEffect(() => {
+    const uuid = params.uuid || "";
+
     async function getData() {
       try {
-        const data = await endpoints.getMyTopFiveDrinks();
+        const data = await endpoints.getUserTopDrinks(uuid);
         setTopFiveDrinks(data);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar as suas bebidas mais pedidas",
+          fallback:
+            "Não foi possível carregar as bebidas mais pedidas do usuário",
         });
       } finally {
-        setLoadingTopFive(false);
+        setTopFiveLoading(false);
       }
     }
 
-    if (loadingTopFive) {
+    if (topFiveLoading) {
       getData();
     }
-  }, [loadingTopFive]);
+  }, [topFiveLoading, params]);
 
   useEffect(() => {
-    async function getData() {
+    const uuid = params.uuid || "";
+
+    async function loadUser() {
       try {
-        const data = await endpoints.getTotalOfDrinksGroupedByAlcoholic();
-        setTotalDrinks(data);
+        const user = await endpoints.findUserByUUID(uuid);
+        setUser(user);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar o seu total de bebidas",
+          fallback: "Não foi possível carregar as informações do usuário",
         });
       } finally {
-        setLoadingTotalDrinks(false);
+        setUserLoading(false);
       }
     }
 
-    if (loadingTotalDrinks) {
-      getData();
+    if (userLoading) {
+      loadUser();
     }
-  }, [loadingTotalDrinks]);
+  }, [userLoading, params]);
 
   useEffect(() => {
     return () => {
-      setLoadingTopFive(false);
-      setLoadingTotalDrinks(false);
+      setTopFiveLoading(false);
+      setUserLoading(false);
     };
   }, []);
 
@@ -114,23 +145,35 @@ export function Statistics() {
     });
   }
 
-  function toTotal(n: TotalDrinkType) {
-    return n.total;
-  }
-
-  const hasRequests =
-    Boolean(topFiveDrinks.length) && Boolean(totalDrinks.length);
+  const hasRequests = Boolean(topFiveDrinks.length);
 
   return (
-    <>
-      <Divider orientation="left" style={{ fontSize: "1.5rem" }}>
-        Estatísticas
-      </Divider>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Métricas</h2>
+
+      {userLoading ? (
+        <Loading />
+      ) : (
+        <Descriptions
+          title={<h3 className={styles.infoTitle}>Informações</h3>}
+          bordered
+          column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm:1, xs: 1 }}
+        >
+          <Descriptions.Item label="Nome">{user.name}</Descriptions.Item>
+          <Descriptions.Item label="Idade">{getUserAge(user.birthDay)} Anos</Descriptions.Item>
+          <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
+          <Descriptions.Item label="CPF">{user.cpf}</Descriptions.Item>
+          <Descriptions.Item label="Cargo">
+            {formatDisplayRole(user.role)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Pedidos">{`${user.lockRequests ? `Bloqueados em ${formatDisplayDate(user.lockRequestsTimestamp)}` : "Não bloqueados"}`}</Descriptions.Item>
+        </Descriptions>
+      )}
 
       {hasRequests ? (
         <>
           <div className={styles.chart}>
-            {loadingTopFive ? (
+            {topFiveLoading ? (
               <Loading />
             ) : (
               <Doughnut
@@ -138,7 +181,7 @@ export function Statistics() {
                   plugins: {
                     title: {
                       display: true,
-                      text: "Suas bebidas mais pedidas",
+                      text: "Bebidas mais pedidas",
                       font: { size: 20 },
                     },
                   },
@@ -178,53 +221,10 @@ export function Statistics() {
               />
             )}
           </div>
-
-          <div className={styles.totalDrinks}>
-            <h2>Total de pedidos</h2>
-
-            {loadingTotalDrinks ? (
-              <Loading />
-            ) : (
-              <Row gutter={[8, 8]}>
-                <Col xs={24} sm={8}>
-                  <Card>
-                    <Statistic
-                      title="Total"
-                      value={sum(totalDrinks, toTotal)}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={12} sm={8}>
-                  <Card>
-                    <Statistic
-                      title="Não alcoólico"
-                      value={sum(
-                        totalDrinks.filter(({ alcoholic }) => !alcoholic),
-                        toTotal
-                      )}
-                      valueStyle={{ color: "#2ecc71" }}
-                    />
-                  </Card>
-                </Col>
-                <Col xs={12} sm={8}>
-                  <Card>
-                    <Statistic
-                      title="Alcoólico"
-                      value={sum(
-                        totalDrinks.filter(({ alcoholic }) => alcoholic),
-                        toTotal
-                      )}
-                      valueStyle={{ color: "#e74c3c" }}
-                    />
-                  </Card>
-                </Col>
-              </Row>
-            )}
-          </div>
         </>
       ) : (
         <Empty description="Nenhum pedido foi realizado" />
       )}
-    </>
+    </div>
   );
 }

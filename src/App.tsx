@@ -34,6 +34,7 @@ import { ManageRequest } from "./pages/request/ManageRequests";
 import { SearchRequests } from "./pages/request/SearchRequests";
 import { ManageTables } from "./pages/table/ManageTables";
 import { Dashboard } from "./pages/Dashboard";
+import { UserMetrics } from "./pages/user/UserMetrics";
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -141,6 +142,15 @@ function App() {
             element={
               <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
                 <EditUser />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={routes.USER_METRICS}
+            element={
+              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+                <UserMetrics />
               </PrivateRoute>
             }
           />

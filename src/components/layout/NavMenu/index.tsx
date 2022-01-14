@@ -4,8 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import {
   AppstoreOutlined,
-  AreaChartOutlined,
   DashboardOutlined,
+  DesktopOutlined,
   HomeOutlined,
   LoginOutlined,
   LogoutOutlined,
@@ -58,8 +58,10 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
       <div className={styles.menuHeader}>
         <h2>
-          <SkyDrinksIcon />
-          <span>SkyDrinks</span>
+          <Link to={routes.HOME}>
+            <SkyDrinksIcon />
+            <span>SkyDrinks</span>
+          </Link>
         </h2>
       </div>
 
@@ -175,8 +177,8 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
           <SubMenu
             className={styles.subMenu}
             key="subDashboard"
-            icon={<DashboardOutlined style={{ fontSize: 25 }} />}
-            title="Dashboard"
+            icon={<DesktopOutlined style={{ fontSize: 25 }} />}
+            title="Painel dos admins"
           >
             <Menu.Item
               icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
@@ -185,10 +187,10 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
               <Link to={routes.MANAGE_USERS}>Gerenciar Usuários</Link>
             </Menu.Item>
             <Menu.Item
-              icon={<AreaChartOutlined style={{ fontSize: 25 }} />}
+              icon={<DashboardOutlined style={{ fontSize: 25 }} />}
               key={routes.DASHBOARD}
             >
-              <Link to={routes.DASHBOARD}>Gráficos</Link>
+              <Link to={routes.DASHBOARD}>Dashboard</Link>
             </Menu.Item>
           </SubMenu>
         )}

@@ -13,7 +13,6 @@ import {
   Drawer,
   Empty,
   Pagination,
-  Spin,
 } from "antd";
 
 import { DrinkCard } from "../DrinkCard";
@@ -25,6 +24,7 @@ import endpoints from "src/api/api";
 import styles from "./styles.module.scss";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
+import { Loading } from "src/components/layout/Loading";
 
 type SearchDrinkType = {
   name: string;
@@ -240,9 +240,7 @@ export function SearchDrinks() {
       </div>
 
       {loading ? (
-        <div className={styles.loading}>
-          <Spin />
-        </div>
+        <Loading />
       ) : (
         <div className={styles.drinksWrapper}>
           {data.content.length !== 0 ? (

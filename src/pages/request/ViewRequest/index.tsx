@@ -1,8 +1,9 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Badge, Button, Divider, Modal, Spin } from "antd";
+import { Badge, Button, Divider, Modal } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import endpoints, { toFullPictureURI } from "src/api/api";
+import { Loading } from "src/components/layout/Loading";
 import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
@@ -299,7 +300,7 @@ export function ViewRequest() {
   return (
     <div className={styles.container}>
       {loading ? (
-        <Spin />
+        <Loading />
       ) : (
         <>
           <div>

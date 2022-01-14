@@ -41,21 +41,25 @@ export function MyAccount() {
           <h3 title={userInfo.name} className={styles.name}>
             {userInfo.name}
           </h3>
-        </div>
 
-        <div className={styles.divider}>
-          <Divider style={{ fontSize: "1.5rem" }} orientation="left">
-            Informações
-          </Divider>
+          <p title={userInfo.email} className={styles.email}>
+            {userInfo.email}
+          </p>
 
           <Tooltip title="Editar informações" className={styles.edit}>
             <Link
               state={{ back: routes.MY_ACCOUNT }}
               to={routes.EDIT_USER.replace(":uuid", userInfo.uuid)}
             >
-              <EditOutlined style={{ fontSize: "1rem" }} />
+              <EditOutlined style={{ fontSize: "1.5rem" }} />
             </Link>
           </Tooltip>
+        </div>
+
+        <div className={styles.divider}>
+          <Divider style={{ fontSize: "1.5rem" }} orientation="left">
+            Informações
+          </Divider>
         </div>
 
         <div className={styles.info}>

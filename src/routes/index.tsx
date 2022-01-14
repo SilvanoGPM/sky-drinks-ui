@@ -15,6 +15,7 @@ const routes = {
   MANAGE_USERS: "users/manage",
   CREATE_USER: "/users/create",
   EDIT_USER: "/users/edit/:uuid",
+  USER_METRICS: "/users/metrics/:uuid",
   MY_ACCOUNT: "my-account",
 
   FINALIZE_REQUEST: "requests/finish",

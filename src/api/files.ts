@@ -36,6 +36,11 @@ const filesEndpoints = {
     };
   },
 
+  async getAllImagesWithoutPagination() {
+    const { data } = await api.get(`/files/list?page`);
+    return data;
+  },
+
   async deleteImage(image: string) {
     await api.delete(`/files/barmen/images/${image}`);
   },

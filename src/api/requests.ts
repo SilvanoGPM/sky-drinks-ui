@@ -134,6 +134,11 @@ const requestsEndpoints = {
     return data;
   },
 
+  async getUserTopDrinks(uuid: string) {
+    const { data } = await api.get(`/requests/admin/top-five-drinks/${uuid}`);
+    return data;
+  },
+
   async getTotalOfDrinksGroupedByAlcoholic() {
     const { data } = await api.get("/requests/user/total-of-drinks-alcoholic");
     return data;

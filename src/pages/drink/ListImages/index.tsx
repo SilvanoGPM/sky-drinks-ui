@@ -55,20 +55,33 @@ export function ListImages() {
 
   useEffect(() => {
     async function loadImages() {
-      const data = await endpoints.getAllImages(
-        pagination.page,
-        pagination.size
-      );
+      try {
+        const data = await endpoints.getAllImages(
+          pagination.page,
+          pagination.size
+        );
 
-      setData(data);
-
-      setLoading(false);
+        setData(data);
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: "Não foi possível carregar as imagens das bebidas",
+        });
+      } finally {
+        setLoading(false);
+      }
     }
 
     if (loading) {
       loadImages();
     }
   }, [loading, pagination]);
+
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
 
   function deleteImage(image: string) {
     const remove = async () => {
@@ -99,7 +112,10 @@ export function ListImages() {
           message: "Imagem foi removida com sucesso!",
         });
       } catch (error: any) {
-        handleError({ error, fallback: "Não foi possível encontrar as imagens" });
+        handleError({
+          error,
+          fallback: "Não foi possível encontrar as imagens",
+        });
       } finally {
         setLoadingDelete(false);
       }
@@ -183,7 +199,13 @@ export function ListImages() {
 
             return (
               <List.Item actions={actions} className={styles.item}>
-                <Image src={picture} alt={image} width={100} height={100} />
+                <Image
+                  src={picture}
+                  alt={image}
+                  style={{ minWidth: 100 }}
+                  width={100}
+                  height={100}
+                />
                 <div className={styles.info}>
                   <List.Item.Meta
                     title={<p className={styles.imageName}>{image}</p>}

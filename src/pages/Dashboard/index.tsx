@@ -22,7 +22,6 @@ import {
   Empty,
   Row,
   Select,
-  Spin,
   Statistic,
   Tooltip,
 } from "antd";
@@ -39,6 +38,7 @@ import {
 } from "@ant-design/icons";
 import { sum } from "src/utils/sum";
 import { randomHotRGBColor, randomRGB } from "src/utils/randomRGB";
+import { Loading } from "src/components/layout/Loading";
 
 type RequestLengthAndPrice = {
   price: number;
@@ -242,9 +242,7 @@ export function Dashboard() {
       <h2 className={styles.title}>Dashboard</h2>
 
       {requestsDataLoading ? (
-        <div className={styles.loading}>
-          <Spin />
-        </div>
+        <Loading />
       ) : (
         <>
           <>
@@ -481,9 +479,7 @@ export function Dashboard() {
       )}
 
       {topDrinksLoading ? (
-        <div className={styles.loading}>
-          <Spin />
-        </div>
+        <Loading />
       ) : hasDataOfDrinks ? (
         <div className={styles.dataOfDrinksContainer}>
           <Divider orientation="left" style={{ fontSize: "1.6rem" }}>

@@ -1,6 +1,7 @@
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   LockOutlined,
   SearchOutlined,
   UnlockOutlined,
@@ -349,6 +350,14 @@ export function ManageUsers() {
                       />
                     )}
                   </Popconfirm>
+                </Tooltip>,
+                <Tooltip title="Ver métricas do usuário" placement="bottom">
+                  <Link to={routes.USER_METRICS.replace(":uuid", uuid)}>
+                    <Button
+                      shape="round"
+                      icon={<EyeOutlined style={{ fontSize: 18 }} />}
+                    />
+                  </Link>
                 </Tooltip>,
               ]}
             >
