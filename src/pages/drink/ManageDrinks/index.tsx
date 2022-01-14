@@ -25,7 +25,7 @@ import {
 import endpoints from "src/api/api";
 import routes from "src/routes";
 import { useTitle } from "src/hooks/useTitle";
-import { DrinkCard } from "../DrinkCard";
+import { DrinkCard } from "../components/DrinkCard";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";

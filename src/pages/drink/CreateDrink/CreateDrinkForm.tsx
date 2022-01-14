@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
 
 import {
@@ -22,6 +22,7 @@ import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
 
 import styles from "./styles.module.scss";
+import { useImages } from "../hooks/useImages";
 
 interface DrinkCreateFormProps {
   form: FormInstance;
@@ -42,39 +43,12 @@ const { Option } = Select;
 
 export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
   const [image, setImage] = useState<File | string>();
-  const [images, setImages] = useState<string[]>([]);
 
   const [createLoading, setCreateLoading] = useState(false);
-  const [imagesLoading, setImagesLoading] = useState(true);
 
   const [useExistsImage, setUseExistsImage] = useState(false);
 
-  useEffect(() => {
-    async function loadImages() {
-      try {
-        const files = await endpoints.getAllImagesWithoutPagination();
-
-        setImages(files);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: "Não foi possível carregar as imagens das bebidas",
-        });
-      } finally {
-        setImagesLoading(false);
-      }
-    }
-
-    if (imagesLoading) {
-      loadImages();
-    }
-  }, [imagesLoading]);
-
-  useEffect(() => {
-    return () => {
-      setImagesLoading(false);
-    };
-  }, []);
+  const { images, imagesLoading } = useImages();
 
   async function handleFormFinish(values: DrinkCreateForm) {
     try {

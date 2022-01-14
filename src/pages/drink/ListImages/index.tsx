@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Badge, Button, Image, List, Modal, Popover, Upload } from "antd";
-
-import {
-  DeleteOutlined,
-  PlayCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { Badge, Button, Image, List, Modal, Popover } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
@@ -16,6 +11,8 @@ import { DrinkType } from "src/types/drinks";
 import { handleError } from "src/utils/handleError";
 import { imageToFullURI } from "src/utils/imageUtils";
 import { showNotification } from "src/utils/showNotification";
+
+import { UploadImages } from "./UploadImages";
 
 import styles from "./styles.module.scss";
 
@@ -46,10 +43,6 @@ export function ListImages() {
     totalElements: 0,
     content: [],
   });
-
-  const [showUploadList, setShowUploadList] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
-  const [imagesUploading, setImagesUploading] = useState(false);
 
   useEffect(() => {
     async function loadImages() {
@@ -146,40 +139,6 @@ export function ListImages() {
     });
   }
 
-  function dummyRequest({ file, onSuccess }: any) {
-    setImages([...images, file]);
-    setShowUploadList(true);
-
-    return onSuccess(file);
-  }
-
-  async function uploadImages() {
-    try {
-      setImagesUploading(true);
-
-      await endpoints.uploadMultipleImages(images);
-
-      setShowUploadList(false);
-
-      showNotification({
-        type: "success",
-        message: "Upload realizado com sucesso!",
-      });
-    } catch {
-      showNotification({
-        type: "warn",
-        message: "Não foi possível realizar o upload",
-      });
-    } finally {
-      setImagesUploading(false);
-    }
-  }
-
-  function resetImages() {
-    setShowUploadList(false);
-    setImages([]);
-  }
-
   const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
 
   return (
@@ -188,52 +147,7 @@ export function ListImages() {
         <h2 className={styles.title}>Imagens</h2>
       </div>
 
-      <div className={styles.uploadImages}>
-        {Boolean(images.length) && (
-          <>
-            <Button
-              loading={imagesUploading}
-              size="large"
-              type="primary"
-              icon={<PlayCircleOutlined />}
-              onClick={uploadImages}
-            >
-              Iniciar Upload
-            </Button>
-
-            <Button
-              loading={imagesUploading}
-              size="large"
-              type="primary"
-              style={{
-                color: "#ffffff",
-                borderColor: "#e74c3c",
-                backgroundColor: "#e74c3c",
-              }}
-              icon={<PlayCircleOutlined />}
-              onClick={resetImages}
-            >
-              Resetar Imagens
-            </Button>
-          </>
-        )}
-
-        <Upload
-          listType="picture"
-          accept="image/png, image/jpeg"
-          multiple
-          customRequest={dummyRequest}
-          showUploadList={showUploadList}
-        >
-          <Button
-            loading={imagesUploading}
-            size="large"
-            icon={<UploadOutlined />}
-          >
-            Upar Imagens
-          </Button>
-        </Upload>
-      </div>
+      <UploadImages />
 
       <div>
         <List

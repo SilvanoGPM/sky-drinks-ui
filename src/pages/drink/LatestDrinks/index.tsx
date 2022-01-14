@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Empty } from "antd";
 import useDraggableScroll from "use-draggable-scroll";
 
-import { DrinkCard } from "../DrinkCard";
+import { DrinkCard } from "../components/DrinkCard";
 import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";

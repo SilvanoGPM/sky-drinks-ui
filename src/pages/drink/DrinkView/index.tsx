@@ -25,19 +25,18 @@ import drinkPlaceholder from "src/assets/drink-placeholder.png";
 export function DrinkView() {
   useTitle("SkyDrinks - Visualizar bebida");
 
+  const { userInfo } = useContext(AuthContext);
+  const { addDrink } = useContext(RequestContext);
+
   const infoRef = useRef<HTMLDivElement>(null);
 
   const { onMouseDown } = useDraggableScroll(infoRef);
 
   const params = useParams();
-
   const navigate = useNavigate();
 
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
   const [loading, setLoading] = useState(true);
-
-  const { userInfo } = useContext(AuthContext);
-  const { addDrink } = useContext(RequestContext);
 
   useEffect(() => {
     async function findDrink() {

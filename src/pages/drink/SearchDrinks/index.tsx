@@ -16,7 +16,7 @@ import {
 } from "antd";
 
 import endpoints from "src/api/api";
-import { DrinkCard } from "../DrinkCard";
+import { DrinkCard } from "../components/DrinkCard";
 import { useTitle } from "src/hooks/useTitle";
 import { pluralize } from "src/utils/pluralize";
 import { trimInput } from "src/utils/trimInput";

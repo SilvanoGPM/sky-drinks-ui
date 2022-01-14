@@ -34,6 +34,7 @@ import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
 import { DrinkType } from "src/types/drinks";
 
 import styles from "./styles.module.scss";
+import { useImages } from "../hooks/useImages";
 
 interface DrinkEditForm {
   volume: number;
@@ -59,15 +60,15 @@ export function EditDrink() {
   const params = useParams();
 
   const [image, setImage] = useState<File | string>();
-  const [images, setImages] = useState<string[]>([]);
 
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
 
   const [drinkLoading, setDrinkLoading] = useState(true);
-  const [imagesLoading, setImagesLoading] = useState(true);
   const [editLoading, setEditLoading] = useState(false);
 
   const [useExistsImage, setUseExistsImage] = useState(false);
+
+  const { images, imagesLoading } = useImages();
 
   useEffect(() => {
     const uuid = params.uuid || "";
@@ -106,30 +107,8 @@ export function EditDrink() {
   }, [drinkLoading, params, navigate]);
 
   useEffect(() => {
-    async function loadImages() {
-      try {
-        const files = await endpoints.getAllImagesWithoutPagination();
-
-        setImages(files);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: "Não foi possível carregar as imagens das bebidas",
-        });
-      } finally {
-        setImagesLoading(false);
-      }
-    }
-
-    if (imagesLoading) {
-      loadImages();
-    }
-  }, [imagesLoading]);
-
-  useEffect(() => {
     return () => {
       setDrinkLoading(false);
-      setImagesLoading(false);
     };
   }, []);
 
