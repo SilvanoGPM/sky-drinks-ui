@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import moment from "moment";
+import { Link } from "react-router-dom";
+
 import {
   DeleteOutlined,
   EditOutlined,
@@ -7,6 +11,7 @@ import {
   UnlockOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
+
 import {
   Avatar,
   Button,
@@ -21,13 +26,17 @@ import {
   Select,
   Tooltip,
 } from "antd";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
+import { useTitle } from "src/hooks/useTitle";
+import { formatDisplayRole } from "src/utils/formatDisplayRole";
+import { useForm } from "antd/lib/form/Form";
+import { showNotification } from "src/utils/showNotification";
+import { trimInput } from "src/utils/trimInput";
+import { handleError } from "src/utils/handleError";
+import { UserPaginatedType, UserSearchParams } from "src/types/user";
+
 import {
   formatBirthDayDate,
   formatDatabaseDate,
@@ -35,14 +44,6 @@ import {
 
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar.png";
-
-import { formatDisplayRole } from "src/utils/formatDisplayRole";
-import { useForm } from "antd/lib/form/Form";
-import moment from "moment";
-import { showNotification } from "src/utils/showNotification";
-import { trimInput } from "src/utils/trimInput";
-import { handleError } from "src/utils/handleError";
-import { UserPaginatedType, UserSearchParams } from "src/types/user";
 
 interface UserSearchForm {
   name: string;

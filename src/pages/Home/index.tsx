@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Typography } from "antd";
 import { Footer } from "antd/lib/layout/layout";
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import { NavMenu } from "src/components/layout/NavMenu";

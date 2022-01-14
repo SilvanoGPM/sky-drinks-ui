@@ -1,7 +1,14 @@
 import qs from "query-string";
 
 import { toFullPictureURI } from "src/utils/toFullPictureURI";
-import { DrinkPaginatedType, DrinkSearchParams, DrinkToCreate, DrinkToUpdate, DrinkType } from "src/types/drinks";
+
+import {
+  DrinkPaginatedType,
+  DrinkSearchParams,
+  DrinkToCreate,
+  DrinkToUpdate,
+  DrinkType,
+} from "src/types/drinks";
 
 import { api } from "./api";
 import filesEndpoints from "./files";
@@ -22,7 +29,9 @@ const drinksEndpoints = {
   async searchDrink(params: DrinkSearchParams): Promise<DrinkPaginatedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get<DrinkPaginatedType>(`/drinks/search?${searchParams}`);
+    const { data } = await api.get<DrinkPaginatedType>(
+      `/drinks/search?${searchParams}`
+    );
 
     return {
       totalElements: data.totalElements,
@@ -55,7 +64,7 @@ const drinksEndpoints = {
     await api.put("/drinks/barmen", drink);
   },
 
-  async deleteDrink(uuid: string): Promise<void>  {
+  async deleteDrink(uuid: string): Promise<void> {
     await api.delete(`/drinks/barmen/${uuid}`);
   },
 };

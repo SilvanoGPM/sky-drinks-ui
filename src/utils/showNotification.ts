@@ -1,5 +1,5 @@
 import { notification } from "antd";
-import { NotificationPlacement } from "antd/lib/notification";
+import { NotificationPlacement,  } from "antd/lib/notification";
 
 interface ShowNotificationProps {
   type: "success" | "warn" | "error" | "info";

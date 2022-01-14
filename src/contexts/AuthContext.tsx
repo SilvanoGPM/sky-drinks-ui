@@ -1,4 +1,5 @@
 import { createContext } from "react";
+
 import { UserType } from "src/types/user";
 
 import { useAuth } from "./hooks/useAuth";

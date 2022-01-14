@@ -1,4 +1,5 @@
 import { Spin } from "antd";
+
 import { useTitle } from "src/hooks/useTitle";
 
 import styles from "./styles.module.scss";

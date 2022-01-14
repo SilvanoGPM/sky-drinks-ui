@@ -1,5 +1,6 @@
 import { Result, Button } from "antd";
 import { Link } from "react-router-dom";
+
 import { useFlashNotification } from "src/hooks/useFlashNotification";
 
 import { useTitle } from "src/hooks/useTitle";

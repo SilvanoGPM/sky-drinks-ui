@@ -2,13 +2,14 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Badge, Button, Divider, Modal } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+
 import endpoints from "src/api/api";
+import routes from "src/routes";
 import { Loading } from "src/components/layout/Loading";
 import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 import { RequestStatusType, RequestType } from "src/types/requests";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";

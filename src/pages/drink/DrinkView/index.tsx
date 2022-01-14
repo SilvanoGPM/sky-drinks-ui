@@ -4,24 +4,23 @@ import { Skeleton, Tag, Divider, Button } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import useDraggableScroll from "use-draggable-scroll";
 
-import { useTitle } from "src/hooks/useTitle";
-
 import endpoints from "src/api/api";
+import routes from "src/routes";
+import { useTitle } from "src/hooks/useTitle";
+import { showNotification } from "src/utils/showNotification";
+import { RequestContext } from "src/contexts/RequestContext";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { isUUID } from "src/utils/isUUID";
+import { AuthContext } from "src/contexts/AuthContext";
+import { getUserPermissions } from "src/utils/getUserPermissions";
+import { handleError } from "src/utils/handleError";
+import { DrinkType } from "src/types/drinks";
 import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 import { formatDrinkVolume } from "src/utils/formatDrinkVolume";
 import { getAdditionalTagColor } from "src/utils/getAdditionalTagColor";
 
 import styles from "./styles.module.scss";
 import drinkPlaceholder from "src/assets/drink-placeholder.png";
-import { showNotification } from "src/utils/showNotification";
-import { RequestContext } from "src/contexts/RequestContext";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { isUUID } from "src/utils/isUUID";
-import routes from "src/routes";
-import { AuthContext } from "src/contexts/AuthContext";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import { handleError } from "src/utils/handleError";
-import { DrinkType } from "src/types/drinks";
 
 export function DrinkView() {
   useTitle("SkyDrinks - Visualizar bebida");
@@ -49,7 +48,7 @@ export function DrinkView() {
           const drinkFound = await endpoints.findDrinkByUUID(uuid);
           setDrink(drinkFound);
         } catch (error: any) {
-          handleError({ error, fallback: "Não foi possível encontrar bebida" })
+          handleError({ error, fallback: "Não foi possível encontrar bebida" });
 
           navigate(routes.HOME);
         } finally {

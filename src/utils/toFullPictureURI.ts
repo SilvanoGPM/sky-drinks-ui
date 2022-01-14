@@ -1,4 +1,5 @@
 import { DrinkType } from "src/types/drinks";
+
 import { imageToFullURI } from "./imageUtils";
 
 export function toFullPictureURI(object: DrinkType) {

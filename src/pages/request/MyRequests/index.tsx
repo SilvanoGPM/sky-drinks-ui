@@ -1,9 +1,15 @@
+import { useEffect, useState } from "react";
+import { useForm } from "antd/lib/form/Form";
+import { Link } from "react-router-dom";
+import moment from "moment";
+
 import {
   CloseOutlined,
   DeleteOutlined,
   PaperClipOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+
 import {
   Form,
   Badge,
@@ -19,16 +25,12 @@ import {
   Popover,
   Modal,
 } from "antd";
-import { useForm } from "antd/lib/form/Form";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 import endpoints from "src/api/api";
-import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { useTitle } from "src/hooks/useTitle";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { showNotification } from "src/utils/showNotification";
-import styles from "./styles.module.scss";
-import moment from "moment";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
@@ -37,6 +39,8 @@ import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { imageToFullURI } from "src/utils/imageUtils";
 import { RequestPaginatedType, RequestSearchParams, RequestStatusType, RequestType } from "src/types/requests";
+
+import styles from "./styles.module.scss";
 
 interface RequestSearchForm {
   status: RequestStatusType;

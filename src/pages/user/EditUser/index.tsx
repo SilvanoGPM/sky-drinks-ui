@@ -1,19 +1,17 @@
+import { useContext, useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, DatePicker, Form, Input, Select } from "antd";
-
 import { useForm } from "antd/lib/form/Form";
 import moment from "moment";
-import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 import endpoints from "src/api/api";
+import routes from "src/routes";
 import { Loading } from "src/components/layout/Loading";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useFavicon } from "src/hooks/useFavicon";
-
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 import { UserType } from "src/types/user";
-
 import { cpfMask } from "src/utils/cpfMask";
 import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";

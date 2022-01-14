@@ -1,15 +1,17 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Badge, Button, Image, List, Modal, Popover, Upload } from "antd";
+
 import {
   DeleteOutlined,
   PlayCircleOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Badge, Button, Image, List, Modal, Popover, Upload } from "antd";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
 import endpoints from "src/api/api";
+import routes from "src/routes";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 import { DrinkType } from "src/types/drinks";
 import { handleError } from "src/utils/handleError";
 import { imageToFullURI } from "src/utils/imageUtils";

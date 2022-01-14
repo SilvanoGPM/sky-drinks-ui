@@ -3,14 +3,13 @@ import { HeartOutlined, LogoutOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
+import routes from "src/routes";
 import { AuthContext } from "src/contexts/AuthContext";
 import { useTitle } from "src/hooks/useTitle";
-
-import routes from "src/routes";
-
-import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { RequestContext } from "src/contexts/RequestContext";
+
+import styles from "./styles.module.scss";
 
 export function Logout() {
   useTitle("SkyDrinks - Sair");
@@ -42,7 +41,9 @@ export function Logout() {
         <h2>Você quer mesmo sair?</h2>
 
         {Boolean(request.drinks.length) && (
-          <p className={styles.warn}>Seu pedido não foi efetuado, logo, será perdido caso você deslogue.</p>
+          <p className={styles.warn}>
+            Seu pedido não foi efetuado, logo, será perdido caso você deslogue.
+          </p>
         )}
 
         <div className={styles.buttons}>

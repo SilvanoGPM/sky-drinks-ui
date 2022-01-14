@@ -1,16 +1,17 @@
+import { useContext } from "react";
 import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Button, Card, Image, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 
 import routes from "src/routes";
-
-import drinkPlaceholder from "src/assets/drink-placeholder.png";
-import drinkErrorImage from "src/assets/imageError.png";
-import { showNotification } from "src/utils/showNotification";
 import endpoints from "src/api/api";
-import { useContext } from "react";
+
+import { showNotification } from "src/utils/showNotification";
 import { RequestContext } from "src/contexts/RequestContext";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+
+import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import drinkErrorImage from "src/assets/image-error.png";
 
 interface DrinkCardProps {
   uuid: string;

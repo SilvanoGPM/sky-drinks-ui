@@ -3,12 +3,11 @@ import { Button, DatePicker, Form, Input, Result, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import endpoints from "src/api/api";
-import { useFavicon } from "src/hooks/useFavicon";
 
-import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
-
+import endpoints from "src/api/api";
+import { useTitle } from "src/hooks/useTitle";
+import { useFavicon } from "src/hooks/useFavicon";
 import { cpfMask } from "src/utils/cpfMask";
 import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";

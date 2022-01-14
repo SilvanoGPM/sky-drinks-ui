@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import {
   DeleteOutlined,
   EditOutlined,
@@ -21,18 +22,17 @@ import {
   Tooltip,
 } from "antd";
 
-import { useTitle } from "src/hooks/useTitle";
-import { DrinkCard } from "../DrinkCard";
-
 import endpoints from "src/api/api";
 import routes from "src/routes";
-
-import styles from "./styles.module.scss";
+import { useTitle } from "src/hooks/useTitle";
+import { DrinkCard } from "../DrinkCard";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
 import { DrinkPaginatedType, DrinkSearchParams } from "src/types/drinks";
+
+import styles from "./styles.module.scss";
 
 interface DrinkSearchForm {
   name: string;

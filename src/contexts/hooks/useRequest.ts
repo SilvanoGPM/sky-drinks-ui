@@ -1,11 +1,13 @@
-import { Modal } from "antd";
 import { useContext, useEffect, useState } from "react";
+import { Modal } from "antd";
+
 import { DrinkType } from "src/types/drinks";
 import { RequestType } from "src/types/requests";
 import { TableType } from "src/types/tables";
 import { getUserAge } from "src/utils/getUserAge";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { showNotification } from "src/utils/showNotification";
+
 import { AuthContext } from "../AuthContext";
 
 export const REQUEST_KEY = "request";

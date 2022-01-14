@@ -1,6 +1,4 @@
-function randomNum() {
-  return Math.floor(Math.random() * (235 - 52 + 1) + 52);
-}
+import { randomNum } from "./randomNum";
 
 export function randomRGB() {
   return `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`;

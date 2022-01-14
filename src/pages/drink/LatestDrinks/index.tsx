@@ -7,14 +7,14 @@ import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 
-import styles from "./styles.module.scss";
-
-import drinkPlaceholder from "src/assets/drink-placeholder.png";
-import { showNotification } from "src/utils/showNotification";
 import routes from "src/routes";
+import { showNotification } from "src/utils/showNotification";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
 import { handleError } from "src/utils/handleError";
 import { DrinkType } from "src/types/drinks";
+
+import styles from "./styles.module.scss";
+import drinkPlaceholder from "src/assets/drink-placeholder.png";
 
 const drinkFake = {
   name: "Carregando...",

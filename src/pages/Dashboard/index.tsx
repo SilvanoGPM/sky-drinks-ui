@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import endpoints from "src/api/api";
-import { handleError } from "src/utils/handleError";
-import styles from "./styles.module.scss";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
+import moment from "moment";
 
 import {
   Chart as ChartJS,
@@ -15,6 +13,7 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+
 import {
   Card,
   Col,
@@ -25,9 +24,7 @@ import {
   Statistic,
   Tooltip,
 } from "antd";
-import moment from "moment";
-import { useTitle } from "src/hooks/useTitle";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+
 import {
   ArrowDownOutlined,
   ArrowUpOutlined,
@@ -36,10 +33,23 @@ import {
   DollarOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { sum } from "src/utils/sum";
-import { randomHotRGBColor, randomRGB } from "src/utils/randomRGB";
+
+import endpoints from "src/api/api";
+import { handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
-import { DataOfDrinksType, RequestData, RequestLengthAndPrice, RequestsData } from "src/types/requests";
+import { useTitle } from "src/hooks/useTitle";
+import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
+import { sum } from "src/utils/sum";
+import { randomHotRGBColor, randomRGB } from "src/utils/rgbUtils";
+
+import {
+  DataOfDrinksType,
+  RequestData,
+  RequestLengthAndPrice,
+  RequestsData,
+} from "src/types/requests";
+
+import styles from "./styles.module.scss";
 
 ChartJS.register(
   ArcElement,

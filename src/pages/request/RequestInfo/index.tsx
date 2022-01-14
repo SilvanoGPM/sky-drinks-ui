@@ -1,15 +1,16 @@
 import { Badge, Button, Modal, Popover, Tooltip } from "antd";
 import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
-import styles from "./styles.module.scss";
+import routes from "src/routes";
 import { useContext } from "react";
 import { RequestContext } from "src/contexts/RequestContext";
-import { Link } from "react-router-dom";
-import routes from "src/routes";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { calculateDrinksPrice } from "src/utils/calculateDrinkPrice";
 import { AuthContext } from "src/contexts/AuthContext";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+
+import styles from "./styles.module.scss";
 
 const { confirm } = Modal;
 
@@ -93,7 +94,11 @@ export function RequestInfo() {
         <>
           <div className={styles.noRequest}>
             {permissions.isUser || permissions.isGuest ? (
-              <p>{permissions.isUser ? "Nenhum pedido no momento" : "Faça login para realizar pedidos"}</p>
+              <p>
+                {permissions.isUser
+                  ? "Nenhum pedido no momento"
+                  : "Faça login para realizar pedidos"}
+              </p>
             ) : (
               <p className={styles.niceJob}>Bom trabalho!</p>
             )}

@@ -1,23 +1,23 @@
 import { useContext, useState } from "react";
+import { Input, Form, Button, Checkbox, Spin } from "antd";
+import { Navigate, useLocation } from "react-router-dom";
+
 import {
   LockOutlined,
   LoginOutlined,
   MailOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Input, Form, Button, Checkbox, Spin } from "antd";
-import { Navigate, useLocation } from "react-router-dom";
-
-import { AuthContext } from "src/contexts/AuthContext";
-import { useTitle } from "src/hooks/useTitle";
 
 import routes from "src/routes";
-
-import styles from "./styles.module.scss";
-import loginImage from "src/assets/login-image.jpg";
+import { AuthContext } from "src/contexts/AuthContext";
+import { useTitle } from "src/hooks/useTitle";
 import { showNotification } from "src/utils/showNotification";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
 import { handleError } from "src/utils/handleError";
+
+import styles from "./styles.module.scss";
+import loginImage from "src/assets/login-image.jpg";
 
 interface LoginValues {
   email: string;
@@ -72,7 +72,11 @@ export function Login() {
 
             <h1 className={styles.title}>Login</h1>
 
-            <svg className={styles.curve} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <svg
+              className={styles.curve}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1440 320"
+            >
               <path
                 fill="#ffffff"
                 fillOpacity="1"

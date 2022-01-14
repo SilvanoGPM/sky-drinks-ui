@@ -1,5 +1,6 @@
-import { Select } from "antd";
 import { useEffect, useState } from "react";
+import { Select } from "antd";
+
 import endpoints from "src/api/api";
 import { Loading } from "src/components/layout/Loading";
 import { TableType } from "src/types/tables";

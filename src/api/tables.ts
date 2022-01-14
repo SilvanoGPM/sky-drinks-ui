@@ -1,5 +1,12 @@
 import qs from "query-string";
-import { TablePaginetedType, TableSearchParams, TableToCreate, TableToUpdate, TableType } from "src/types/tables";
+
+import {
+  TablePaginetedType,
+  TableSearchParams,
+  TableToCreate,
+  TableToUpdate,
+  TableType,
+} from "src/types/tables";
 
 import { api } from "./api";
 
@@ -11,14 +18,19 @@ const tablesEndpoints = {
   },
 
   async getAllTables(size = 100): Promise<TablePaginetedType> {
-    const { data } = await api.get<TablePaginetedType>(`/tables/all?size=${size}&sort=number`);
+    const { data } = await api.get<TablePaginetedType>(
+      `/tables/all?size=${size}&sort=number`
+    );
+
     return data;
   },
 
   async searchTables(params: TableSearchParams): Promise<TablePaginetedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get<TablePaginetedType>(`/tables/waiter/search?${searchParams}`);
+    const { data } = await api.get<TablePaginetedType>(
+      `/tables/waiter/search?${searchParams}`
+    );
 
     return data;
   },
@@ -28,7 +40,9 @@ const tablesEndpoints = {
   },
 
   async toggleTableOccupied(uuid: string): Promise<TableType> {
-    const { data } = await api.patch<TableType>(`/tables/waiter/switch-occupied/${uuid}`);
+    const { data } = await api.patch<TableType>(
+      `/tables/waiter/switch-occupied/${uuid}`
+    );
 
     return data;
   },

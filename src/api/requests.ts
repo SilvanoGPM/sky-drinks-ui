@@ -1,6 +1,8 @@
 import moment from "moment";
 import qs from "query-string";
-import { BooleanParameterOfRequest } from "src/enum/BooleanParameterOfRequestEnum";
+
+import { BooleanParameterOfRequest } from "src/enums/BooleanParameterOfRequestEnum";
+
 import {
   DataOfDrinksType,
   RequestData,
@@ -39,6 +41,7 @@ const requestsEndpoints = {
     const { data } = await api.get<RequestDateType[]>(
       "/requests/admin/all-dates"
     );
+
     return data;
   },
 
@@ -101,6 +104,7 @@ const requestsEndpoints = {
     const { data } = await api.get<TopDrinkType[]>(
       "/requests/user/top-five-drinks"
     );
+
     return data;
   },
 
@@ -108,16 +112,23 @@ const requestsEndpoints = {
     const { data } = await api.get<TopDrinkType[]>(
       `/requests/admin/top-five-drinks/${uuid}`
     );
+
     return data;
   },
 
   async getTotalOfDrinksGroupedByAlcoholic(): Promise<TotalDrinkType[]> {
-    const { data } = await api.get<TotalDrinkType[]>("/requests/user/total-of-drinks-alcoholic");
+    const { data } = await api.get<TotalDrinkType[]>(
+      "/requests/user/total-of-drinks-alcoholic"
+    );
+
     return data;
   },
 
   async getTopDrinks(size = 5): Promise<TopDrinkType[]> {
-    const { data } = await api.get<TopDrinkType[]>(`/requests/admin/top-drinks?size=${size}`);
+    const { data } = await api.get<TopDrinkType[]>(
+      `/requests/admin/top-drinks?size=${size}`
+    );
+
     return data;
   },
 
@@ -125,6 +136,7 @@ const requestsEndpoints = {
     const { data } = await api.get<TopDrinkType[]>(
       `/requests/admin/most-canceled?size=${size}`
     );
+
     return data;
   },
 
@@ -175,15 +187,17 @@ const requestsEndpoints = {
     const startOfMonth = startMonth ?? yearAndMonth;
     const endOfMonth = endMonth ?? yearAndMonth;
 
+    const createdInDateOrAfter = moment(startOfMonth)
+      .startOf("month")
+      .format(DATE_PATTERN);
+
+    const createdInDateOrBefore = moment(endOfMonth)
+      .endOf("month")
+      .format(DATE_PATTERN);
+
     const options = {
-      createdInDateOrAfter: moment(startOfMonth)
-        .startOf("month")
-        .format(DATE_PATTERN),
-      createdInDateOrBefore: moment(endOfMonth)
-        .endOf("month")
-        .format(DATE_PATTERN),
-      // createdInDateOrAfter: "2021-12-01",
-      // createdInDateOrBefore: "2022-12-01",
+      createdInDateOrAfter,
+      createdInDateOrBefore,
       size: SIZE,
     };
 
@@ -227,7 +241,10 @@ const requestsEndpoints = {
   },
 
   async toggleBlockAllRequests(): Promise<boolean> {
-    const { data } = await api.patch<boolean>("/requests/admin/toggle-all-blocked");
+    const { data } = await api.patch<boolean>(
+      "/requests/admin/toggle-all-blocked"
+    );
+
     return data;
   },
 };

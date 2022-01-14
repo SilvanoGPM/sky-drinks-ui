@@ -1,5 +1,5 @@
-import { Form, InputNumber, Modal } from "antd";
 import { useEffect } from "react";
+import { Form, InputNumber, Modal } from "antd";
 
 interface PersistTableProps {
   visible: boolean;

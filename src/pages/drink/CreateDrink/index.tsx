@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { useForm } from "antd/lib/form/Form";
+import { useNavigate } from "react-router-dom";
+
 import {
   Input,
   Form,
@@ -12,15 +15,11 @@ import {
   Radio,
   RadioChangeEvent,
 } from "antd";
-import { useForm } from "antd/lib/form/Form";
-import { useNavigate } from "react-router-dom";
 
 import { useTitle } from "src/hooks/useTitle";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
-
-import styles from "./styles.module.scss";
 import { showNotification } from "src/utils/showNotification";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useFavicon } from "src/hooks/useFavicon";
@@ -28,6 +27,8 @@ import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { trimInput } from "src/utils/trimInput";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
+
+import styles from "./styles.module.scss";
 
 interface DrinkCreateForm {
   volume: number;

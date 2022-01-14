@@ -17,6 +17,8 @@ import {
 } from "@ant-design/icons";
 
 import { AuthContext } from "src/contexts/AuthContext";
+import { getUserPermissions } from "src/utils/getUserPermissions";
+import routes from "src/routes";
 
 import {
   DrinkIcon,
@@ -27,8 +29,6 @@ import {
 } from "src/components/custom/CustomIcons";
 
 import styles from "./styles.module.scss";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import routes from "src/routes";
 
 interface NavMenuProps {
   menuShow: boolean;

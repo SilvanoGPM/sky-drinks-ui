@@ -15,17 +15,16 @@ import {
   Pagination,
 } from "antd";
 
+import endpoints from "src/api/api";
 import { DrinkCard } from "../DrinkCard";
 import { useTitle } from "src/hooks/useTitle";
-
 import { pluralize } from "src/utils/pluralize";
-import endpoints from "src/api/api";
-
-import styles from "./styles.module.scss";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
 import { DrinkPaginatedType, DrinkSearchParams } from "src/types/drinks";
+
+import styles from "./styles.module.scss";
 
 interface DrinkSearchForm {
   name: string;

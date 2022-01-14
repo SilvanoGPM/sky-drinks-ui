@@ -1,4 +1,5 @@
 import { useContext, useEffect } from "react";
+
 import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
 
 export function useBrowserNotification() {

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { showNotification } from "src/utils/showNotification";
 
 export function useFlashNotification(route: string) {

@@ -1,24 +1,27 @@
+import { Button, Modal } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
   CloseOutlined,
   MinusOutlined,
   PlusOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import { Button, Modal } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+
 import endpoints from "src/api/api";
+import routes from "src/routes";
 import { InputNumberSpinner } from "src/components/custom/InputNumberSpinner";
 import { AuthContext } from "src/contexts/AuthContext";
 import { RequestContext } from "src/contexts/RequestContext";
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 import { DrinkType } from "src/types/drinks";
 import { RequestGrouped } from "src/types/requests";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { handleError } from "src/utils/handleError";
 import { showNotification } from "src/utils/showNotification";
+
 import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";

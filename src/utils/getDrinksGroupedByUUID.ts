@@ -1,7 +1,7 @@
 import { RequestGrouped, RequestType } from "src/types/requests";
 
 export function getDrinksGroupedByUUID(request: RequestType) {
-  return request.drinks.reduce((obj, drink) => {
+  return request.drinks.reduce((obj: RequestGrouped, drink) => {
     if (!obj[drink.uuid]) {
       obj[drink.uuid] = [drink];
     } else {
@@ -9,5 +9,5 @@ export function getDrinksGroupedByUUID(request: RequestType) {
     }
 
     return obj;
-  }, {} as RequestGrouped);
+  }, {});
 }

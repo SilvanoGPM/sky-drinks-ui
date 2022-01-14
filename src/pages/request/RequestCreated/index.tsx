@@ -1,10 +1,11 @@
-import { Button, Result } from "antd";
 import { useEffect } from "react";
+import { Button, Result } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import routes from "src/routes";
 import { MyRequestsIcon } from "src/components/custom/CustomIcons";
 import { useFavicon } from "src/hooks/useFavicon";
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 
 export function RequestCreated() {
   useTitle("SkyDrinks - Pedido realizado com sucesso!");

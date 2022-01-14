@@ -1,7 +1,7 @@
-import { api } from "./api";
-
 import { USER_CREDENTIALS_KEY } from "src/contexts/hooks/useAuth";
 import { showNotification } from "src/utils/showNotification";
+
+import { api } from "./api";
 
 export function tokenExpirationInterceptor() {
   api.interceptors.response.use(
@@ -17,7 +17,10 @@ export function tokenExpirationInterceptor() {
         error.config.headers.Authorization = undefined;
         api.defaults.headers.common["Authorization"] = "";
 
-        showNotification({ type: "info", message: "Por favor, faça login novamente!" });
+        showNotification({
+          type: "info",
+          message: "Por favor, faça login novamente!",
+        });
 
         throw new Error("Por favor, faça login novamente!");
       } else {

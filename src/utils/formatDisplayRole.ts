@@ -1,9 +1,8 @@
-const roles = new Map<string, string>();
+import { Roles } from "src/enums/Roles";
 
-roles.set("USER", "Usuário");
-roles.set("BARMEN", "Barmen");
-roles.set("WAITER", "Garçom");
-roles.set("ADMIN", "Admin");
+export const roles = new Map<string, string>(
+  Object.entries(Roles)
+);
 
 export function formatDisplayRole(role: string = "") {
   const lastRole = role.split(",").pop()?.toUpperCase() || "";

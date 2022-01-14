@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
+
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+
 import {
   Button,
   Divider,
@@ -15,16 +18,22 @@ import {
   Slider,
   Tooltip,
 } from "antd";
-import { useEffect, useState } from "react";
+
 import endpoints from "src/api/api";
 import { TableIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
 import { pluralize } from "src/utils/pluralize";
 import { showNotification } from "src/utils/showNotification";
-import styles from "./styles.module.scss";
 import { PersistTable } from "../PersistTable";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
-import { TablePaginetedType, TableSearchParams, TableType } from "src/types/tables";
+
+import {
+  TablePaginetedType,
+  TableSearchParams,
+  TableType,
+} from "src/types/tables";
+
+import styles from "./styles.module.scss";
 
 interface TableSearchForm {
   seats: number[];

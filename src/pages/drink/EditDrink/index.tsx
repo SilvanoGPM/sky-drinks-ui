@@ -21,12 +21,9 @@ import {
   Upload,
 } from "antd";
 
-import { useTitle } from "src/hooks/useTitle";
-
 import endpoints from "src/api/api";
 import routes from "src/routes";
-
-import styles from "./styles.module.scss";
+import { useTitle } from "src/hooks/useTitle";
 import { showNotification } from "src/utils/showNotification";
 import { useFavicon } from "src/hooks/useFavicon";
 import { isUUID } from "src/utils/isUUID";
@@ -35,6 +32,8 @@ import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
 import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
 import { DrinkType } from "src/types/drinks";
+
+import styles from "./styles.module.scss";
 
 interface DrinkEditForm {
   volume: number;

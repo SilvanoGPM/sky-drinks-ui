@@ -1,19 +1,21 @@
-import { useTitle } from "src/hooks/useTitle";
-
-import avatar from "src/assets/avatar_white.png";
-import { Avatar, Divider, Switch, Tooltip } from "antd";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { Avatar, Divider, Switch, Tooltip } from "antd";
+
+import routes from "src/routes";
+import { useTitle } from "src/hooks/useTitle";
 import { AuthContext } from "src/contexts/AuthContext";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
-import { Link } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
-import routes from "src/routes";
-import styles from "./styles.module.scss";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { getUserAge } from "src/utils/getUserAge";
 import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
-import { Statistics } from "./statistics";
 import { getUserPermissions } from "src/utils/getUserPermissions";
+
+import { Statistics } from "./statistics";
+
+import styles from "./styles.module.scss";
+import avatar from "src/assets/avatar_white.png";
 
 export function MyAccount() {
   useTitle("SkyDrinks - Minha Conta");

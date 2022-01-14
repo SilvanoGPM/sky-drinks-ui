@@ -1,9 +1,8 @@
 import { Result, Button } from "antd";
 import { Link } from "react-router-dom";
 
-import { useTitle } from "src/hooks/useTitle";
-
 import routes from "src/routes";
+import { useTitle } from "src/hooks/useTitle";
 
 export function NotFound() {
   useTitle("SkyDrinks - Página não encontrada");

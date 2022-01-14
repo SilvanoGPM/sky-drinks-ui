@@ -1,8 +1,7 @@
 import { Descriptions, Empty, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import endpoints from "src/api/api";
-import routes from "src/routes";
+import { Doughnut } from "react-chartjs-2";
 
 import {
   Chart as ChartJS,
@@ -15,9 +14,8 @@ import {
   Legend,
 } from "chart.js";
 
-import { Doughnut } from "react-chartjs-2";
-
-import styles from "./styles.module.scss";
+import endpoints from "src/api/api";
+import routes from "src/routes";
 import { handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
@@ -27,6 +25,8 @@ import { getUserAge } from "src/utils/getUserAge";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { TopDrinkType } from "src/types/requests";
 import { UserType } from "src/types/user";
+
+import styles from "./styles.module.scss";
 
 ChartJS.register(
   ArcElement,

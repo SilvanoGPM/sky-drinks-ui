@@ -2,6 +2,8 @@ import { Button, Modal, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
+
+import routes from "src/routes";
 import endpoints from "src/api/api";
 import { Loading } from "src/components/layout/Loading";
 import { AuthContext } from "src/contexts/AuthContext";
@@ -9,7 +11,6 @@ import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useAudio } from "src/hooks/useAudio";
 import { useBrowserNotification } from "src/hooks/useBrowserNotification";
 import { useTitle } from "src/hooks/useTitle";
-import routes from "src/routes";
 import { RequestType } from "src/types/requests";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
@@ -55,7 +56,7 @@ export function NotificateRequestUpdates() {
 
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("SkyDrinks - Notificação");
+  const [title, setTitle] = useState("");
 
   const [modalInfo, setModalInfo] = useState({
     title: "",
@@ -200,7 +201,9 @@ export function NotificateRequestUpdates() {
               </span>
             </p>
 
-            <p>Pedido realizado em: {formatDisplayDate(request.createdAt || "")}</p>
+            <p>
+              Pedido realizado em: {formatDisplayDate(request.createdAt || "")}
+            </p>
 
             {request.status === "FINISHED" &&
               (request.delivered ? (
