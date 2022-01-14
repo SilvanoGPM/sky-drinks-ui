@@ -25,25 +25,8 @@ import { Loading } from "src/components/layout/Loading";
 import { formatDisplayRole } from "src/utils/formatDisplayRole";
 import { getUserAge } from "src/utils/getUserAge";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-
-type TopFiveDrinkType = {
-  drinkUUID: string;
-  name: string;
-  total: number;
-};
-
-type UserProps = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-  lockRequestsTimestamp: string;
-  lockRequests: boolean;
-};
+import { TopDrinkType } from "src/types/requests";
+import { UserType } from "src/types/user";
 
 ChartJS.register(
   ArcElement,
@@ -58,8 +41,8 @@ ChartJS.register(
 const { confirm } = Modal;
 
 export function UserMetrics() {
-  const [topFiveDrinks, setTopFiveDrinks] = useState<TopFiveDrinkType[]>([]);
-  const [user, setUser] = useState<UserProps>({} as UserProps);
+  const [topFiveDrinks, setTopFiveDrinks] = useState<TopDrinkType[]>([]);
+  const [user, setUser] = useState<UserType>({} as UserType);
 
   const [topFiveLoading, setTopFiveLoading] = useState(true);
   const [userLoading, setUserLoading] = useState(true);

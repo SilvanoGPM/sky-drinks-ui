@@ -1,27 +1,19 @@
 import { useState, useEffect } from "react";
 
 import endpoints, { api } from "src/api/api";
+import { UserType } from "src/types/user";
 import { handleError } from "src/utils/handleError";
 
-type UserInfoProps = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
+interface LoginProps {
   email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-  lockRequestsTimestamp: string;
-  lockRequests: boolean;
-};
-
-type LoginProps = { email: string; password: string; remember: boolean };
+  password: string;
+  remember: boolean
+}
 
 export const USER_CREDENTIALS_KEY = "userCredentials";
 
 export function useAuth() {
-  const [userInfo, setUserInfo] = useState<UserInfoProps>({} as UserInfoProps);
+  const [userInfo, setUserInfo] = useState<UserType>({} as UserType);
   const [authenticated, setAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [token, setToken] = useState("");

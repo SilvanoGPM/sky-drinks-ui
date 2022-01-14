@@ -21,20 +21,7 @@ import routes from "src/routes";
 import { AuthContext } from "src/contexts/AuthContext";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { handleError } from "src/utils/handleError";
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
+import { DrinkType } from "src/types/drinks";
 
 export function DrinkView() {
   useTitle("SkyDrinks - Visualizar bebida");

@@ -12,6 +12,7 @@ import { useFavicon } from "src/hooks/useFavicon";
 
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { UserType } from "src/types/user";
 
 import { cpfMask } from "src/utils/cpfMask";
 import { getBirthDayDate } from "src/utils/formatDatabaseDate";
@@ -23,24 +24,14 @@ import { trimInput } from "src/utils/trimInput";
 
 import styles from "./styles.module.scss";
 
-type UserType = {
-  uuid: string;
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  cpf: string;
-  birthDay: string;
-};
-
-type UserToUpdate = {
+interface UserEditForm {
   name: string;
   email: string;
   password: string;
   role: string;
   cpf: string;
   birthDay: any;
-};
+}
 
 export function EditUser() {
   useTitle("SkyDrinks - Editar usuário");
@@ -111,7 +102,7 @@ export function EditUser() {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 
-  async function handleFormFinish(values: UserToUpdate) {
+  async function handleFormFinish(values: UserEditForm) {
     try {
       setEditLoading(true);
 

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useTitle } from "src/hooks/useTitle";
 
-import endpoints, { imageToFullURI } from "src/api/api";
+import endpoints from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
@@ -27,9 +27,9 @@ import { useFavicon } from "src/hooks/useFavicon";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { trimInput } from "src/utils/trimInput";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
-import { normalizeImage } from "src/utils/imageUtils";
+import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
 
-type DrinkToCreate = {
+interface DrinkCreateForm {
   volume: number;
   name: string;
   picture: string;
@@ -37,7 +37,7 @@ type DrinkToCreate = {
   price: number;
   additional: string[];
   alcoholic: boolean;
-};
+}
 
 const { Option } = Select;
 
@@ -94,7 +94,7 @@ export function CreateDrink() {
     setCreated(false);
   }
 
-  async function handleFormFinish(values: DrinkToCreate) {
+  async function handleFormFinish(values: DrinkCreateForm) {
     try {
       setCreateLoading(true);
 

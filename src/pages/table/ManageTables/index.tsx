@@ -24,42 +24,17 @@ import { showNotification } from "src/utils/showNotification";
 import styles from "./styles.module.scss";
 import { PersistTable } from "../PersistTable";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
+import { TablePaginetedType, TableSearchParams, TableType } from "src/types/tables";
 
-type TableType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  number: number;
-  seats: number;
-  occupied: boolean;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: TableType[];
-};
-
-type TableSearchType = {
+interface TableSearchForm {
   seats: number[];
   occupied: number;
-};
+}
 
-type TableParams = {
-  greaterThanOrEqualToSeats: number;
-  lessThanOrEqualToSeats: number;
-  occupied: number;
-};
-
-type TableToPersist = {
+interface TablePersistForm {
   seats: number;
   number: number;
-};
-
-type TableSelected = {
-  uuid: string;
-  seats: number;
-  number: number;
-};
+}
 
 const { confirm } = Modal;
 const { Option } = Select;
@@ -77,16 +52,16 @@ export function ManageTables() {
 
   const [persistTableShow, setPersistTableShow] = useState(false);
 
-  const [params, setParams] = useState<TableParams>({} as TableParams);
+  const [params, setParams] = useState<TableSearchParams>({});
 
-  const [selectedTable, setSelectedTable] = useState<TableSelected>();
+  const [selectedTable, setSelectedTable] = useState<TableType>();
 
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<TablePaginetedType>({
     totalElements: 0,
     content: [],
   });
@@ -225,7 +200,7 @@ export function ManageTables() {
     setLoading(true);
   }
 
-  function handleFormFinish(values: TableSearchType) {
+  function handleFormFinish(values: TableSearchForm) {
     const { occupied, seats } = values;
 
     const [greaterThanOrEqualToSeats, lessThanOrEqualToSeats] = seats;
@@ -265,7 +240,7 @@ export function ManageTables() {
     };
   }
 
-  async function handleCreateTable(values: TableToPersist) {
+  async function handleCreateTable(values: TablePersistForm) {
     try {
       setPersistTableLoading(true);
 
@@ -295,7 +270,7 @@ export function ManageTables() {
     }
   }
 
-  async function updateSelectedTable(values: TableToPersist) {
+  async function updateSelectedTable(values: TablePersistForm) {
     try {
       setPersistTableLoading(true);
 
@@ -352,7 +327,7 @@ export function ManageTables() {
       </div>
 
       <ul className={styles.list}>
-        {data.content.map(({ uuid, number, occupied, seats }) => (
+        {data.content.map(({ uuid = "", number, occupied, seats }) => (
           <li key={uuid}>
             <div className={styles.table}>
               <Tooltip

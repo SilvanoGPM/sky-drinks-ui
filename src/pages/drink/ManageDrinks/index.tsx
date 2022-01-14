@@ -32,38 +32,16 @@ import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
+import { DrinkPaginatedType, DrinkSearchParams } from "src/types/drinks";
 
-type FoundedDrinkType = {
-  uuid: string;
-  name: string;
-  picture: string;
-  price: number;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: FoundedDrinkType[];
-};
-
-type SearchDrinkType = {
+interface DrinkSearchForm {
   name: string;
   description: string;
   alcoholic: string;
   price: number[];
   volume: number[];
   additional: string[];
-};
-
-type SearchParameters = {
-  name: string;
-  description: string;
-  additional: string;
-  alcoholic: string;
-  greaterThanOrEqualToPrice?: number;
-  lessThanOrEqualToPrice?: number;
-  greaterThanOrEqualToVolume?: number;
-  lessThanOrEqualToVolume?: number;
-};
+}
 
 const { Option } = Select;
 
@@ -75,16 +53,14 @@ export function ManageDrinks() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [params, setParams] = useState<SearchParameters>(
-    {} as SearchParameters
-  );
+  const [params, setParams] = useState<DrinkSearchParams>({});
 
   const [pagination, setPagination] = useState({
     page: 0,
     size: 6,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<DrinkPaginatedType>({
     totalElements: 0,
     content: [],
   });
@@ -134,16 +110,16 @@ export function ManageDrinks() {
     };
   }
 
-  function handleFormFinish(values: SearchDrinkType) {
+  function handleFormFinish(values: DrinkSearchForm) {
     const { name, description, additional, alcoholic, price, volume } = values;
 
-    const params = {
+    const params: DrinkSearchParams = {
       name,
       description,
       alcoholic,
       additional: additional?.join(";"),
       ...getPriceAndVolume(price, volume),
-    } as SearchParameters;
+    };
 
     setParams(params);
     setLoading(true);

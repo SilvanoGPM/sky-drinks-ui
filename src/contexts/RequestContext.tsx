@@ -1,41 +1,20 @@
 import { createContext } from "react";
+import { DrinkType } from "src/types/drinks";
+import { RequestType } from "src/types/requests";
+import { TableType } from "src/types/tables";
 import { useRequest } from "./hooks/useRequest";
 
-type RequestProviderProps = {
+interface RequestProviderProps {
   children: React.ReactNode;
-};
+}
 
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type TableType = {
-  uuid: string;
-  number: number;
-};
-
-type RequestType = {
-  drinks: DrinkType[];
-  table?: TableType;
-};
-
-type RequestContextProps = {
+interface RequestContextProps {
   request: RequestType;
   addDrink: (drink: DrinkType) => void;
   clearRequest: () => void;
   setRequest: (request: RequestType) => void;
   changeTable: (table?: TableType) => void;
-};
+}
 
 export const RequestContext = createContext<RequestContextProps>(
   {} as RequestContextProps

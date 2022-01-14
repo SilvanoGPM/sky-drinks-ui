@@ -2,19 +2,15 @@ import { Select } from "antd";
 import { useEffect, useState } from "react";
 import endpoints from "src/api/api";
 import { Loading } from "src/components/layout/Loading";
+import { TableType } from "src/types/tables";
 import { handleError } from "src/utils/handleError";
 
 const { Option } = Select;
 
-type TableType = {
-  uuid: string;
-  number: number;
-};
-
-type FetchTablesProps = {
+interface FetchTablesProps {
   defaultTable?: TableType;
   onChange: (table?: TableType) => void;
-};
+}
 
 export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
   const [loading, setLoading] = useState(true);

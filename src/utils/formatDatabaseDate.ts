@@ -2,7 +2,7 @@ import moment from "moment";
 
 import "moment/locale/pt-br";
 
-export function formatDatabaseDate(dateStr: string) {
+export function formatDatabaseDate(dateStr: string = new Date().toString()) {
   return moment(dateStr).format("DD/MM/yyyy");
 }
 
@@ -16,10 +16,10 @@ export function formatBirthDayDate(dateStr: string) {
   return moment(dateStr).format("DD/MM/yyyy");
 }
 
-export function formatToDatabaseDate(date: Date) {
+export function formatToDatabaseDate(date: Date = new Date()) {
   return moment(date).format("yyyy-MM-DD");
 }
 
-export function formatDisplayDate(date: string) {
+export function formatDisplayDate(date: string = new Date().toString()) {
   return moment(date).locale("pt-br").format("DD [de] MMMM, yyyy [as] HH:mm");
 }

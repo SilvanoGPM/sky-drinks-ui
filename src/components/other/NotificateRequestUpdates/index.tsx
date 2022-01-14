@@ -10,55 +10,12 @@ import { useAudio } from "src/hooks/useAudio";
 import { useBrowserNotification } from "src/hooks/useBrowserNotification";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { RequestType } from "src/types/requests";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getStatusBadge } from "src/utils/getStatusBadge";
 
 import styles from "./styles.module.scss";
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type UserType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-type TableType = {
-  number: number;
-  seats: number;
-};
-
-type RequestType = {
-  drinks: DrinkType[];
-  createdAt: string;
-  updatedAt: string;
-  status: StatusType;
-  uuid: string;
-  user: UserType;
-  totalPrice: number;
-  delivered: boolean;
-  table: TableType;
-};
 
 type RequestNotificationType = "FINISHED" | "CANCELED";
 
@@ -243,7 +200,7 @@ export function NotificateRequestUpdates() {
               </span>
             </p>
 
-            <p>Pedido realizado em: {formatDisplayDate(request.createdAt)}</p>
+            <p>Pedido realizado em: {formatDisplayDate(request.createdAt || "")}</p>
 
             {request.status === "FINISHED" &&
               (request.delivered ? (

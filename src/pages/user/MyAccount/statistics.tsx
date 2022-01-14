@@ -21,17 +21,7 @@ import styles from "./styles.module.scss";
 import { handleError } from "src/utils/handleError";
 import { sum } from "src/utils/sum";
 import { Loading } from "src/components/layout/Loading";
-
-type TopFiveDrinkType = {
-  drinkUUID: string;
-  name: string;
-  total: number;
-};
-
-type TotalDrinkType = {
-  alcoholic: boolean;
-  total: number;
-};
+import { TopDrinkType, TotalDrinkType } from "src/types/requests";
 
 ChartJS.register(
   ArcElement,
@@ -47,7 +37,7 @@ const { confirm } = Modal;
 
 export function Statistics() {
   const [loadingTopFive, setLoadingTopFive] = useState(true);
-  const [topFiveDrinks, setTopFiveDrinks] = useState<TopFiveDrinkType[]>([]);
+  const [topFiveDrinks, setTopFiveDrinks] = useState<TopDrinkType[]>([]);
 
   const [loadingTotalDrinks, setLoadingTotalDrinks] = useState(true);
   const [totalDrinks, setTotalDrinks] = useState<TotalDrinkType[]>([]);

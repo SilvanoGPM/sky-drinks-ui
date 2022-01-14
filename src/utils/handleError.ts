@@ -1,12 +1,12 @@
 import { showNotification } from "./showNotification";
 
-type HandleErrorProps = {
+interface HandleErrorProps {
   error: any;
   fallback?: string;
   title?: string;
   maxDetailsChars?: number;
   description?: string;
-};
+}
 
 export function getFieldErrorsDescription(e: any) {
   const errors = e?.response?.data?.fieldErrors;

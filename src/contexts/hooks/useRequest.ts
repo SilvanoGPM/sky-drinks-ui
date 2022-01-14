@@ -1,33 +1,12 @@
 import { Modal } from "antd";
 import { useContext, useEffect, useState } from "react";
+import { DrinkType } from "src/types/drinks";
+import { RequestType } from "src/types/requests";
+import { TableType } from "src/types/tables";
 import { getUserAge } from "src/utils/getUserAge";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { showNotification } from "src/utils/showNotification";
 import { AuthContext } from "../AuthContext";
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type TableType = {
-  uuid: string;
-  number: number;
-};
-
-type RequestType = {
-  drinks: DrinkType[];
-  table?: TableType;
-};
 
 export const REQUEST_KEY = "request";
 
@@ -35,12 +14,15 @@ export const MINORITY = 18;
 
 const { confirm } = Modal;
 
+const initialRequestState = {
+  drinks: [] as DrinkType[],
+  status: "PROCESSING",
+} as RequestType;
+
 export function useRequest() {
   const { userInfo } = useContext(AuthContext);
 
-  const [request, setRequest] = useState<RequestType>({
-    drinks: [],
-  });
+  const [request, setRequest] = useState<RequestType>(initialRequestState);
 
   useEffect(() => {
     const request = localStorage.getItem(REQUEST_KEY);
@@ -116,7 +98,7 @@ export function useRequest() {
   }
 
   function clearRequest() {
-    setRequest({ drinks: [] });
+    setRequest(initialRequestState);
   }
 
   function changeTable(table?: TableType) {

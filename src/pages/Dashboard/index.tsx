@@ -39,32 +39,7 @@ import {
 import { sum } from "src/utils/sum";
 import { randomHotRGBColor, randomRGB } from "src/utils/randomRGB";
 import { Loading } from "src/components/layout/Loading";
-
-type RequestLengthAndPrice = {
-  price: number;
-  length: number;
-};
-
-type RequestData = {
-  [key: string]: RequestLengthAndPrice;
-};
-
-type RequestsData = {
-  requestsDelivered: RequestData;
-  requestsCanceled: RequestData;
-  requestsProcessing: RequestData;
-};
-
-type TopDrinkType = {
-  drinkUUID: string;
-  name: string;
-  total: number;
-};
-
-type DataOfDrinksType = {
-  topDrinks: TopDrinkType[];
-  mostCanceled: TopDrinkType[];
-};
+import { DataOfDrinksType, RequestData, RequestLengthAndPrice, RequestsData } from "src/types/requests";
 
 ChartJS.register(
   ArcElement,

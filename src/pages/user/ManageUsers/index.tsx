@@ -42,42 +42,16 @@ import moment from "moment";
 import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
+import { UserPaginatedType, UserSearchParams } from "src/types/user";
 
-type FoundedUserType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-  lockRequestsTimestamp: string;
-  lockRequests: boolean;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: FoundedUserType[];
-};
-
-type SearchUserType = {
+interface UserSearchForm {
   name: string;
   email: string;
   cpf: string;
   role: string[];
   birthDay: any;
   lockRequests: number;
-};
-
-type UserSearchParams = {
-  name?: string;
-  email?: string;
-  cpf?: string;
-  role?: string;
-  birthDay?: string;
-  lockRequests?: number;
-};
+}
 
 const { Option } = Select;
 
@@ -89,16 +63,14 @@ export function ManageUsers() {
   const [loading, setLoading] = useState(true);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [params, setParams] = useState<UserSearchParams>(
-    {} as UserSearchParams
-  );
+  const [params, setParams] = useState<UserSearchParams>({});
 
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<UserPaginatedType>({
     totalElements: 0,
     content: [],
   });
@@ -166,7 +138,7 @@ export function ManageUsers() {
     });
   }
 
-  function handleFormFinish(values: SearchUserType) {
+  function handleFormFinish(values: UserSearchForm) {
     setParams({
       ...values,
       role: values?.role?.join(","),

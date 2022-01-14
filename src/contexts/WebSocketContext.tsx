@@ -1,15 +1,15 @@
 import { createContext, useState } from "react";
 
-type WebSocketContextProps = {
+interface WebSocketContextProps {
   updateRequests: boolean;
   updateRequest: boolean;
   setUpdateRequests: (updateRequests: boolean) => void;
   setUpdateRequest: (updateRequest: boolean) => void;
-};
+}
 
-type WebSocketProviderProps = {
+interface WebSocketProviderProps {
   children: React.ReactNode;
-};
+}
 
 export const WebSocketContext = createContext<WebSocketContextProps>(
   {} as WebSocketContextProps

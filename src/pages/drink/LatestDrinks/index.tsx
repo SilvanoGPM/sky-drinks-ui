@@ -14,13 +14,7 @@ import { showNotification } from "src/utils/showNotification";
 import routes from "src/routes";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
 import { handleError } from "src/utils/handleError";
-
-type LatestDrinkType = {
-  uuid: string;
-  name: string;
-  picture: string;
-  price: number;
-};
+import { DrinkType } from "src/types/drinks";
 
 const drinkFake = {
   name: "Carregando...",
@@ -41,7 +35,7 @@ export function LatestDrinks() {
 
   const [loading, setLoading] = useState(true);
   const [latestDrinks, setLatestDrinks] =
-    useState<LatestDrinkType[]>(latestDrinksFake);
+    useState<DrinkType[]>(latestDrinksFake);
 
   useFlashNotification(routes.HOME);
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import styles from "./styles.module.scss";
 
-type InputNumberSpinnerProps = {
+interface InputNumberSpinnerProps {
   initialValue: number;
   min?: number;
   max?: number;
@@ -13,7 +13,7 @@ type InputNumberSpinnerProps = {
   beforeIncrement?: (value: number, increment: () => void) => void;
   onDecrement?: (value: number) => void;
   onIncrement?: (value: number) => void;
-};
+}
 
 export function InputNumberSpinner({
   initialValue = 0,

@@ -13,6 +13,8 @@ import { AuthContext } from "src/contexts/AuthContext";
 import { RequestContext } from "src/contexts/RequestContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { DrinkType } from "src/types/drinks";
+import { RequestGrouped } from "src/types/requests";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { handleError } from "src/utils/handleError";
@@ -20,22 +22,6 @@ import { showNotification } from "src/utils/showNotification";
 import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type RequestGrouped = { [key: string]: DrinkType[] };
 
 const { confirm } = Modal;
 

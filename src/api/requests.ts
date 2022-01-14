@@ -1,126 +1,94 @@
 import moment from "moment";
 import qs from "query-string";
 import { BooleanParameterOfRequest } from "src/enum/BooleanParameterOfRequestEnum";
+import {
+  DataOfDrinksType,
+  RequestData,
+  RequestPaginatedType,
+  RequestsData,
+  RequestSearchParams,
+  RequestToCreate,
+  RequestType,
+  TopDrinkType,
+  TotalDrinkType,
+} from "src/types/requests";
 
 import { api } from "./api";
 
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type Table = {
-  uuid: string;
-};
-
-type RequestToCreate = {
-  drinks: DrinkType[];
-  table?: Table;
-};
-
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-type RequestSearchParams = {
-  status?: StatusType;
-  drinkName?: string;
-  drinkDescription?: string;
-  createdAt?: string;
-  createdInDateOrAfter?: string;
-  createdInDateOrBefore?: string;
-  price?: number;
-  lessThanOrEqualToTotalPrice?: number;
-  greaterThanOrEqualToTotalPrice?: number;
-  delivered?: number;
-  sort?: string;
-  page?: number;
-  size?: number;
-};
-
-type RequestData = {
-  [key: string]: {
-    price: number;
-    length: number;
-  };
-};
-
-type RequestsData = {
-  requestsDelivered: RequestData;
-  requestsCanceled: RequestData;
-  requestsProcessing: RequestData;
-};
-
-type RequestType = {
-  createdAt: string;
-  totalPrice: number;
-};
+interface RequestDateType {
+  date: string;
+}
 
 const requestsEndpoints = {
-  async createRequest(request: RequestToCreate) {
-    const { data } = await api.post("/requests/user", request);
+  async createRequest(request: RequestToCreate): Promise<RequestType> {
+    const { data } = await api.post<RequestType>("/requests/user", request);
     return data;
   },
 
-  async findRequestByUUID(uuid: string) {
-    const { data } = await api.get(`/requests/${uuid}`);
+  async findRequestByUUID(uuid: string): Promise<RequestType> {
+    const { data } = await api.get<RequestType>(`/requests/${uuid}`);
     return data;
   },
 
-  async getAllBlocked() {
-    const { data } = await api.get("/requests/all/all-blocked");
+  async getAllBlocked(): Promise<boolean> {
+    const { data } = await api.get<boolean>("/requests/all/all-blocked");
     return data;
   },
 
-  async getAllDates() {
-    const { data } = await api.get("/requests/admin/all-dates");
+  async getAllDates(): Promise<RequestDateType[]> {
+    const { data } = await api.get<RequestDateType[]>(
+      "/requests/admin/all-dates"
+    );
     return data;
   },
 
-  async getAllMonths() {
+  async getAllMonths(): Promise<string[]> {
     const dates = await this.getAllDates();
 
-    const months = dates.reduce((months: string[], { date }: any) => {
-      const month = moment(date).format("YYYY-MM");
+    const months = dates.reduce(
+      (months: string[], { date }: RequestDateType) => {
+        const month = moment(date).format("YYYY-MM");
 
-      if (months.includes(month)) {
-        return months;
-      }
+        if (months.includes(month)) {
+          return months;
+        }
 
-      return [month, ...months];
-    }, []);
+        return [month, ...months];
+      },
+      []
+    );
 
     return months;
   },
 
   async searchRequests(
-    params: RequestSearchParams = {} as RequestSearchParams
-  ) {
+    params: RequestSearchParams = {}
+  ): Promise<RequestPaginatedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get(`/requests/staff/search?${searchParams}`);
+    const { data } = await api.get<RequestPaginatedType>(
+      `/requests/staff/search?${searchParams}`
+    );
 
     return data;
   },
 
-  async getMyRequests(params: RequestSearchParams = {} as RequestSearchParams) {
+  async getMyRequests(
+    params: RequestSearchParams = {}
+  ): Promise<RequestPaginatedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get(
+    const { data } = await api.get<RequestPaginatedType>(
       `/requests/user/my-requests?${searchParams}`
     );
 
     return data;
   },
 
-  async getProcessingRequests(page = 0, size = 10) {
+  async getProcessingRequests(
+    page = 0,
+    size = 10
+  ): Promise<RequestPaginatedType> {
     return this.searchRequests({
       status: "PROCESSING",
       sort: "createdAt",
@@ -129,34 +97,38 @@ const requestsEndpoints = {
     });
   },
 
-  async getMyTopFiveDrinks() {
-    const { data } = await api.get("/requests/user/top-five-drinks");
+  async getMyTopFiveDrinks(): Promise<TopDrinkType[]> {
+    const { data } = await api.get<TopDrinkType[]>(
+      "/requests/user/top-five-drinks"
+    );
     return data;
   },
 
-  async getUserTopDrinks(uuid: string) {
-    const { data } = await api.get(`/requests/admin/top-five-drinks/${uuid}`);
+  async getUserTopDrinks(uuid: string): Promise<TopDrinkType[]> {
+    const { data } = await api.get<TopDrinkType[]>(
+      `/requests/admin/top-five-drinks/${uuid}`
+    );
     return data;
   },
 
-  async getTotalOfDrinksGroupedByAlcoholic() {
-    const { data } = await api.get("/requests/user/total-of-drinks-alcoholic");
+  async getTotalOfDrinksGroupedByAlcoholic(): Promise<TotalDrinkType[]> {
+    const { data } = await api.get<TotalDrinkType[]>("/requests/user/total-of-drinks-alcoholic");
     return data;
   },
 
-  async getTopDrinks(size = 5) {
-    const { data } = await api.get(`/requests/admin/top-drinks?size=${size}`);
+  async getTopDrinks(size = 5): Promise<TopDrinkType[]> {
+    const { data } = await api.get<TopDrinkType[]>(`/requests/admin/top-drinks?size=${size}`);
     return data;
   },
 
-  async getMostCanceledDrinks(size = 5) {
-    const { data } = await api.get(
+  async getMostCanceledDrinks(size = 5): Promise<TopDrinkType[]> {
+    const { data } = await api.get<TopDrinkType[]>(
       `/requests/admin/most-canceled?size=${size}`
     );
     return data;
   },
 
-  async getDataOfDrinksInRequests(size = 5) {
+  async getDataOfDrinksInRequests(size = 5): Promise<DataOfDrinksType> {
     const topDrinks = await this.getTopDrinks(size);
     const mostCanceled = await this.getMostCanceledDrinks(size);
 
@@ -170,7 +142,7 @@ const requestsEndpoints = {
     yearAndMonth: string,
     startMonth?: string,
     endMonth?: string
-  ) {
+  ): Promise<RequestsData> {
     const DATE_PATTERN = "YYYY-MM-DD";
 
     function toRequestData(
@@ -204,8 +176,12 @@ const requestsEndpoints = {
     const endOfMonth = endMonth ?? yearAndMonth;
 
     const options = {
-      createdInDateOrAfter: moment(startOfMonth).startOf("month").format(DATE_PATTERN),
-      createdInDateOrBefore: moment(endOfMonth).endOf("month").format(DATE_PATTERN),
+      createdInDateOrAfter: moment(startOfMonth)
+        .startOf("month")
+        .format(DATE_PATTERN),
+      createdInDateOrBefore: moment(endOfMonth)
+        .endOf("month")
+        .format(DATE_PATTERN),
       // createdInDateOrAfter: "2021-12-01",
       // createdInDateOrBefore: "2022-12-01",
       size: SIZE,
@@ -238,20 +214,20 @@ const requestsEndpoints = {
     return requestsData;
   },
 
-  async cancelRequest(uuid: string) {
+  async cancelRequest(uuid: string): Promise<void> {
     await api.patch(`/requests/all/cancel/${uuid}`);
   },
 
-  async finishRequest(uuid: string) {
+  async finishRequest(uuid: string): Promise<void> {
     await api.patch(`/requests/staff/finish/${uuid}`);
   },
 
-  async deliverRequest(uuid: string) {
+  async deliverRequest(uuid: string): Promise<void> {
     await api.patch(`/requests/staff/deliver/${uuid}`);
   },
 
-  async toggleBlockAllRequests() {
-    const { data } = await api.patch("/requests/admin/toggle-all-blocked");
+  async toggleBlockAllRequests(): Promise<boolean> {
+    const { data } = await api.patch<boolean>("/requests/admin/toggle-all-blocked");
     return data;
   },
 };

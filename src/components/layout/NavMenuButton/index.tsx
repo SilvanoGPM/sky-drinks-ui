@@ -2,10 +2,10 @@ import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
 
 import styles from "./styles.module.scss";
 
-type NavMenuButtonProps = {
+interface NavMenuButtonProps {
   menuShow: boolean;
   setMenuShow: (menuShow: boolean) => void;
-};
+}
 
 export function NavMenuButton({ menuShow, setMenuShow }: NavMenuButtonProps) {
   function switchMenu() {

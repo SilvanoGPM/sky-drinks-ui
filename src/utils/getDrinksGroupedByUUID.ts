@@ -1,22 +1,4 @@
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type RequestType = {
-  drinks: DrinkType[];
-};
-
-type RequestGrouped = { [key: string]: DrinkType[] };
+import { RequestGrouped, RequestType } from "src/types/requests";
 
 export function getDrinksGroupedByUUID(request: RequestType) {
   return request.drinks.reduce((obj, drink) => {

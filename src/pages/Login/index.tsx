@@ -19,11 +19,11 @@ import { showNotification } from "src/utils/showNotification";
 import { useFlashNotification } from "src/hooks/useFlashNotification";
 import { handleError } from "src/utils/handleError";
 
-type LoginValues = {
+interface LoginValues {
   email: string;
   password: string;
   remember: boolean;
-};
+}
 
 export function Login() {
   useTitle("SkyDrinks - Login");

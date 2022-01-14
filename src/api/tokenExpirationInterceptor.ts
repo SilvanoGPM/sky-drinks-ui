@@ -6,7 +6,7 @@ import { showNotification } from "src/utils/showNotification";
 export function tokenExpirationInterceptor() {
   api.interceptors.response.use(
     (response) => response,
-    async (error) => {
+    async (error: any) => {
       const tokenExpired = error?.response?.data?.expired || false;
       const status = error?.response.data?.status || 0;
 

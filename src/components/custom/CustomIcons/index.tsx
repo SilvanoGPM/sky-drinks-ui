@@ -6,10 +6,10 @@ import { ReactComponent as PerformRequestSvg } from "src/assets/perform-request.
 import { ReactComponent as MyRequestsSvg } from "src/assets/my-requests.svg";
 import { ReactComponent as SkyDrinksSvg } from "src/assets/sky-drinks.svg";
 
-type IconProps = {
+interface IconProps {
   style?: React.CSSProperties;
   className?: string;
-};
+}
 
 export function DrinkIcon(props: IconProps) {
   return <Icon {...props} component={DrinkSvg} />;

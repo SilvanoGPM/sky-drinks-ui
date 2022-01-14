@@ -2,13 +2,14 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { Badge, Button, Divider, Modal } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import endpoints, { toFullPictureURI } from "src/api/api";
+import endpoints from "src/api/api";
 import { Loading } from "src/components/layout/Loading";
 import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { RequestStatusType, RequestType } from "src/types/requests";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
@@ -17,57 +18,14 @@ import { getUserPermissions } from "src/utils/getUserPermissions";
 import { handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
+import { toFullPictureURI } from "src/utils/toFullPictureURI";
 
 import styles from "./styles.module.scss";
 
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type TableType = {
-  number: number;
-  seats: number;
-};
-
-type UserType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-type RequestType = {
-  drinks: DrinkType[];
-  createdAt: string;
-  updatedAt: string;
-  uuid: string;
-  status: StatusType;
-  user: UserType;
-  table?: TableType;
-  totalPrice: number;
-  delivered: boolean;
-};
-
-type UpdatedRequest = {
-  status?: StatusType;
+interface UpdatedRequest {
+  status?: RequestStatusType;
   delivered?: boolean;
-};
+}
 
 const { confirm } = Modal;
 
@@ -75,8 +33,7 @@ export function ViewRequest() {
   useTitle("SkyDrinks - Visualizar pedido");
 
   const { userInfo } = useContext(AuthContext);
-  const { updateRequest: updateRequestView } =
-    useContext(WebSocketContext);
+  const { updateRequest: updateRequestView } = useContext(WebSocketContext);
 
   const params = useParams();
 
@@ -231,7 +188,7 @@ export function ViewRequest() {
     const { isBarmen, isWaiter } = permissions;
 
     const isStaff = isBarmen || isWaiter;
-    const isRequestOwner = userInfo.uuid === requestFound.user.uuid;
+    const isRequestOwner = userInfo.uuid === requestFound.user?.uuid;
 
     const hasPermission = isStaff || isRequestOwner;
 
@@ -310,7 +267,7 @@ export function ViewRequest() {
           <div>
             {requestFound.status === "FINISHED" &&
               !requestFound.delivered &&
-              userInfo.uuid === requestFound.user.uuid && (
+              userInfo.uuid === requestFound.user?.uuid && (
                 <div className={styles.qrcode}>
                   <p className={styles.qrcodeTitle}>QRCode do pedido:</p>
 
@@ -341,7 +298,7 @@ export function ViewRequest() {
             <p>
               Usuário:{" "}
               <span className={styles.bold}>
-                {requestFound.user.name} - {requestFound.user.email}
+                {requestFound.user?.name} - {requestFound.user?.email}
               </span>
             </p>
             <div className={styles.status}>
@@ -364,21 +321,19 @@ export function ViewRequest() {
             )}
 
             {requestFound.status === "FINISHED" && requestFound.delivered && (
-              <p className={styles.warnMessage}>
-                O pedido já foi entregado.
-              </p>
+              <p className={styles.warnMessage}>O pedido já foi entregado.</p>
             )}
 
             <p>
               Pedido realizado em{" "}
               <span className={styles.bold}>
-                {formatDisplayDate(requestFound.createdAt)}
+                {formatDisplayDate(requestFound?.createdAt)}
               </span>
             </p>
             <p>
               Pedido atualizado em{" "}
               <span className={styles.bold}>
-                {formatDisplayDate(requestFound.updatedAt)}
+                {formatDisplayDate(requestFound?.updatedAt)}
               </span>
             </p>
             <p>
@@ -400,9 +355,11 @@ export function ViewRequest() {
                 (key, index) => {
                   const drinksWithFullPicture =
                     requestFound.drinks.map(toFullPictureURI);
+
                   const drinksGrouped = getDrinksGroupedByUUID({
                     drinks: drinksWithFullPicture,
-                  });
+                  } as RequestType);
+
                   const [drink] = drinksGrouped[key];
                   const length = drinksGrouped[key].length;
 

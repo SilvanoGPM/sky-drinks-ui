@@ -6,38 +6,26 @@ import {
 import { Badge, Button, Image, List, Modal, Popover, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import endpoints, { toFullPictureURI } from "src/api/api";
+import endpoints from "src/api/api";
 import { DrinkIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { DrinkType } from "src/types/drinks";
 import { handleError } from "src/utils/handleError";
+import { imageToFullURI } from "src/utils/imageUtils";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
 
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type ImageFoundedType = {
+interface ImageFoundedType {
   image: string;
   drinks: DrinkType[];
-};
+}
 
-type PaginetedDataType = {
+interface PaginetedDataType {
   totalElements: number;
   content: ImageFoundedType[];
-};
+}
 
 const { confirm } = Modal;
 
@@ -259,9 +247,7 @@ export function ListImages() {
           }}
           dataSource={data.content}
           renderItem={({ drinks, image }) => {
-            const { picture } = toFullPictureURI({
-              picture: image,
-            } as DrinkType);
+            const picture = imageToFullURI(image);
 
             const actions = [
               ...(drinks.length > 0

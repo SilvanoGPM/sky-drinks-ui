@@ -8,13 +8,13 @@ import { LoadingPage } from "src/components/other/LoadingPage";
 
 type UserPerms = "isAdmin" | "isBarmen" | "isWaiter" | "isUser" | "isGuest";
 
-type CustomRouteProps = {
+interface CustomRouteProps {
   children: JSX.Element;
   requiredPerms?: {
     type: "or" | "and";
     perms: UserPerms[];
   };
-};
+}
 
 export function PrivateRoute({ children, requiredPerms = { type: "and", perms: [] } }: CustomRouteProps): JSX.Element {
   const location = useLocation();

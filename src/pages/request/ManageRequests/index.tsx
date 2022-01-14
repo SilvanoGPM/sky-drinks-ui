@@ -8,57 +8,17 @@ import {
 import { Button, Empty, Modal, Pagination, Tooltip } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import endpoints, { toFullPictureURI } from "src/api/api";
+import endpoints from "src/api/api";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
+import { RequestPaginatedType } from "src/types/requests";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 import { handleError } from "src/utils/handleError";
+import { imageToFullURI } from "src/utils/imageUtils";
 import { pluralize } from "src/utils/pluralize";
 import { showNotification } from "src/utils/showNotification";
 import styles from "./styles.module.scss";
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type UserType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-type RequestType = {
-  drinks: DrinkType[];
-  createdAt: string;
-  updatedAt: string;
-  status: StatusType;
-  uuid: string;
-  user: UserType;
-  totalPrice: number;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: RequestType[];
-};
 
 const { confirm } = Modal;
 
@@ -75,7 +35,7 @@ export function ManageRequest() {
     size: 9,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<RequestPaginatedType>({
     totalElements: 0,
     content: [],
   });
@@ -252,7 +212,7 @@ export function ManageRequest() {
           <ul className={styles.cardContainer}>
             {data.content.map(({ uuid, user, totalPrice, drinks }) => {
               const drinksSize = drinks.length;
-              const { picture } = toFullPictureURI(drinks[0]);
+              const picture = imageToFullURI(drinks[0].picture);
 
               return (
                 <li key={uuid}>
@@ -271,7 +231,7 @@ export function ManageRequest() {
                           Preço: {formatDisplayPrice(totalPrice)}
                         </h3>
 
-                        <p className={styles.cardText}>Usuário: {user.name}</p>
+                        <p className={styles.cardText}>Usuário: {user?.name}</p>
 
                         <p className={styles.cardText}>
                           {`${drinksSize} ${pluralize(

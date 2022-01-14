@@ -1,4 +1,6 @@
-import { api, toFullPictureURI } from "./api";
+import { toFullPictureURI } from "src/utils/toFullPictureURI";
+
+import { api } from "./api";
 
 const filesEndpoints = {
   async uploadImage(picture: File) {

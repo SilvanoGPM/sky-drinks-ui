@@ -12,7 +12,7 @@ import { useContext } from "react";
 import { RequestContext } from "src/contexts/RequestContext";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
 
-type DrinkCardProps = {
+interface DrinkCardProps {
   uuid: string;
   name: string;
   picture: string;
@@ -23,7 +23,7 @@ type DrinkCardProps = {
   imageHeight: string | number;
   showBuyAction?: boolean;
   moreActions?: React.ReactNode[];
-};
+}
 
 const { Meta } = Card;
 

@@ -25,38 +25,16 @@ import styles from "./styles.module.scss";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
+import { DrinkPaginatedType, DrinkSearchParams } from "src/types/drinks";
 
-type SearchDrinkType = {
+interface DrinkSearchForm {
   name: string;
   description: string;
   alcoholic: string;
   price: number[];
   volume: number[];
   additional: string[];
-};
-
-type SearchParameters = {
-  name?: string;
-  description?: string;
-  additional?: string;
-  alcoholic?: string;
-  greaterThanOrEqualToPrice?: number;
-  lessThanOrEqualToPrice?: number;
-  greaterThanOrEqualToVolume?: number;
-  lessThanOrEqualToVolume?: number;
-};
-
-type FoundedDrinkType = {
-  uuid: string;
-  name: string;
-  picture: string;
-  price: number;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: FoundedDrinkType[];
-};
+}
 
 const { Option } = Select;
 
@@ -67,9 +45,7 @@ export function SearchDrinks() {
 
   const location = useLocation();
 
-  const [params, setParams] = useState<SearchParameters>(
-    {} as SearchParameters
-  );
+  const [params, setParams] = useState<DrinkSearchParams>({});
 
   const [form] = Form.useForm();
 
@@ -82,7 +58,7 @@ export function SearchDrinks() {
     size: 6,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<DrinkPaginatedType>({
     totalElements: 0,
     content: [],
   });
@@ -201,10 +177,10 @@ export function SearchDrinks() {
     };
   }
 
-  function handleFormFinish(values: SearchDrinkType) {
+  function handleFormFinish(values: DrinkSearchForm) {
     const { name, description, additional, alcoholic, price, volume } = values;
 
-    const params: SearchParameters = {
+    const params: DrinkSearchParams = {
       name,
       description,
       alcoholic,

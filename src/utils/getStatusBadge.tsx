@@ -1,8 +1,7 @@
 import { Badge } from "antd";
+import { RequestStatusType } from "src/types/requests";
 
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-export function getStatusBadge(status: StatusType) {
+export function getStatusBadge(status: RequestStatusType) {
   const statusTexts = {
     PROCESSING: <Badge status="processing" text="Preparando..." />,
     FINISHED: <Badge status="success" text="Finalizado" />,

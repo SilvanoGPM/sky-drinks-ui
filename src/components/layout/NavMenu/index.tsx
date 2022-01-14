@@ -30,10 +30,10 @@ import styles from "./styles.module.scss";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import routes from "src/routes";
 
-type NavMenuProps = {
+interface NavMenuProps {
   menuShow: boolean;
   setMenuShow: (menuShow: boolean) => void;
-};
+}
 
 const { SubMenu } = Menu;
 

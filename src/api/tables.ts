@@ -1,58 +1,39 @@
 import qs from "query-string";
+import { TablePaginetedType, TableSearchParams, TableToCreate, TableToUpdate, TableType } from "src/types/tables";
 
 import { api } from "./api";
 
-type TableToCreate = {
-  seats: number;
-  number: number;
-};
-
-type TableToUpdate = {
-  uuid: string;
-  seats: number;
-  number: number;
-};
-
-type TableSearchParams = {
-  greaterThanOrEqualToSeats?: number;
-  lessThanOrEqualToSeats?: number;
-  occupied?: number;
-  page?: number;
-  size?: number;
-};
-
 const tablesEndpoints = {
-  async createTable(table: TableToCreate) {
-    const { data } = await api.post("/tables/waiter/", table);
+  async createTable(table: TableToCreate): Promise<TableType> {
+    const { data } = await api.post<TableType>("/tables/waiter/", table);
 
     return data;
   },
 
-  async getAllTables(size = 100) {
-    const { data } = await api.get(`/tables/all?size=${size}&sort=number`);
-
+  async getAllTables(size = 100): Promise<TablePaginetedType> {
+    const { data } = await api.get<TablePaginetedType>(`/tables/all?size=${size}&sort=number`);
     return data;
   },
 
-  async searchTables(params: TableSearchParams) {
+  async searchTables(params: TableSearchParams): Promise<TablePaginetedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get(`/tables/waiter/search?${searchParams}`);
+    const { data } = await api.get<TablePaginetedType>(`/tables/waiter/search?${searchParams}`);
 
     return data;
   },
 
-  async updateTable(table: TableToUpdate) {
+  async updateTable(table: TableToUpdate): Promise<void> {
     await api.put("/tables/waiter/", table);
   },
 
-  async toggleTableOccupied(uuid: string) {
-    const { data } = await api.patch(`/tables/waiter/switch-occupied/${uuid}`);
+  async toggleTableOccupied(uuid: string): Promise<TableType> {
+    const { data } = await api.patch<TableType>(`/tables/waiter/switch-occupied/${uuid}`);
 
     return data;
   },
 
-  async deleteTable(uuid: string) {
+  async deleteTable(uuid: string): Promise<void> {
     await api.delete(`/tables/waiter/${uuid}`);
   },
 };

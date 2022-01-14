@@ -1,47 +1,25 @@
 import qs from "query-string";
 
 import { LoginError } from "src/errors/LoginError";
+import {
+  UserPaginatedType,
+  UserSearchParams,
+  UserToCreate,
+  UserToUpdate,
+  UserType,
+} from "src/types/user";
 
 import { api } from "./api";
 
-type UserToCreate = {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type UserToUpdate = {
-  uuid: string;
-  name: string;
-  email: string;
-  password: string;
-  newPassword?: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type UserSearchParams = {
-  name?: string;
-  role?: string;
-  birthDay?: string;
-  page?: number;
-  size?: number;
-  lockRequests?: number;
-};
-
 const usersEndpoints = {
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<string> {
     try {
-      const response = await api.post("/login", {
+      const { headers } = await api.post("/login", {
         email,
         password,
       });
 
-      return response.headers.authorization;
+      return headers.authorization;
     } catch (exception: any) {
       const status = exception?.response?.data?.status || 0;
 
@@ -53,15 +31,17 @@ const usersEndpoints = {
     }
   },
 
-  async createUser(user: UserToCreate) {
-    const { data } = await api.post("/users/admin", user);
+  async createUser(user: UserToCreate): Promise<UserType> {
+    const { data } = await api.post<UserType>("/users/admin", user);
     return data;
   },
 
-  async searchUser(params: UserSearchParams) {
+  async searchUser(params: UserSearchParams): Promise<UserPaginatedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get(`/users/admin/search?${searchParams}`);
+    const { data } = await api.get<UserPaginatedType>(
+      `/users/admin/search?${searchParams}`
+    );
 
     return {
       totalElements: data.totalElements,
@@ -69,27 +49,29 @@ const usersEndpoints = {
     };
   },
 
-  async findUserByUUID(uuid: string) {
-    const { data } = await api.get(`/users/all/${uuid}`);
+  async findUserByUUID(uuid: string): Promise<UserType> {
+    const { data } = await api.get<UserType>(`/users/all/${uuid}`);
     return data;
   },
 
-  async findUserByEmail(email: string) {
-    const { data } = await api.get(`/users/admin/find-by-email/${email}`);
+  async findUserByEmail(email: string): Promise<UserType> {
+    const { data } = await api.get<UserType>(
+      `/users/admin/find-by-email/${email}`
+    );
     return data;
   },
 
-  async findUserByCPF(cpf: string) {
-    const { data } = await api.get(`/users/admin/find-by-cpf/${cpf}`);
+  async findUserByCPF(cpf: string): Promise<UserType> {
+    const { data } = await api.get<UserType>(`/users/admin/find-by-cpf/${cpf}`);
     return data;
   },
 
-  async getUserInfo() {
-    const { data } = await api.get("/users/all/user-info");
+  async getUserInfo(): Promise<UserType> {
+    const { data } = await api.get<UserType>("/users/all/user-info");
     return data;
   },
 
-  async replaceUser(drink: UserToUpdate) {
+  async replaceUser(drink: UserToUpdate): Promise<void> {
     const userFound = await this.findUserByUUID(drink.uuid);
     await this.login(userFound.email, drink.password);
 
@@ -101,12 +83,14 @@ const usersEndpoints = {
     await api.put("/users/user", drinkToUpdate);
   },
 
-  async toggleUserLockReqeusts(uuid: string) {
-    const { data } = await api.patch(`/users/admin/toggle-lock-requests/${uuid}`);
+  async toggleUserLockReqeusts(uuid: string): Promise<UserType> {
+    const { data } = await api.patch<UserType>(
+      `/users/admin/toggle-lock-requests/${uuid}`
+    );
     return data;
   },
 
-  async deleteUser(uuid: string) {
+  async deleteUser(uuid: string): Promise<void> {
     await api.delete(`/users/user/${uuid}`);
   },
 };

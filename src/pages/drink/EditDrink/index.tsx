@@ -23,7 +23,7 @@ import {
 
 import { useTitle } from "src/hooks/useTitle";
 
-import endpoints, { imageToFullURI } from "src/api/api";
+import endpoints from "src/api/api";
 import routes from "src/routes";
 
 import styles from "./styles.module.scss";
@@ -33,9 +33,10 @@ import { isUUID } from "src/utils/isUUID";
 import { trimInput } from "src/utils/trimInput";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { Loading } from "src/components/layout/Loading";
-import { normalizeImage } from "src/utils/imageUtils";
+import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
+import { DrinkType } from "src/types/drinks";
 
-type DrinkToCreate = {
+interface DrinkEditForm {
   volume: number;
   name: string;
   picture: string;
@@ -43,21 +44,7 @@ type DrinkToCreate = {
   price: number;
   additional: string[];
   alcoholic: boolean;
-};
-
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
+}
 
 const { confirm } = Modal;
 const { Option } = Select;
@@ -147,7 +134,7 @@ export function EditDrink() {
     };
   }, []);
 
-  function handleFormFinish(values: DrinkToCreate) {
+  function handleFormFinish(values: DrinkEditForm) {
     async function update() {
       try {
         setEditLoading(true);

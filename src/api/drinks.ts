@@ -1,44 +1,13 @@
 import qs from "query-string";
 
-import { api, toFullPictureURI } from "./api";
+import { toFullPictureURI } from "src/utils/toFullPictureURI";
+import { DrinkPaginatedType, DrinkSearchParams, DrinkToCreate, DrinkToUpdate, DrinkType } from "src/types/drinks";
+
+import { api } from "./api";
 import filesEndpoints from "./files";
 
-type DrinkToCreate = {
-  volume: number;
-  name: string;
-  picture?: File | string;
-  description: string;
-  price: number;
-  additional: string;
-  alcoholic: boolean;
-};
-
-type DrinkToUpdate = {
-  uuid: string;
-  volume: number;
-  name: string;
-  picture?: File | string;
-  description: string;
-  price: number;
-  additional: string;
-  alcoholic: boolean;
-};
-
-type DrinkSearchParams = {
-  name?: string;
-  description?: string;
-  additional?: string;
-  alcoholic?: string;
-  greaterThanOrEqualToPrice?: number;
-  lessThanOrEqualToPrice?: number;
-  greaterThanOrEqualToVolume?: number;
-  lessThanOrEqualToVolume?: number;
-  page?: number;
-  size?: number;
-};
-
 const drinksEndpoints = {
-  async createDrink(drink: DrinkToCreate) {
+  async createDrink(drink: DrinkToCreate): Promise<DrinkType> {
     const { picture } = drink;
 
     if (picture && picture instanceof File) {
@@ -46,14 +15,14 @@ const drinksEndpoints = {
       drink.picture = image.data.fileName;
     }
 
-    const response = await api.post("/drinks/barmen", drink);
-    return response.data;
+    const { data } = await api.post<DrinkType>("/drinks/barmen", drink);
+    return data;
   },
 
-  async searchDrink(params: DrinkSearchParams) {
+  async searchDrink(params: DrinkSearchParams): Promise<DrinkPaginatedType> {
     const searchParams = qs.stringify(params);
 
-    const { data } = await api.get(`/drinks/search?${searchParams}`);
+    const { data } = await api.get<DrinkPaginatedType>(`/drinks/search?${searchParams}`);
 
     return {
       totalElements: data.totalElements,
@@ -61,21 +30,21 @@ const drinksEndpoints = {
     };
   },
 
-  async findDrinkByUUID(uuid: string) {
-    const { data } = await api.get(`/drinks/${uuid}`);
+  async findDrinkByUUID(uuid: string): Promise<DrinkType> {
+    const { data } = await api.get<DrinkType>(`/drinks/${uuid}`);
 
     return toFullPictureURI(data);
   },
 
-  async getLatestDrinks(size: number = 5) {
-    const { data } = await api.get(
+  async getLatestDrinks(size: number = 5): Promise<DrinkType[]> {
+    const { data } = await api.get<DrinkPaginatedType>(
       `/drinks?size=${size}&page=0&sort=createdAt,desc`
     );
 
     return data.content.map(toFullPictureURI);
   },
 
-  async replaceDrink(drink: DrinkToUpdate) {
+  async replaceDrink(drink: DrinkToUpdate): Promise<void> {
     const { picture } = drink;
 
     if (picture && picture instanceof File) {
@@ -86,7 +55,7 @@ const drinksEndpoints = {
     await api.put("/drinks/barmen", drink);
   },
 
-  async deleteDrink(uuid: string) {
+  async deleteDrink(uuid: string): Promise<void>  {
     await api.delete(`/drinks/barmen/${uuid}`);
   },
 };

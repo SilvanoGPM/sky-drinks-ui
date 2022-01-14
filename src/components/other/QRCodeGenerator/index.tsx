@@ -3,9 +3,9 @@ import QRCode from "easyqrcodejs";
 
 import styles from "./styles.module.scss";
 
-type QRCodeGeneratorProps = {
+interface QRCodeGeneratorProps {
   text: string;
-};
+}
 
 export function QRCodeGenerator({ text = "" }: QRCodeGeneratorProps) {
   const ref = useRef<HTMLDivElement>(null);

@@ -1,16 +1,16 @@
 import { Modal } from "antd";
 import { createContext, useEffect, useState } from "react";
 
-type BrowserPermissionsContextProps = {
+interface BrowserPermissionsContextProps {
   notificationPermission: NotificationPermission;
   soundPermission: boolean;
   requestNotificationPermission: () => void;
   toggleSoundPermission: () => void;
-};
+}
 
-type BrowserPermissionsProviderProps = {
+interface BrowserPermissionsProviderProps {
   children: React.ReactNode;
-};
+}
 
 export const BrowserPermissionsContext =
   createContext<BrowserPermissionsContextProps>(

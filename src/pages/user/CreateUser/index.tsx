@@ -17,14 +17,14 @@ import { trimInput } from "src/utils/trimInput";
 
 import styles from "./styles.module.scss";
 
-type UserToCreate = {
+interface UserCreateForm {
   name: string;
   email: string;
   password: string;
   role: string;
   cpf: string;
   birthDay: any;
-};
+}
 
 export function CreateUser() {
   useTitle("SkyDrinks - Criar usuário");
@@ -50,7 +50,7 @@ export function CreateUser() {
     setCreated(false);
   }
 
-  async function handleFormFinish(values: UserToCreate) {
+  async function handleFormFinish(values: UserCreateForm) {
     try {
       setCreateLoading(true);
 

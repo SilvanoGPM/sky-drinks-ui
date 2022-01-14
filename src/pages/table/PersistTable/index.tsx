@@ -1,7 +1,7 @@
 import { Form, InputNumber, Modal } from "antd";
 import { useEffect } from "react";
 
-type PersistTableProps = {
+interface PersistTableProps {
   visible: boolean;
   title: string;
   seats?: number;
@@ -9,7 +9,7 @@ type PersistTableProps = {
   loading?: boolean;
   onFinish?: (values: any) => void;
   onCancel?: () => void;
-};
+}
 
 export function PersistTable({
   visible,

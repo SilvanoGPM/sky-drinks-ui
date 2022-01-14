@@ -22,7 +22,7 @@ import {
 import { useForm } from "antd/lib/form/Form";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import endpoints, { toFullPictureURI } from "src/api/api";
+import endpoints from "src/api/api";
 import { useTitle } from "src/hooks/useTitle";
 import routes from "src/routes";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
@@ -35,88 +35,36 @@ import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
+import { imageToFullURI } from "src/utils/imageUtils";
+import { RequestPaginatedType, RequestSearchParams, RequestStatusType, RequestType } from "src/types/requests";
 
-type DrinkType = {
-  uuid: string;
-  volume: number;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  picture: string;
-  description: string;
-  price: number;
-  additional: string;
-  additionalList: string[];
-  alcoholic: boolean;
-};
-
-type UserType = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-};
-
-type StatusType = "PROCESSING" | "FINISHED" | "CANCELED";
-
-type RequestType = {
-  drinks: DrinkType[];
-  createdAt: string;
-  updatedAt: string;
-  status: StatusType;
-  uuid: string;
-  user: UserType;
-  totalPrice: number;
-};
-
-type RequestSearchType = {
-  status: StatusType;
+interface RequestSearchForm {
+  status: RequestStatusType;
   createdAt: any;
   drinkName: string;
   drinkDescription: string;
   price: number[];
-};
-
-type RequestParams = {
-  status: StatusType;
-  drinkName: string;
-  drinkDescription: string;
-  createdAt?: string;
-  createdInDateOrAfter?: string;
-  createdInDateOrBefore?: string;
-  price?: number;
-  lessThanOrEqualToTotalPrice?: number;
-  greaterThanOrEqualToTotalPrice?: number;
-};
-
-type PaginetedDataType = {
-  totalElements: number;
-  content: RequestType[];
-};
+}
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { confirm } = Modal;
 
-const status = ["PROCESSING", "FINISHED", "CANCELED"] as StatusType[];
+const status = ["PROCESSING", "FINISHED", "CANCELED"] as RequestStatusType[];
 
 export function MyRequests() {
   useTitle("SkyDrinks - Meus pedidos");
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [params, setParams] = useState<RequestParams>({} as RequestParams);
+  const [params, setParams] = useState<RequestSearchParams>({});
 
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
+  const [data, setData] = useState<RequestPaginatedType>({
     totalElements: 0,
     content: [],
   });
@@ -210,7 +158,7 @@ export function MyRequests() {
     });
   }
 
-  function handleFinishForm(values: RequestSearchType) {
+  function handleFinishForm(values: RequestSearchForm) {
     const { drinkDescription, drinkName, status } = values;
 
     const [greaterThanOrEqualToTotalPrice, lessThanOrEqualToTotalPrice] =
@@ -297,8 +245,8 @@ export function MyRequests() {
           showSizeChanger: false,
         }}
         renderItem={(request) => {
-          const { uuid, createdAt, status, drinks, totalPrice } = request;
-          const { picture } = toFullPictureURI(drinks[0]);
+          const { uuid, createdAt, status, drinks: [drink], totalPrice } = request;
+          const picture = imageToFullURI(drink.picture);
 
           return (
             <List.Item

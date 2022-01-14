@@ -1,36 +1,24 @@
 import { createContext } from "react";
+import { UserType } from "src/types/user";
 
 import { useAuth } from "./hooks/useAuth";
 
-type UserInfoProps = {
-  uuid: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  role: string;
-  birthDay: string;
-  cpf: string;
-  lockRequestsTimestamp: string;
-  lockRequests: boolean;
-};
+interface LoginProps { email: string; password: string; remember: boolean };
 
-type LoginProps = { email: string; password: string; remember: boolean };
-
-type AuthContextProps = {
-  userInfo: UserInfoProps;
+interface AuthContextProps {
+  userInfo: UserType;
   authenticated: boolean;
   authLoading: boolean;
   token: string;
-  setUserInfo: (userInfo: UserInfoProps) => void;
+  setUserInfo: (userInfo: UserType) => void;
   setAuthenticated: (authenticated: boolean) => void;
   handleLogin: (values: LoginProps) => Promise<void>;
   handleLogout: () => void;
-};
+}
 
-type AuthProviderProps = {
+interface AuthProviderProps {
   children: React.ReactNode;
-};
+}
 
 export const AuthContext = createContext<AuthContextProps>(
   {} as AuthContextProps
