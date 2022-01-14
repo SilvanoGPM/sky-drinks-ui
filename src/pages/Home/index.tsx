@@ -20,7 +20,10 @@ export function Home() {
 
       <div className={styles.contentContainer}>
         <RequestInfo />
-        <Outlet />
+
+        <main style={{ flex: 1 }}>
+          <Outlet />
+        </main>
 
         <Footer style={{ textAlign: "center" }}>
           SkyDrinks ©2021 Criado por{" "}

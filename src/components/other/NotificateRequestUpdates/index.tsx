@@ -1,22 +1,18 @@
-import { Button, Modal, notification } from "antd";
+import { Button, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSubscription } from "react-stomp-hooks";
 
 import routes from "src/routes";
 import endpoints from "src/api/api";
-import { Loading } from "src/components/layout/Loading";
 import { AuthContext } from "src/contexts/AuthContext";
 import { WebSocketContext } from "src/contexts/WebSocketContext";
 import { useAudio } from "src/hooks/useAudio";
 import { useBrowserNotification } from "src/hooks/useBrowserNotification";
 import { useTitle } from "src/hooks/useTitle";
 import { RequestType } from "src/types/requests";
-import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { getStatusBadge } from "src/utils/getStatusBadge";
 
-import styles from "./styles.module.scss";
+import { RequestModal } from "./RequestModal";
 
 type RequestNotificationType = "FINISHED" | "CANCELED";
 
@@ -42,17 +38,15 @@ export function NotificateRequestUpdates() {
 
   const { createBrowsetNotification } = useBrowserNotification();
 
-  const { toggle: toggleFinished } = useAudio(
+  const [toggleFinished] = useAudio(
     `${publicPath}/noises/request-finished.wav`
   );
 
-  const { toggle: toggleCanceled } = useAudio(
+  const [toggleCanceled] = useAudio(
     `${publicPath}/noises/request-canceled.mp3`
   );
 
-  const { toggle: toggleUpdated } = useAudio(
-    `${publicPath}/noises/requests-updated.mp3`
-  );
+  const [toggleUpdated] = useAudio(`${publicPath}/noises/requests-updated.mp3`);
 
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,24 +78,6 @@ export function NotificateRequestUpdates() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  function closeModal() {
-    setVisible(false);
-  }
-
-  function viewRequest(uuid: string) {
-    return () => {
-      const path = routes.VIEW_REQUEST.replace(":uuid", uuid);
-
-      if (location.pathname.includes(path)) {
-        navigate(0);
-      } else {
-        navigate(path);
-      }
-
-      closeModal();
-    };
-  }
 
   function goToManageRequests() {
     navigate(routes.MANAGE_REQUESTS);
@@ -178,83 +154,12 @@ export function NotificateRequestUpdates() {
   );
 
   return (
-    <Modal
-      title={modalInfo.title}
-      cancelText="Fechar"
-      okText="Ver pedido"
-      onOk={viewRequest(modalInfo.uuid)}
-      onCancel={closeModal}
+    <RequestModal
+      {...modalInfo}
       visible={visible}
-      destroyOnClose
-    >
-      <div className={styles.modalContainer}>
-        {loading ? (
-          <Loading />
-        ) : request.uuid ? (
-          <div className={styles.requestInfo}>
-            <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>
-
-            <p>
-              Status:{" "}
-              <span className={styles.badge}>
-                {getStatusBadge(request.status)}
-              </span>
-            </p>
-
-            <p>
-              Pedido realizado em: {formatDisplayDate(request.createdAt || "")}
-            </p>
-
-            {request.status === "FINISHED" &&
-              (request.delivered ? (
-                <p className={styles.bold}>Seu pedido foi entregue!</p>
-              ) : request.table ? (
-                <>
-                  <p className={styles.bold}>
-                    Seu pedido será entregue na mesa n° {request.table.number}!
-                  </p>
-                  <p className={styles.bold}>
-                    Para confirmar o seu pedido, mostre seu{" "}
-                    <span
-                      onClick={viewRequest(request.uuid)}
-                      className={styles.link}
-                    >
-                      QRCode do pedido
-                    </span>{" "}
-                    para o garçom que for entregar.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>
-                  <p className={styles.bold}>
-                    Lembre-se de ir com o{" "}
-                    <span
-                      onClick={viewRequest(request.uuid)}
-                      className={styles.link}
-                    >
-                      QRCode do pedido
-                    </span>
-                    .
-                  </p>
-                </>
-              ))}
-
-            {request.status === "CANCELED" && (
-              <p className={styles.bold}>
-                Vá até o balcão para mais informações sobre o cancelamento.
-              </p>
-            )}
-          </div>
-        ) : (
-          <>
-            <p>Não foi possível buscar as informações do pedido!</p>
-            <p className={styles.bold}>
-              Vá até o balcão para obter informações sobre o pedido.
-            </p>
-          </>
-        )}
-      </div>
-    </Modal>
+      setVisible={setVisible}
+      loading={loading}
+      request={request}
+    />
   );
 }

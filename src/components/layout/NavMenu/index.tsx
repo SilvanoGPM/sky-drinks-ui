@@ -57,12 +57,12 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
   return (
     <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
       <div className={styles.menuHeader}>
-        <h2>
+        <h1 className={styles.logo}>
           <Link to={routes.HOME}>
             <SkyDrinksIcon />
             <span>SkyDrinks</span>
           </Link>
-        </h2>
+        </h1>
       </div>
 
       <div className={styles.userInfo}>

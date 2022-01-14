@@ -29,7 +29,7 @@
     @include centeredElement();
     height: $headerHeight;
 
-    h2 {
+    .logo {
       color: var(--navmenu-color);
       background-color: var(--navmenu-header-background);
       margin: 0;
@@ -37,6 +37,7 @@
       width: 80%;
       text-align: center;
       white-space: nowrap;
+      font-size: 1.4rem;
 
       svg {
         margin-right: 0.5rem;

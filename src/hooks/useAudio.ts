@@ -2,7 +2,7 @@ import { useMemo, useEffect, useState, useContext } from "react";
 
 import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
 
-export function useAudio(url: string) {
+export function useAudio(url: string): [() => void, boolean] {
   const { soundPermission } = useContext(BrowserPermissionsContext);
   const audio = useMemo(() => new Audio(url), [url]);
 
@@ -21,5 +21,5 @@ export function useAudio(url: string) {
     };
   }, [audio]);
 
-  return { playing, toggle };
+  return [toggle, playing];
 }
