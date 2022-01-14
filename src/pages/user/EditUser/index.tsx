@@ -13,7 +13,6 @@ import { useFavicon } from "src/hooks/useFavicon";
 import { useTitle } from "src/hooks/useTitle";
 import { UserType } from "src/types/user";
 import { cpfMask } from "src/utils/cpfMask";
-import { getBirthDayDate } from "src/utils/formatDatabaseDate";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
@@ -159,7 +158,7 @@ export function EditUser() {
               email: user.email,
               role: user.role,
               cpf: user.cpf,
-              birthDay: moment(getBirthDayDate(user.birthDay, true)),
+              birthDay: moment(user.birthDay),
             }}
           >
             <Form.Item

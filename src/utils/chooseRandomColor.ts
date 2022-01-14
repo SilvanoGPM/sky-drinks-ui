@@ -1,6 +1,9 @@
 import { randomItem } from "./randomItem";
 
-export function chooseRandomColor() {
+/**
+ * Escolhe uma cor aleatória.
+ */
+export function chooseRandomColor(): string {
   const colors = [
     '#eccc68',
     '#7bed9f',

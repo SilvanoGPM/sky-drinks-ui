@@ -36,11 +36,7 @@ import { showNotification } from "src/utils/showNotification";
 import { trimInput } from "src/utils/trimInput";
 import { handleError } from "src/utils/handleError";
 import { UserPaginatedType, UserSearchParams } from "src/types/user";
-
-import {
-  formatBirthDayDate,
-  formatDatabaseDate,
-} from "src/utils/formatDatabaseDate";
+import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar.png";
@@ -353,7 +349,7 @@ export function ManageUsers() {
                 <p>
                   Data de nascimento:{" "}
                   <span className={styles.bold}>
-                    {formatBirthDayDate(birthDay)}
+                    {formatDatabaseDate(birthDay)}
                   </span>
                 </p>
                 <p>

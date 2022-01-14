@@ -13,8 +13,15 @@ export const additionals = new Map<string, string>(
   })
 );
 
-export function getAdditionalTagColor(additional: string) {
+/**
+ * Pega uma cor para um adicional.
+ * @param {string} additional Nome do adicional.
+ * @example
+ *  getAdditionalTagColor("gelo") // return "cyan";
+ *  getAdditionalTagColor() // return a random color.
+ */
+export function getAdditionalTagColor(additional: string): string {
   return additionals.has(additional)
-    ? additionals.get(additional)
+    ? additionals.get(additional) || ""
     : chooseRandomColor();
 }
