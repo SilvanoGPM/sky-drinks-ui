@@ -22,8 +22,6 @@ import { UserPaginatedType, UserSearchParams } from "src/types/user";
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar.png";
 
-import "./fix.scss";
-
 interface ListUsersProps {
   loading: boolean;
   params: UserSearchParams;

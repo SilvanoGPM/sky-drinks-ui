@@ -74,9 +74,9 @@ export function ManageRequest() {
   function removeRequestOfState(uuid: string) {
     const content = data.content.filter((item) => item.uuid !== uuid);
 
-    if (content.length > 0) {
-      setData({ ...data, content });
-    } else if (pagination.page > 0) {
+    setData({ ...data, content });
+
+    if (pagination.page > 0 && content.length === 0) {
       setPagination({ ...pagination, page: pagination.page - 1 });
       setLoading(true);
     }
