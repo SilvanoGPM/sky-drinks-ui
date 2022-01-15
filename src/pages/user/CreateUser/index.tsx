@@ -36,7 +36,7 @@ export function CreateUser() {
   const [createLoading, setCreateLoading] = useState(false);
   const [created, setCreated] = useState(false);
 
-  function handleCPFChange(any: any) {
+  function handleCPFChange(any: React.ChangeEvent<HTMLInputElement>) {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 

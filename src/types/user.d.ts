@@ -9,7 +9,7 @@ export interface UserType {
   cpf: string;
   lockRequestsTimestamp?: string;
   lockRequests?: boolean;
-};
+}
 
 export interface UserToCreate {
   name: string;
@@ -18,7 +18,7 @@ export interface UserToCreate {
   role: string;
   birthDay: string;
   cpf: string;
-};
+}
 
 export interface UserToUpdate {
   uuid: string;
@@ -29,7 +29,7 @@ export interface UserToUpdate {
   role: string;
   birthDay: string;
   cpf: string;
-};
+}
 
 export interface UserSearchParams {
   name?: string;
@@ -40,9 +40,18 @@ export interface UserSearchParams {
   page?: number;
   size?: number;
   lockRequests?: number;
-};
+}
 
 export interface UserPaginatedType {
   totalElements: number;
   content: UserType[];
-};
+}
+
+export interface UserSearchForm {
+  name: string;
+  email: string;
+  cpf: string;
+  role: string[];
+  birthDay: any;
+  lockRequests: number;
+}

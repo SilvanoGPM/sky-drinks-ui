@@ -7,7 +7,7 @@ import "moment/locale/pt-br";
  * @param {string} date Data a ser formatada.
  */
 export function formatDatabaseDate(date: string = new Date().toString()): string {
-  return moment(date).format("DD/MM/YYYY");
+  return moment(date || new Date().toString()).format("DD/MM/YYYY");
 }
 
 /**
@@ -15,7 +15,7 @@ export function formatDatabaseDate(date: string = new Date().toString()): string
  * @param {Date} date Data a ser formatada.
  */
 export function formatToDatabaseDate(date: Date = new Date()): string {
-  return moment(date).format("YYYY-MM-DD");
+  return moment(date || new Date()).format("YYYY-MM-DD");
 }
 
 /**
@@ -23,5 +23,5 @@ export function formatToDatabaseDate(date: Date = new Date()): string {
  * @param {string} date Data a ser formatada.
  */
 export function formatDisplayDate(date: string = new Date().toString()): string {
-  return moment(date).locale("pt-br").format("DD [de] MMMM, YYYY [as] HH:mm");
+  return moment(date || new Date().toString()).locale("pt-br").format("DD [de] MMMM, YYYY [as] HH:mm");
 }

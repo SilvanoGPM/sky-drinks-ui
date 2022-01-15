@@ -57,8 +57,6 @@ export function EditUser() {
       navigate(routes.HOME, {
         state: { warnMessage: "Você não possui permissão!" },
       });
-
-      return () => setInfoLoading(false);
     }
   }, [userInfo, params, navigate, permissions]);
 
@@ -94,6 +92,10 @@ export function EditUser() {
       loadUser();
     }
   }, [infoLoading, params, navigate, location]);
+
+  useEffect(() => {
+    return () => setInfoLoading(false);
+  }, []);
 
   function handleCPFChange(any: any) {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });

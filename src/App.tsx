@@ -1,5 +1,7 @@
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 
+import routes from "./routes";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { NotFound } from "./pages/NotFound";
@@ -15,8 +17,6 @@ import { CreateDrink } from "./pages/drink/CreateDrink";
 import { ManageUsers } from "./pages/user/ManageUsers";
 import { CreateUser } from "./pages/user/CreateUser";
 import { EditUser } from "./pages/user/EditUser";
-
-import routes from "./routes";
 import { NotAuthorized } from "./pages/NotAuthorized";
 import { MyAccount } from "./pages/user/MyAccount";
 import { FinalizeRequest } from "./pages/request/FinalizeRequest";
@@ -27,7 +27,6 @@ import { MyRequests } from "./pages/request/MyRequests";
 import { ListImages } from "./pages/drink/ListImages";
 import { StompSessionProvider } from "react-stomp-hooks";
 import { baseURL } from "./api/api";
-import React, { useContext } from "react";
 import { StompSessionProviderProps } from "react-stomp-hooks/dist/interfaces/StompSessionProviderProps";
 import { NotificateRequestUpdates } from "./components/other/NotificateRequestUpdates";
 import { ManageRequest } from "./pages/request/ManageRequests";
