@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import qs from "query-string";
 
 import {
   DeleteOutlined,
@@ -34,6 +35,8 @@ import {
 } from "src/types/tables";
 
 import styles from "./styles.module.scss";
+import { useCreateParams } from "src/hooks/useCreateParams";
+import { useSearchParams } from "react-router-dom";
 
 interface TableSearchForm {
   seats: number[];
@@ -51,11 +54,13 @@ const { Option } = Select;
 export function ManageTables() {
   useTitle("SkyDrinks - Gerenciar mesas");
 
+  const [, setSearchParams] = useSearchParams();
+
   const [form] = Form.useForm();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [persistTableLoading, setPersistTableLoading] = useState(false);
   const [removeTableLoading, setRemoveTableLoading] = useState(false);
 
@@ -75,6 +80,17 @@ export function ManageTables() {
     content: [],
   });
 
+  useCreateParams({
+    params: {
+      occupied: Number,
+      greaterThanOrEqualToSeats: Number,
+      lessThanOrEqualToSeats: Number,
+    },
+    setParams,
+    setLoading,
+    setPagination,
+  });
+
   useEffect(() => {
     async function loadTables() {
       const { page, size } = pagination;
@@ -85,6 +101,13 @@ export function ManageTables() {
           page,
           size,
         });
+
+        setSearchParams(
+          qs.stringify({
+            ...params,
+            page,
+          })
+        );
 
         setData(data);
       } catch (error: any) {
@@ -97,7 +120,7 @@ export function ManageTables() {
     if (loading) {
       loadTables();
     }
-  }, [loading, pagination, params]);
+  }, [loading, pagination, params, setSearchParams]);
 
   function handleRemoveTable(uuid: string) {
     async function remove() {
@@ -222,6 +245,7 @@ export function ManageTables() {
 
     setPagination({ ...pagination, page: 0 });
 
+    closeDrawer();
     setLoading(true);
   }
 

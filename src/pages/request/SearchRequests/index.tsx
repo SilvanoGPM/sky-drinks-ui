@@ -90,6 +90,7 @@ export function SearchRequests() {
         params={params}
         loading={loading}
         setLoading={setLoading}
+        setParams={setParams}
       />
 
       <SearchRequestsDrawer

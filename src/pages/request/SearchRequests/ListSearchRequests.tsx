@@ -24,17 +24,19 @@ import styles from "./styles.module.scss";
 
 const { confirm } = Modal;
 
-interface LisyMyRequestsProps {
+interface ListSearchRequestsProps {
   params: RequestSearchParams;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  setParams: (params: any) => void;
 }
 
 export function ListSearchRequests({
   params,
   loading,
   setLoading,
-}: LisyMyRequestsProps) {
+  setParams,
+}: ListSearchRequestsProps) {
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,

@@ -27,7 +27,7 @@ import {
 
 import styles from "./styles.module.scss";
 
-interface LisyMyRequestsProps {
+interface ListMyRequestsProps {
   params: RequestSearchParams;
   loading: boolean;
   setLoading: (loading: boolean) => void;
@@ -35,7 +35,7 @@ interface LisyMyRequestsProps {
 
 const { confirm } = Modal;
 
-export function ListMyRequests({ params, loading, setLoading }: LisyMyRequestsProps) {
+export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsProps) {
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
