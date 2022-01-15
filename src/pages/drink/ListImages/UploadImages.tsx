@@ -38,6 +38,7 @@ export function UploadImages() {
       });
     } finally {
       setImagesUploading(false);
+      resetImages();
     }
   }
 
