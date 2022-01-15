@@ -24,7 +24,7 @@ import { TableIcon } from "src/components/custom/CustomIcons";
 import { useTitle } from "src/hooks/useTitle";
 import { pluralize } from "src/utils/pluralize";
 import { showNotification } from "src/utils/showNotification";
-import { PersistTable } from "../PersistTable";
+import { PersistTable } from "./PersistTable";
 import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
 
 import {
