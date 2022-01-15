@@ -1,6 +1,7 @@
 import qs from "query-string";
 
 import { LoginError } from "src/errors/LoginError";
+
 import {
   UserPaginatedType,
   UserSearchParams,
@@ -10,6 +11,12 @@ import {
 } from "src/types/user";
 
 import { api } from "./api";
+
+interface UserWantsUpdate {
+  uuid: string;
+  email: string;
+  password: string;
+}
 
 const usersEndpoints = {
   async login(email: string, password: string): Promise<string> {
@@ -71,13 +78,14 @@ const usersEndpoints = {
     return data;
   },
 
-  async replaceUser(drink: UserToUpdate): Promise<void> {
-    const userFound = await this.findUserByUUID(drink.uuid);
-    await this.login(userFound.email, drink.password);
+  async replaceUser(user: UserToUpdate, userWantsCall: UserWantsUpdate): Promise<void> {
+    const userFound = await this.findUserByUUID(userWantsCall.uuid);
+
+    await this.login(userFound.email, userWantsCall.password);
 
     const { newPassword, ...drinkToUpdate } = {
-      ...drink,
-      password: drink.newPassword || drink.password,
+      ...user,
+      password: user.newPassword,
     };
 
     await api.put("/users/user", drinkToUpdate);

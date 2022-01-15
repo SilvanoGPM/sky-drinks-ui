@@ -50,15 +50,16 @@ export function EditUser() {
 
   const permissions = getUserPermissions(userInfo.role);
 
-  useEffect(() => {
-    const isOwnerOrAdmin = params.uuid === userInfo.uuid || permissions.isAdmin;
+  const isOwner = params.uuid === userInfo.uuid;
+  const isOwnerOrAdmin = isOwner || permissions.isAdmin;
 
+  useEffect(() => {
     if (!isOwnerOrAdmin) {
       navigate(routes.HOME, {
         state: { warnMessage: "Você não possui permissão!" },
       });
     }
-  }, [userInfo, params, navigate, permissions]);
+  }, [params, navigate, isOwnerOrAdmin]);
 
   useEffect(() => {
     const uuid = params.uuid || "";
@@ -105,12 +106,21 @@ export function EditUser() {
     try {
       setEditLoading(true);
 
-      await endpoints.replaceUser({
-        ...values,
-        uuid: params.uuid || "",
-        role: values.role || user.role,
-        birthDay: moment(values.birthDay._d).format("yyyy-MM-DD"),
-      });
+      const userWantsUpdate = {
+        uuid: userInfo.uuid,
+        email: userInfo.email,
+        password: values.password,
+      };
+
+      await endpoints.replaceUser(
+        {
+          ...values,
+          uuid: params.uuid || "",
+          role: values.role || user.role,
+          birthDay: values.birthDay ? moment(values.birthDay._d).format("yyyy-MM-DD") : user.birthDay,
+        },
+        userWantsUpdate
+      );
 
       if (params.uuid === userInfo.uuid) {
         const userInfo = await endpoints.getUserInfo();
@@ -124,6 +134,8 @@ export function EditUser() {
 
       navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
     } catch (error: any) {
+      console.log(error);
+
       const description = getFieldErrorsDescription(error);
 
       handleError({
@@ -194,27 +206,29 @@ export function EditUser() {
             <Form.Item
               name="password"
               label="Senha"
-              tooltip="Digite a senha para confimar as alterações"
+              tooltip="Digite sua senha para confimar as alterações"
               hasFeedback
               rules={[{ required: true, message: "Insira a senha do usuário" }]}
             >
               <Input.Password />
             </Form.Item>
 
-            <Form.Item
-              name="newPassword"
-              label="Nova senha"
-              tooltip="Deixe em branco caso não queria alterar a senha"
-              hasFeedback
-              rules={[
-                {
-                  min: 8,
-                  message: "A senha precisa ter pelo menos 8 caracteres",
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
+            {isOwner && (
+              <Form.Item
+                name="newPassword"
+                label="Nova senha"
+                tooltip="Deixe em branco caso não queria alterar a senha"
+                hasFeedback
+                rules={[
+                  {
+                    min: 8,
+                    message: "A senha precisa ter pelo menos 8 caracteres",
+                  },
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+            )}
 
             <Form.Item
               name="cpf"
@@ -231,38 +245,42 @@ export function EditUser() {
               <Input placeholder="123.456.789-10" onChange={handleCPFChange} />
             </Form.Item>
 
-            <Form.Item
-              name="birthDay"
-              label="Data de nascimento"
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: "Insira a data de nascimento do usuário",
-                },
-              ]}
-            >
-              <DatePicker placeholder="ex: 2004/09/12" format="DD/MM/yyyy" />
-            </Form.Item>
-
             {permissions.isAdmin && (
-              <Form.Item
-                name="role"
-                label="Tipo"
-                hasFeedback
-                rules={[
-                  { required: true, message: "Escolha o tipo do usuário" },
-                ]}
-              >
-                <Select>
-                  <Select.Option value="USER">Usuário</Select.Option>
-                  <Select.Option value="BARMEN">Barmen</Select.Option>
-                  <Select.Option value="WAITER">Garçom</Select.Option>
-                  <Select.Option value="USER,BARMEN,WAITER,ADMIN">
-                    Admin
-                  </Select.Option>
-                </Select>
-              </Form.Item>
+              <>
+                <Form.Item
+                  name="birthDay"
+                  label="Data de nascimento"
+                  hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: "Insira a data de nascimento do usuário",
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    placeholder="ex: 2004/09/12"
+                    format="DD/MM/yyyy"
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="role"
+                  label="Tipo"
+                  hasFeedback
+                  rules={[
+                    { required: true, message: "Escolha o tipo do usuário" },
+                  ]}
+                >
+                  <Select>
+                    <Select.Option value="USER">Usuário</Select.Option>
+                    <Select.Option value="BARMEN">Barmen</Select.Option>
+                    <Select.Option value="WAITER">Garçom</Select.Option>
+                    <Select.Option value="USER,BARMEN,WAITER,ADMIN">
+                      Admin
+                    </Select.Option>
+                  </Select>
+                </Form.Item>
+              </>
             )}
 
             <Form.Item
