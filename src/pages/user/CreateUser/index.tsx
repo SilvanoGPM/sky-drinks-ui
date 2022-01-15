@@ -79,7 +79,7 @@ export function CreateUser() {
   const onBlur = trimInput(form);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       {created ? (
         <div>
           <Result
@@ -250,6 +250,6 @@ export function CreateUser() {
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

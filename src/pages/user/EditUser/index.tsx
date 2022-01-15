@@ -140,7 +140,7 @@ export function EditUser() {
   const onBlur = trimInput(form);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div className={styles.titleContainer}>
         <h1 className={styles.title}>Editar Usuário</h1>
       </div>
@@ -285,6 +285,6 @@ export function EditUser() {
           </Form>
         </div>
       )}
-    </div>
+    </section>
   );
 }

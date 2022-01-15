@@ -22,7 +22,7 @@ export function SearchDrinks() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <h2 className={styles.title}>Pesquisar bebida</h2>
 
       <div className={styles.fullButton}>
@@ -42,6 +42,6 @@ export function SearchDrinks() {
         setLoading={setLoading}
         setDrawerVisible={setDrawerVisible}
       />
-    </div>
+    </section>
   );
 }

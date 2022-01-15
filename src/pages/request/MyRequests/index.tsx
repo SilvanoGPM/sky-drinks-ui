@@ -54,7 +54,7 @@ export function MyRequests() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Meus Pedidos</h2>
       </div>
@@ -83,6 +83,6 @@ export function MyRequests() {
         setVisible={setDrawerVisible}
         onFinish={handleFinishForm}
       />
-    </div>
+    </section>
   );
 }

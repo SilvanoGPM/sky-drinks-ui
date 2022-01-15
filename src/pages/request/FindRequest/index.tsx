@@ -31,7 +31,7 @@ export function FindRequest() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Encontrar Pedido</h2>
       </div>
@@ -45,6 +45,6 @@ export function FindRequest() {
           enterButton
         />
       </div>
-    </div>
+    </section>
   );
 }

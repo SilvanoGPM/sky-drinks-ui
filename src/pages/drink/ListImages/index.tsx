@@ -142,7 +142,7 @@ export function ListImages() {
   const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Imagens</h2>
       </div>
@@ -220,6 +220,6 @@ export function ListImages() {
           }}
         />
       </div>
-    </div>
+    </section>
   );
 }

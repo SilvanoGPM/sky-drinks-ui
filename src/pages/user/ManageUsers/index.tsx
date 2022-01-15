@@ -49,7 +49,7 @@ export function ManageUsers() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <h2 className={styles.title}>Gerenciar Usuários</h2>
 
       <div className={styles.fullButton}>
@@ -81,6 +81,6 @@ export function ManageUsers() {
       />
 
       <BlockAll />
-    </div>
+    </section>
   );
 }

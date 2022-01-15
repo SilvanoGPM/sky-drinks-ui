@@ -17,7 +17,7 @@ export function CreateDrink() {
   const [created, setCreated] = useState(false);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       {created ? (
         <DrinkCreated form={form} setCreated={setCreated} />
       ) : (
@@ -27,6 +27,6 @@ export function CreateDrink() {
           <CreateDrinkForm form={form} setCreated={setCreated} />
         </>
       )}
-    </div>
+    </section>
   );
 }

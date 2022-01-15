@@ -30,7 +30,7 @@ export function RequestCreated() {
   }
 
   return (
-    <div>
+    <section>
       <Result
         icon={<MyRequestsIcon style={{ color: "#52c41a" }} />}
         title="Pedido realizado com sucesso!"
@@ -55,6 +55,6 @@ export function RequestCreated() {
           </Button>,
         ]}
       />
-    </div>
+    </section>
   );
 }

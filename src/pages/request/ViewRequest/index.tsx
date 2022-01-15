@@ -260,7 +260,7 @@ export function ViewRequest() {
     userInfo.uuid === requestFound.user?.uuid;
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       {loading ? (
         <Loading />
       ) : (
@@ -351,6 +351,6 @@ export function ViewRequest() {
           </div>
         </>
       )}
-    </div>
+    </section>
   );
 }

@@ -179,7 +179,7 @@ export function EditDrink() {
   const onBlur = trimInput(form);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <h2 className={styles.title}>Editar Bebida</h2>
 
       {drinkLoading ? (
@@ -372,6 +372,6 @@ export function EditDrink() {
           </Form>
         </div>
       )}
-    </div>
+    </section>
   );
 }

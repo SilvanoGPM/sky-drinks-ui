@@ -76,7 +76,7 @@ export function LatestDrinks() {
   }, []);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <h2 className={styles.title}>Últimas bebidas adicionadas:</h2>
 
       {Boolean(latestDrinks.length) ? (
@@ -99,6 +99,6 @@ export function LatestDrinks() {
       ) : (
         <Empty description="Sem drinks no momento!" />
       )}
-    </div>
+    </section>
   );
 }

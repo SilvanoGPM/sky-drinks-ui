@@ -145,7 +145,7 @@ export function FinalizeRequest() {
     : "";
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div className={styles.titleWrapper}>
         <h2 className={styles.title}>Finalizar Pedido</h2>
       </div>
@@ -251,6 +251,6 @@ export function FinalizeRequest() {
           Finalizar Pedido
         </Button>
       </div>
-    </div>
+    </section>
   );
 }

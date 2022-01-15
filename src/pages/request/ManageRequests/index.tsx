@@ -155,7 +155,7 @@ export function ManageRequest() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Gerenciar Pedidos</h2>
       </div>
@@ -250,6 +250,6 @@ export function ManageRequest() {
       ) : (
         <Empty description="Nenhum pedido para gerenciar" />
       )}
-    </div>
+    </section>
   );
 }

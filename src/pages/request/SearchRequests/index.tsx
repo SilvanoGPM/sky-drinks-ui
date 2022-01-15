@@ -69,7 +69,7 @@ export function SearchRequests() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Pesquisar Pedidos</h2>
       </div>
@@ -98,6 +98,6 @@ export function SearchRequests() {
         setVisible={setDrawerVisible}
         onFinish={handleFinishForm}
       />
-    </div>
+    </section>
   );
 }

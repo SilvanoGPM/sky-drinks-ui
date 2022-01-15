@@ -131,7 +131,7 @@ export function UserMetrics() {
   const hasRequests = Boolean(topFiveDrinks.length);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <h2 className={styles.title}>Métricas</h2>
 
       {userLoading ? (
@@ -208,6 +208,6 @@ export function UserMetrics() {
       ) : (
         <Empty description="Nenhum pedido foi realizado" />
       )}
-    </div>
+    </section>
   );
 }

@@ -62,8 +62,8 @@ export function Login() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formContainer}>
+    <main className={styles.container}>
+      <section className={styles.formContainer}>
         <div className={styles.form}>
           <div className={styles.header}>
             <div className={styles.icon}>
@@ -146,7 +146,7 @@ export function Login() {
           {loadingImage && <Spin />}
           <img alt="" src={loginImage} onLoad={endImageLoad} />
         </figure>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

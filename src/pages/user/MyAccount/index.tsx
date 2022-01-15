@@ -32,7 +32,7 @@ export function MyAccount() {
   const permissions = getUserPermissions(userInfo.role);
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <div className={styles.myAccount}>
           <div className={styles.avatarWrapper}>
@@ -118,6 +118,6 @@ export function MyAccount() {
           />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

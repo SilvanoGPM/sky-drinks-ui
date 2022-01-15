@@ -36,7 +36,7 @@ export function Logout() {
   }
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div className={styles.card}>
         <h2>Você quer mesmo sair?</h2>
 
@@ -70,6 +70,6 @@ export function Logout() {
           </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

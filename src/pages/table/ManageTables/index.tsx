@@ -324,7 +324,7 @@ export function ManageTables() {
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
 
   return (
-    <div className={styles.container}>
+    <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Gerenciar Mesas</h2>
       </div>
@@ -518,6 +518,6 @@ export function ManageTables() {
           </Form.Item>
         </Form>
       </Drawer>
-    </div>
+    </section>
   );
 }
