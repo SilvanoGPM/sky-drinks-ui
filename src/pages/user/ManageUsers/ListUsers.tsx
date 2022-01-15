@@ -22,7 +22,7 @@ import { UserPaginatedType, UserSearchParams } from "src/types/user";
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar.png";
 
-import "./styles.scss";
+import "./fix.scss";
 
 interface ListUsersProps {
   loading: boolean;

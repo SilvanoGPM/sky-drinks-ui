@@ -1,7 +1,7 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Badge, Button, Divider, Modal } from "antd";
+import { Button, Divider, Modal } from "antd";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import endpoints from "src/api/api";
 import routes from "src/routes";
@@ -13,15 +13,14 @@ import { useTitle } from "src/hooks/useTitle";
 import { RequestStatusType, RequestType } from "src/types/requests";
 import { formatDisplayDate } from "src/utils/formatDatabaseDate";
 import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
 import { getStatusBadge } from "src/utils/getStatusBadge";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 import { handleError } from "src/utils/handleError";
 import { isUUID } from "src/utils/isUUID";
 import { showNotification } from "src/utils/showNotification";
-import { toFullPictureURI } from "src/utils/toFullPictureURI";
 
 import styles from "./styles.module.scss";
+import { DrinkList } from "./DrinkList";
 
 interface UpdatedRequest {
   status?: RequestStatusType;
@@ -255,6 +254,11 @@ export function ViewRequest() {
     );
   }
 
+  const showQRCode =
+    requestFound.status === "FINISHED" &&
+    !requestFound.delivered &&
+    userInfo.uuid === requestFound.user?.uuid;
+
   return (
     <div className={styles.container}>
       {loading ? (
@@ -266,22 +270,19 @@ export function ViewRequest() {
           </div>
 
           <div>
-            {requestFound.status === "FINISHED" &&
-              !requestFound.delivered &&
-              userInfo.uuid === requestFound.user?.uuid && (
-                <div className={styles.qrcode}>
-                  <p className={styles.qrcodeTitle}>QRCode do pedido:</p>
+            {showQRCode && (
+              <div className={styles.qrcode}>
+                <p className={styles.qrcodeTitle}>QRCode do pedido:</p>
 
-                  <QRCodeGenerator text={window.location.href} />
+                <QRCodeGenerator text={window.location.href} />
 
-                  <p className={styles.warnMessage}>
-                    Cuidado! Apenas compartilhe o QRCode do pedido com pessoas
-                    que você confia. Isso é o que garante para nossos
-                    funcionários que quem o possuí tem autorização para receber
-                    o pedido.
-                  </p>
-                </div>
-              )}
+                <p className={styles.warnMessage}>
+                  Cuidado! Apenas compartilhe o QRCode do pedido com pessoas que
+                  você confia. Isso é o que garante para nossos funcionários que
+                  quem o possuí tem autorização para receber o pedido.
+                </p>
+              </div>
+            )}
 
             {showActions()}
 
@@ -296,12 +297,14 @@ export function ViewRequest() {
               Código do pedido:{" "}
               <span className={styles.bold}>{requestFound.uuid}</span>
             </h3>
+
             <p>
               Usuário:{" "}
               <span className={styles.bold}>
                 {requestFound.user?.name} - {requestFound.user?.email}
               </span>
             </p>
+
             <div className={styles.status}>
               <p>Status: </p>
               {getStatusBadge(requestFound.status)}
@@ -344,53 +347,7 @@ export function ViewRequest() {
               </span>
             </p>
 
-            <Divider
-              style={{ fontSize: "1.5rem", margin: "2rem 0" }}
-              orientation="left"
-            >
-              Bebidas
-            </Divider>
-
-            <div>
-              {Object.keys(getDrinksGroupedByUUID(requestFound)).map(
-                (key, index) => {
-                  const drinksWithFullPicture =
-                    requestFound.drinks.map(toFullPictureURI);
-
-                  const drinksGrouped = getDrinksGroupedByUUID({
-                    drinks: drinksWithFullPicture,
-                  } as RequestType);
-
-                  const [drink] = drinksGrouped[key];
-                  const length = drinksGrouped[key].length;
-
-                  const { picture, name, price } = drink;
-
-                  return (
-                    <div
-                      title={name}
-                      key={`${key} - ${index}`}
-                      className={styles.drink}
-                    >
-                      <div className={styles.info}>
-                        <Link to={routes.VIEW_DRINK.replace(":uuid", key)}>
-                          <p className={styles.name}>{name}</p>
-                        </Link>
-                        <p className={styles.price}>
-                          {formatDisplayPrice(price * length)}
-                        </p>
-                      </div>
-
-                      <Badge count={length}>
-                        <figure>
-                          <img src={picture} alt={name} />
-                        </figure>
-                      </Badge>
-                    </div>
-                  );
-                }
-              )}
-            </div>
+            <DrinkList request={requestFound} />
           </div>
         </>
       )}
