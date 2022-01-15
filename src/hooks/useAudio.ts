@@ -8,14 +8,19 @@ export function useAudio(url: string): [() => void, boolean] {
 
   const [playing, setPlaying] = useState(false);
 
-  const toggle = () => setPlaying(!playing);
+  function toggle() {
+    if (soundPermission) {
+      setPlaying(!playing);
+    }
+  }
 
   useEffect(() => {
-    playing && soundPermission ? audio.play() : audio.pause();
-  }, [playing, audio, soundPermission]);
+    playing ? audio.play() : audio.pause();
+  }, [playing, audio]);
 
   useEffect(() => {
     audio.addEventListener("ended", () => setPlaying(false));
+
     return () => {
       audio.removeEventListener("ended", () => setPlaying(false));
     };

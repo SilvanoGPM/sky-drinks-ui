@@ -47,6 +47,7 @@ import {
 } from "chart.js";
 
 import styles from "./styles.module.scss";
+import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
 
 ChartJS.register(
   ArcElement,
@@ -134,6 +135,7 @@ export function DataOfRequests() {
     return Object.values(requestsData)
       .map(Object.keys)
       .flat()
+      .filter((month, index, arr) => arr.indexOf(month) === index)
       .sort((a, b) => moment(a).diff(b));
   }
 
@@ -144,8 +146,8 @@ export function DataOfRequests() {
     if (!requestData) return [];
 
     return getMonthsInRequestsData().map((month) => {
-      const x = requestData[month]?.[attr];
-      return x ? x : 0;
+      const value = requestData[month]?.[attr];
+      return value ? value : 0;
     });
   }
 
@@ -329,6 +331,10 @@ export function DataOfRequests() {
                         display: true,
                         text: "Datas",
                       },
+                      ticks: {
+                        maxRotation: 90,
+                        minRotation: 30,
+                      },
                     },
                   },
                   plugins: {
@@ -342,7 +348,7 @@ export function DataOfRequests() {
                   },
                 }}
                 data={{
-                  labels: getMonthsInRequestsData(),
+                  labels: getMonthsInRequestsData().map(formatDatabaseDate),
                   datasets: [
                     {
                       label: "Pedidos entregues",

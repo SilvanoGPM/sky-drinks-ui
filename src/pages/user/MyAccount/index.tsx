@@ -12,7 +12,7 @@ import { getUserAge } from "src/utils/getUserAge";
 import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
 import { getUserPermissions } from "src/utils/getUserPermissions";
 
-import { Statistics } from "./statistics";
+import { Statistics } from "./Statistics";
 
 import styles from "./styles.module.scss";
 import avatar from "src/assets/avatar_white.png";

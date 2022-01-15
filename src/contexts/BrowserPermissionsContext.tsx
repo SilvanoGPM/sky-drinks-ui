@@ -1,5 +1,7 @@
 import { Modal } from "antd";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
+import { AuthContext } from "./AuthContext";
 
 interface BrowserPermissionsContextProps {
   notificationPermission: NotificationPermission;
@@ -24,6 +26,8 @@ const { info } = Modal;
 export function BrowserPermissionsProvider({
   children,
 }: BrowserPermissionsProviderProps) {
+  const { userInfo, authenticated } = useContext(AuthContext);
+
   const [notificationPermission, setNotificationPermission] =
     useState<NotificationPermission>(Notification.permission);
 
@@ -32,17 +36,28 @@ export function BrowserPermissionsProvider({
   useEffect(() => {
     const permString = localStorage.getItem(PERMISSIONS_KEY);
 
-    if (permString) {
+    if (permString && authenticated) {
       const perms = JSON.parse(permString);
-      setSoundPermission(perms.sound);
+
+      if (perms[userInfo.email]) {
+        setSoundPermission(perms[userInfo.email].sound);
+      }
     }
-  }, []);
+  }, [userInfo, authenticated]);
 
   useEffect(() => {
-    const perms = JSON.stringify({ sound: soundPermission });
+    if (authenticated) {
+      const otherUsersString = localStorage.getItem(PERMISSIONS_KEY);
+      const otherUsers = otherUsersString ? JSON.parse(otherUsersString) : {};
 
-    localStorage.setItem(PERMISSIONS_KEY, perms);
-  }, [soundPermission]);
+      const perms = JSON.stringify({
+        ...otherUsers,
+        [userInfo.email]: { sound: soundPermission },
+      });
+
+      localStorage.setItem(PERMISSIONS_KEY, perms);
+    }
+  }, [soundPermission, userInfo, authenticated]);
 
   function requestNotificationPermission() {
     async function request() {

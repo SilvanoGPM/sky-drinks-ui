@@ -170,7 +170,7 @@ export function Statistics() {
           </div>
 
           <div className={styles.totalDrinks}>
-            <h2>Total de pedidos</h2>
+            <h2>Total de bebidas</h2>
 
             {loadingTotalDrinks ? (
               <Loading />
@@ -187,7 +187,7 @@ export function Statistics() {
                 <Col xs={12} sm={8}>
                   <Card>
                     <Statistic
-                      title="Não alcoólico"
+                      title="Não alcoólica"
                       value={sum(
                         totalDrinks.filter(({ alcoholic }) => !alcoholic),
                         toTotal
@@ -199,7 +199,7 @@ export function Statistics() {
                 <Col xs={12} sm={8}>
                   <Card>
                     <Statistic
-                      title="Alcoólico"
+                      title="Alcoólica"
                       value={sum(
                         totalDrinks.filter(({ alcoholic }) => alcoholic),
                         toTotal

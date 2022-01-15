@@ -25,6 +25,7 @@ import { showNotification } from "src/utils/showNotification";
 import { FetchTables } from "./FetchTables";
 
 import styles from "./styles.module.scss";
+import { isUUID } from "src/utils/isUUID";
 
 const { confirm } = Modal;
 
@@ -83,6 +84,30 @@ export function FinalizeRequest() {
 
       clearRequest();
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const regex = /Bebida com id: ([\w-]*), não foi encontrada\./gm;
+        const message = error.response?.data?.details;
+
+        const values = regex.exec(message);
+
+        if (values && isUUID(values[1])) {
+          const uuid = values[1];
+
+          const drinks = request.drinks.filter((drink) => drink.uuid !== uuid);
+
+          setRequest({ ...request, drinks });
+
+          showNotification({
+            type: "info",
+            message: "Bebida removida do pedido",
+            description:
+              "No seu pedido, havia uma bebida que foi removida do nosso servidor, ou que não foi encontrada, então removemos ela. Tente realizar o pedido novamente",
+          });
+
+          return;
+        }
+      }
+
       handleError({
         error,
         fallback: "Não foi possível finalizar o pedido",
