@@ -87,3 +87,10 @@ export interface RequestSearchForm {
   drinkDescription: string;
   price: number[];
 }
+
+interface RequestSearchFormForAdmins extends RequestSearchForm {
+  delivered: number;
+  userName: string;
+  userEmail: string;
+  userCpf: string;
+}
