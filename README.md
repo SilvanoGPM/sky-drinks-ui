@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+<h1 align="center">SkyDrinksUI</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+    SkyDrinksUI é um site construido para uma empresa fictícia(Sky Drinks), desenvolvido com React e And Design.   
+</p>
 
-## Available Scripts
+<p align="center">
+    <img width="200" src="./SkyDrinksUI.png" />
+</p>
 
-In the project directory, you can run:
+Você pode visualizar o site já em produção na seguinte URL: https://thirsty-curie-dca26d.netlify.app/
 
-### `yarn start`
+O site pode demorar um pouco para carregar de inicio, porque o servidor deve estar iniciando. Caso as imagens das bebidas não estejam aparecendo, infelizmente o host do servidor deletou elas.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## :wrench: Como executar?
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### :mag_right: Requisitos:
 
-### `yarn test`
+* NodeJS
+* NPM ou Yarn.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Para rodar todas as funções do site, lembre-se de ter [o servidor](https://github.com/SkyG0D/sky-drinks-api) rodando na sua máquina.
 
-### `yarn build`
+### :athletic_shoe: Passo a passo:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clone este repositório.
+2. Abra uma nova janela no terminal e navegue até o diretório do projeto.
+3. Execute `npm install` ou `yarn`.
+4. Execute `npm start` ou `yarn start`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+O servidor rodará na porta 3000, e você poderá acessar pelo link `localhost:3000`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### :paperclip: Informaçõea adicionais:
 
-### `yarn eject`
+O arquivo `.env` na raiz do projeto precisa estar apontando para a URL [do servidor](https://github.com/SkyG0D/sky-drinks-api).
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Exemplo:
+```
+REACT_APP_API_URL=http://localhost:8080/api/v1
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## :rocket: Tecnologias usadas
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- [React](https://pt-br.reactjs.org/) é uma biblioteca JavaScript de código aberto com foco em criar interfaces de usuário em páginas web.
+- [Ant Design](https://ant.design/), biblioteca de estilos número 2 do react.
+- [React Router](https://reactrouter.com/) é uma biblioteca para uso de rotas dinâmicas dentro da sua aplicação.
+- [Sass](https://sass-lang.com/) é um preprocessador CSS.
+- [ChartJS](https://www.chartjs.org/) 
+é uma biblioteca para mostrar gráficos com JavaScript.
