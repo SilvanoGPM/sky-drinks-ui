@@ -192,7 +192,6 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
         }) => (
           <List.Item
             className={styles.item}
-
             actions={[
               <Tooltip key="remove" title="Deletar usuário" placement="bottom">
                 <Popconfirm
