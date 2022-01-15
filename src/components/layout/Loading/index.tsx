@@ -7,6 +7,7 @@ export function Loading() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        marginBottom: "1.5rem",
       }}
     >
       <Spin />

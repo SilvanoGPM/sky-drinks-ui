@@ -6,15 +6,16 @@ import endpoints from "src/api/api";
 import { showNotification } from "src/utils/showNotification";
 
 import styles from "./styles.module.scss";
+import { UploadFile } from "antd/lib/upload/interface";
 
 export function UploadImages() {
-  const [showUploadList, setShowUploadList] = useState(false);
   const [images, setImages] = useState<File[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [imagesUploading, setImagesUploading] = useState(false);
 
   function dummyRequest({ file, onSuccess }: any) {
     setImages([...images, file]);
-    setShowUploadList(true);
+    setFileList([...fileList, file]);
 
     return onSuccess(file);
   }
@@ -24,8 +25,6 @@ export function UploadImages() {
       setImagesUploading(true);
 
       await endpoints.uploadMultipleImages(images);
-
-      setShowUploadList(false);
 
       showNotification({
         type: "success",
@@ -43,8 +42,8 @@ export function UploadImages() {
   }
 
   function resetImages() {
-    setShowUploadList(false);
     setImages([]);
+    setFileList([]);
   }
 
   return (
@@ -83,7 +82,7 @@ export function UploadImages() {
         accept="image/png, image/jpeg"
         multiple
         customRequest={dummyRequest}
-        showUploadList={showUploadList}
+        fileList={fileList}
       >
         <Button
           loading={imagesUploading}
