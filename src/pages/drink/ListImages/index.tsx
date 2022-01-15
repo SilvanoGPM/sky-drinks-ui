@@ -147,7 +147,7 @@ export function ListImages() {
         <h2 className={styles.title}>Imagens</h2>
       </div>
 
-      <UploadImages />
+      <UploadImages setListLoading={setLoading} />
 
       <div>
         <List

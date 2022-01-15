@@ -4,11 +4,15 @@ import { Button, Upload } from "antd";
 
 import endpoints from "src/api/api";
 import { showNotification } from "src/utils/showNotification";
-
-import styles from "./styles.module.scss";
 import { UploadFile } from "antd/lib/upload/interface";
 
-export function UploadImages() {
+import styles from "./styles.module.scss";
+
+interface UploadImagesProps {
+  setListLoading: (listLoading: boolean) => void;
+}
+
+export function UploadImages({ setListLoading }: UploadImagesProps) {
   const [images, setImages] = useState<File[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [imagesUploading, setImagesUploading] = useState(false);
@@ -25,6 +29,8 @@ export function UploadImages() {
       setImagesUploading(true);
 
       await endpoints.uploadMultipleImages(images);
+
+      setListLoading(true);
 
       showNotification({
         type: "success",
