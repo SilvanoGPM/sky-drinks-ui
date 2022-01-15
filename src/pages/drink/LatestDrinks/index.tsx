@@ -67,11 +67,13 @@ export function LatestDrinks() {
     if (loading) {
       loadLatestDrinks();
     }
+  }, [loading]);
 
+  useEffect(() => {
     return () => {
       setLoading(false);
     };
-  }, [loading]);
+  }, []);
 
   return (
     <div className={styles.container}>

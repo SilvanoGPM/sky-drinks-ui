@@ -1,48 +1,14 @@
-@import "src/scss/variables";
 @import "src/scss/shared";
 @import "src/scss/mixins";
 
 .container {
   @extend .container;
   @include centeredElement();
+
   flex-direction: column;
 }
 
-.drinks {
-  &Wrapper {
-    margin-top: 1rem;
-    width: 100%;
-  }
-
-  &List {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    flex-wrap: wrap;
-    gap: 0.8rem;
-
-    @media #{$mq-medium} {
-      justify-content: center;
-    }
-  }
-
-  &Founded {
-    @media #{$mq-medium} {
-      text-align: center;
-    }
-  }
-}
-
-.paginationContainer {
-  @include centeredElement();
-}
-
-.drawer {
-  width: 500px;
-}
-
-.loading {
-  @extend .loading;
-  margin-top: 1rem;
+.fullButton {
+  @extend .fullButton;
+  margin-bottom: 1rem;
 }

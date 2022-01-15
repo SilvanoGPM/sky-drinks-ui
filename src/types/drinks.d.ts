@@ -50,3 +50,12 @@ export interface DrinkSearchParams {
   page?: number;
   size?: number;
 };
+
+export interface DrinkSearchForm {
+  name: string;
+  description: string;
+  alcoholic: string;
+  price: number[];
+  volume: number[];
+  additional: string[];
+}
