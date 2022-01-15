@@ -75,7 +75,15 @@ export interface DataOfDrinksType {
   mostCanceled: TopDrinkType[];
 }
 
-interface TotalDrinkType {
+export interface TotalDrinkType {
   alcoholic: boolean;
   total: number;
+}
+
+export interface RequestSearchForm {
+  status: RequestStatusType;
+  createdAt: any;
+  drinkName: string;
+  drinkDescription: string;
+  price: number[];
 }
