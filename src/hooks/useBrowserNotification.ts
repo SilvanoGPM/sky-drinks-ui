@@ -1,14 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect } from 'react';
 
-import { BrowserPermissionsContext } from "src/contexts/BrowserPermissionsContext";
+import { BrowserPermissionsContext } from 'src/contexts/BrowserPermissionsContext';
 
-export function useBrowserNotification() {
+interface UseBrowserNotificationReturn {
+  createBrowsetNotification: (
+    title: string,
+    options?: NotificationOptions
+  ) => void;
+}
+
+export function useBrowserNotification(): UseBrowserNotificationReturn {
   const { notificationPermission, requestNotificationPermission } = useContext(
     BrowserPermissionsContext
   );
 
   useEffect(() => {
-    if (notificationPermission === "default") {
+    if (notificationPermission === 'default') {
       requestNotificationPermission();
     }
   }, [notificationPermission, requestNotificationPermission]);
@@ -16,8 +23,8 @@ export function useBrowserNotification() {
   function createBrowsetNotification(
     title: string,
     options?: NotificationOptions
-  ) {
-    if (notificationPermission === "granted") {
+  ): void {
+    if (notificationPermission === 'granted') {
       new Notification(title, options);
     }
   }

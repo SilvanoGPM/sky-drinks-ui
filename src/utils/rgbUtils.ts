@@ -18,9 +18,7 @@ export function randomRGB(): string {
  * @param {number} alpha Valor do canal alpha.
  */
 export function addAlphaToRGB(rgb: string, alpha: number): string {
-  return rgb
-    .replace("rgb", "rgba")
-    .replace(")", `, ${alpha})`);
+  return rgb.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
 }
 
 /**

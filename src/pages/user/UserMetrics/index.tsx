@@ -1,7 +1,7 @@
-import { Descriptions, Empty, Modal } from "antd";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Doughnut } from "react-chartjs-2";
+import { useEffect, useState } from 'react';
+import { Descriptions, Empty, Modal } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Doughnut } from 'react-chartjs-2';
 
 import {
   Chart as ChartJS,
@@ -12,21 +12,19 @@ import {
   BarElement,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { handleError } from "src/utils/handleError";
-import { isUUID } from "src/utils/isUUID";
-import { showNotification } from "src/utils/showNotification";
-import { Loading } from "src/components/layout/Loading";
-import { formatDisplayRole } from "src/utils/formatDisplayRole";
-import { getUserAge } from "src/utils/getUserAge";
-import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-import { TopDrinkType } from "src/types/requests";
-import { UserType } from "src/types/user";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { handleError } from 'src/utils/handleError';
+import { isUUID } from 'src/utils/isUUID';
+import { showNotification } from 'src/utils/showNotification';
+import { Loading } from 'src/components/layout/Loading';
+import { formatDisplayRole } from 'src/utils/formatDisplayRole';
+import { getUserAge } from 'src/utils/getUserAge';
+import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 ChartJS.register(
   ArcElement,
@@ -40,7 +38,7 @@ ChartJS.register(
 
 const { confirm } = Modal;
 
-export function UserMetrics() {
+export function UserMetrics(): JSX.Element {
   const [topFiveDrinks, setTopFiveDrinks] = useState<TopDrinkType[]>([]);
   const [user, setUser] = useState<UserType>({} as UserType);
 
@@ -51,12 +49,12 @@ export function UserMetrics() {
   const params = useParams();
 
   useEffect(() => {
-    const uuid = params.uuid || "";
+    const uuid = params.uuid || '';
 
     if (!isUUID(uuid)) {
       showNotification({
-        type: "warn",
-        message: "Código de usuário inválido!",
+        type: 'warn',
+        message: 'Código de usuário inválido!',
       });
 
       navigate(-1);
@@ -64,9 +62,9 @@ export function UserMetrics() {
   }, [params, navigate]);
 
   useEffect(() => {
-    const uuid = params.uuid || "";
+    const uuid = params.uuid || '';
 
-    async function getData() {
+    async function getData(): Promise<void> {
       try {
         const data = await endpoints.getUserTopDrinks(uuid);
         setTopFiveDrinks(data);
@@ -74,7 +72,7 @@ export function UserMetrics() {
         handleError({
           error,
           fallback:
-            "Não foi possível carregar as bebidas mais pedidas do usuário",
+            'Não foi possível carregar as bebidas mais pedidas do usuário',
         });
       } finally {
         setTopFiveLoading(false);
@@ -87,16 +85,16 @@ export function UserMetrics() {
   }, [topFiveLoading, params]);
 
   useEffect(() => {
-    const uuid = params.uuid || "";
+    const uuid = params.uuid || '';
 
-    async function loadUser() {
+    async function loadUser(): Promise<void> {
       try {
-        const user = await endpoints.findUserByUUID(uuid);
-        setUser(user);
+        const userFound = await endpoints.findUserByUUID(uuid);
+        setUser(userFound);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar as informações do usuário",
+          fallback: 'Não foi possível carregar as informações do usuário',
         });
       } finally {
         setUserLoading(false);
@@ -115,15 +113,15 @@ export function UserMetrics() {
     };
   }, []);
 
-  function confirmNavigation(uuid: string) {
-    function onOk() {
-      navigate(routes.VIEW_DRINK.replace(":uuid", uuid));
+  function confirmNavigation(uuid: string): void {
+    function onOk(): void {
+      navigate(routes.VIEW_DRINK.replace(':uuid', uuid));
     }
 
     confirm({
-      title: "Visualizar bebida?",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Visualizar bebida?',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk,
     });
   }
@@ -140,71 +138,75 @@ export function UserMetrics() {
         <Descriptions
           title={<h3 className={styles.infoTitle}>Informações</h3>}
           bordered
-          column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm:1, xs: 1 }}
+          column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
         >
           <Descriptions.Item label="Nome">{user.name}</Descriptions.Item>
-          <Descriptions.Item label="Idade">{getUserAge(user.birthDay)} Anos</Descriptions.Item>
+          <Descriptions.Item label="Idade">
+            {getUserAge(user.birthDay)} Anos
+          </Descriptions.Item>
           <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
           <Descriptions.Item label="CPF">{user.cpf}</Descriptions.Item>
           <Descriptions.Item label="Cargo">
             {formatDisplayRole(user.role)}
           </Descriptions.Item>
-          <Descriptions.Item label="Pedidos">{`${user.lockRequests ? `Bloqueados em ${formatDisplayDate(user.lockRequestsTimestamp)}` : "Não bloqueados"}`}</Descriptions.Item>
+          <Descriptions.Item label="Pedidos">{`${
+            user.lockRequests
+              ? `Bloqueados em ${formatDisplayDate(user.lockRequestsTimestamp)}`
+              : 'Não bloqueados'
+          }`}</Descriptions.Item>
         </Descriptions>
       )}
 
       {hasRequests ? (
-        <>
-          <div className={styles.chart}>
-            {topFiveLoading ? (
-              <Loading />
-            ) : (
-              <Doughnut
-                options={{
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: "Bebidas mais pedidas",
-                      font: { size: 20 },
-                    },
+        <div className={styles.chart}>
+          {topFiveLoading ? (
+            <Loading />
+          ) : (
+            <Doughnut
+              options={{
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Bebidas mais pedidas',
+                    font: { size: 20 },
                   },
-                  responsive: true,
-                  rotation: 180,
-                  onClick: (_, element) => {
-                    if (element.length > 0) {
-                      const { index } = element[0];
-                      const item: any = topFiveDrinks[index];
+                },
+                responsive: true,
+                rotation: 180,
+                onClick: (_, element) => {
+                  if (element.length > 0) {
+                    const { index } = element[0];
+                    const item: any = topFiveDrinks[index];
 
-                      confirmNavigation(item.drinkUUID);
-                    }
+                    confirmNavigation(item.drinkUUID);
+                  }
+                },
+              }}
+              data={{
+                labels: topFiveDrinks.map(({ name }) => name),
+                datasets: [
+                  {
+                    data: topFiveDrinks.map(({ total }) => total),
+                    backgroundColor: [
+                      'rgba(0, 148, 50, 0.3)',
+                      'rgba(196, 229, 56, 0.3)',
+                      'rgba(255, 195, 18, 0.3)',
+                      'rgba(247, 159, 31, 0.3)',
+                      'rgba(234, 32, 39, 0.3)',
+                    ],
+                    borderColor: [
+                      'rgb(0, 148, 50)',
+                      'rgb(196, 229, 56)',
+                      'rgb(255, 195, 18)',
+                      'rgb(247, 159, 31)',
+                      'rgb(234, 32, 39)',
+                    ],
                   },
-                }}
-                data={{
-                  labels: topFiveDrinks.map(({ name }) => name),
-                  datasets: [
-                    {
-                      data: topFiveDrinks.map(({ total }) => total),
-                      backgroundColor: [
-                        "rgba(0, 148, 50, 0.3)",
-                        "rgba(196, 229, 56, 0.3)",
-                        "rgba(255, 195, 18, 0.3)",
-                        "rgba(247, 159, 31, 0.3)",
-                        "rgba(234, 32, 39, 0.3)",
-                      ],
-                      borderColor: [
-                        "rgb(0, 148, 50)",
-                        "rgb(196, 229, 56)",
-                        "rgb(255, 195, 18)",
-                        "rgb(247, 159, 31)",
-                        "rgb(234, 32, 39)",
-                      ],
-                    },
-                  ],
-                }}
-              />
-            )}
-          </div>
-        </>
+                ],
+              }}
+            />
+          )}
+        </div>
       ) : (
         <Empty description="Nenhum pedido foi realizado" />
       )}

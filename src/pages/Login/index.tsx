@@ -1,23 +1,23 @@
-import { useContext, useState } from "react";
-import { Input, Form, Button, Checkbox, Spin } from "antd";
-import { Navigate, useLocation } from "react-router-dom";
+import { useContext, useState } from 'react';
+import { Input, Form, Button, Checkbox, Spin } from 'antd';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import {
   LockOutlined,
   LoginOutlined,
   MailOutlined,
   UserOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import routes from "src/routes";
-import { AuthContext } from "src/contexts/AuthContext";
-import { useTitle } from "src/hooks/useTitle";
-import { showNotification } from "src/utils/showNotification";
-import { useFlashNotification } from "src/hooks/useFlashNotification";
-import { handleError } from "src/utils/handleError";
+import routes from 'src/routes';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { useTitle } from 'src/hooks/useTitle';
+import { showNotification } from 'src/utils/showNotification';
+import { useFlashNotification } from 'src/hooks/useFlashNotification';
+import { handleError } from 'src/utils/handleError';
 
-import styles from "./styles.module.scss";
-import loginImage from "src/assets/login-image.jpg";
+import loginImage from 'src/assets/login-image.jpg';
+import styles from './styles.module.scss';
 
 interface LoginValues {
   email: string;
@@ -25,8 +25,8 @@ interface LoginValues {
   remember: boolean;
 }
 
-export function Login() {
-  useTitle("SkyDrinks - Login");
+export function Login(): JSX.Element {
+  useTitle('SkyDrinks - Login');
 
   const location = useLocation();
 
@@ -36,23 +36,23 @@ export function Login() {
 
   useFlashNotification(routes.LOGIN);
 
-  async function handleFormLogin(values: LoginValues) {
+  async function handleFormLogin(values: LoginValues): Promise<void> {
     try {
       await handleLogin(values);
 
       showNotification({
-        type: "success",
-        message: "Login efetuado com sucesso!",
+        type: 'success',
+        message: 'Login efetuado com sucesso!',
       });
     } catch (error: any) {
       handleError({
         error,
-        fallback: "Não foi possível efetuar o login",
+        fallback: 'Não foi possível efetuar o login',
       });
     }
   }
 
-  function endImageLoad() {
+  function endImageLoad(): void {
     setLoadingImage(false);
   }
 
@@ -81,12 +81,12 @@ export function Login() {
                 fill="#ffffff"
                 fillOpacity="1"
                 d="M0,96L80,80C160,64,320,32,480,58.7C640,85,800,171,960,181.3C1120,192,1280,128,1360,96L1440,64L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"
-              ></path>
+              />
             </svg>
           </div>
 
           <Form
-            style={{ padding: "1rem" }}
+            style={{ padding: '1rem' }}
             name="login"
             layout="vertical"
             onFinish={handleFormLogin}
@@ -100,8 +100,8 @@ export function Login() {
               rules={[
                 {
                   required: true,
-                  type: "email",
-                  message: "Insiria um E-mail válido!",
+                  type: 'email',
+                  message: 'Insiria um E-mail válido!',
                 },
               ]}
             >
@@ -112,7 +112,7 @@ export function Login() {
               label="Senha"
               name="password"
               hasFeedback
-              rules={[{ required: true, message: "Insira sua senha!" }]}
+              rules={[{ required: true, message: 'Insira sua senha!' }]}
             >
               <Input.Password prefix={<LockOutlined />} />
             </Form.Item>
@@ -128,7 +128,7 @@ export function Login() {
               }}
             >
               <Button
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 icon={<LoginOutlined />}
                 type="primary"
                 htmlType="submit"

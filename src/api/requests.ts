@@ -1,21 +1,7 @@
-import moment from "moment";
-import qs from "query-string";
+import moment from 'moment';
+import qs from 'query-string';
 
-import { BooleanParameterOfRequest } from "src/enums/BooleanParameterOfRequestEnum";
-
-import {
-  DataOfDrinksType,
-  RequestData,
-  RequestPaginatedType,
-  RequestsData,
-  RequestSearchParams,
-  RequestToCreate,
-  RequestType,
-  TopDrinkType,
-  TotalDrinkType,
-} from "src/types/requests";
-
-import { api } from "./api";
+import { api } from './api';
 
 interface RequestDateType {
   date: string;
@@ -23,7 +9,7 @@ interface RequestDateType {
 
 const requestsEndpoints = {
   async createRequest(request: RequestToCreate): Promise<RequestType> {
-    const { data } = await api.post<RequestType>("/requests/user", request);
+    const { data } = await api.post<RequestType>('/requests/user', request);
     return data;
   },
 
@@ -33,13 +19,13 @@ const requestsEndpoints = {
   },
 
   async getAllBlocked(): Promise<boolean> {
-    const { data } = await api.get<boolean>("/requests/all/all-blocked");
+    const { data } = await api.get<boolean>('/requests/all/all-blocked');
     return data;
   },
 
   async getAllDates(): Promise<RequestDateType[]> {
     const { data } = await api.get<RequestDateType[]>(
-      "/requests/admin/all-dates"
+      '/requests/admin/all-dates'
     );
 
     return data;
@@ -48,9 +34,9 @@ const requestsEndpoints = {
   async getAllMonths(): Promise<string[]> {
     const dates = await this.getAllDates();
 
-    const months = dates.reduce(
+    const mappedMonths = dates.reduce(
       (months: string[], { date }: RequestDateType) => {
-        const month = moment(date).format("YYYY-MM");
+        const month = moment(date).format('YYYY-MM');
 
         if (months.includes(month)) {
           return months;
@@ -61,7 +47,7 @@ const requestsEndpoints = {
       []
     );
 
-    return months;
+    return mappedMonths;
   },
 
   async searchRequests(
@@ -93,8 +79,8 @@ const requestsEndpoints = {
     size = 10
   ): Promise<RequestPaginatedType> {
     return this.searchRequests({
-      status: "PROCESSING",
-      sort: "createdAt",
+      status: 'PROCESSING',
+      sort: 'createdAt',
       page,
       size,
     });
@@ -102,7 +88,7 @@ const requestsEndpoints = {
 
   async getMyTopFiveDrinks(): Promise<TopDrinkType[]> {
     const { data } = await api.get<TopDrinkType[]>(
-      "/requests/user/top-five-drinks"
+      '/requests/user/top-five-drinks'
     );
 
     return data;
@@ -118,7 +104,7 @@ const requestsEndpoints = {
 
   async getTotalOfDrinksGroupedByAlcoholic(): Promise<TotalDrinkType[]> {
     const { data } = await api.get<TotalDrinkType[]>(
-      "/requests/user/total-of-drinks-alcoholic"
+      '/requests/user/total-of-drinks-alcoholic'
     );
 
     return data;
@@ -155,12 +141,12 @@ const requestsEndpoints = {
     startMonth?: string,
     endMonth?: string
   ): Promise<RequestsData> {
-    const DATE_PATTERN = "YYYY-MM-DD";
+    const DATE_PATTERN = 'YYYY-MM-DD';
 
     function toRequestData(
       dates: RequestData,
       { totalPrice, createdAt }: RequestType
-    ) {
+    ): RequestData {
       const date = moment(createdAt).format(DATE_PATTERN);
 
       const value = dates[date];
@@ -176,8 +162,8 @@ const requestsEndpoints = {
         : { ...dates, [date]: { length: 1, price: totalPrice } };
     }
 
-    function toRequestsData(contents: any[]) {
-      return contents.map((content: []) =>
+    function toRequestsData(contents: RequestType[][]): RequestData[] {
+      return contents.map((content) =>
         content.reduce(toRequestData, {} as RequestData)
       );
     }
@@ -188,11 +174,11 @@ const requestsEndpoints = {
     const endOfMonth = endMonth ?? yearAndMonth;
 
     const createdInDateOrAfter = moment(startOfMonth)
-      .startOf("month")
+      .startOf('month')
       .format(DATE_PATTERN);
 
     const createdInDateOrBefore = moment(endOfMonth)
-      .endOf("month")
+      .endOf('month')
       .format(DATE_PATTERN);
 
     const options = {
@@ -203,17 +189,17 @@ const requestsEndpoints = {
 
     const { content: deliveredContent } = await this.searchRequests({
       ...options,
-      delivered: BooleanParameterOfRequest.TRUE,
+      delivered: 1,
     });
 
     const { content: canceledContent } = await this.searchRequests({
       ...options,
-      status: "CANCELED",
+      status: 'CANCELED',
     });
 
     const { content: processingContent } = await this.searchRequests({
       ...options,
-      status: "PROCESSING",
+      status: 'PROCESSING',
     });
 
     const [requestsDelivered, requestsCanceled, requestsProcessing] =
@@ -242,7 +228,7 @@ const requestsEndpoints = {
 
   async toggleBlockAllRequests(): Promise<boolean> {
     const { data } = await api.patch<boolean>(
-      "/requests/admin/toggle-all-blocked"
+      '/requests/admin/toggle-all-blocked'
     );
 
     return data;

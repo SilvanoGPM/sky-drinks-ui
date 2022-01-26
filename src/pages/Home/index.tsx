@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Typography } from "antd";
-import { Footer } from "antd/lib/layout/layout";
-import { Outlet } from "react-router-dom";
+import { useState } from 'react';
+import { Typography } from 'antd';
+import { Footer } from 'antd/lib/layout/layout';
+import { Outlet } from 'react-router-dom';
 
-import { NavMenu } from "src/components/layout/NavMenu";
-import { NavMenuButton } from "src/components/layout/NavMenuButton";
-import { RequestInfo } from "src/pages/request/components/RequestInfo";
+import { NavMenu } from 'src/components/layout/NavMenu';
+import { NavMenuButton } from 'src/components/layout/NavMenuButton';
+import { RequestInfo } from 'src/pages/request/components/RequestInfo';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
-export function Home() {
+export function Home(): JSX.Element {
   const [menuShow, setMenuShow] = useState(window.innerWidth > 700);
 
   return (
@@ -25,10 +25,10 @@ export function Home() {
           <Outlet />
         </main>
 
-        <Footer style={{ textAlign: "center" }}>
-          SkyDrinks ©2021 Criado por{" "}
+        <Footer style={{ textAlign: 'center' }}>
+          SkyDrinks ©2021 Criado por{' '}
           <Typography.Link
-            style={{ color: "#000000", textDecoration: "underline" }}
+            style={{ color: '#000000', textDecoration: 'underline' }}
             href="https://github.com/SkyG0D"
           >
             SkyG0D

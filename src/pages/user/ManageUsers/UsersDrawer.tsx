@@ -1,8 +1,17 @@
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Divider, Drawer, Form, FormInstance, Input, Select } from "antd";
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 
-import { trimInput } from "src/utils/trimInput";
-import { UserSearchForm } from "src/types/user";
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Drawer,
+  Form,
+  FormInstance,
+  Input,
+  Select,
+} from 'antd';
+
+import { trimInput } from 'src/utils/trimInput';
 
 interface UsersDrawerProps {
   form: FormInstance;
@@ -13,15 +22,20 @@ interface UsersDrawerProps {
 
 const { Option } = Select;
 
-export function UsersDrawer({ form, visible, setVisible, onFinish }: UsersDrawerProps) {
+export function UsersDrawer({
+  form,
+  visible,
+  setVisible,
+  onFinish,
+}: UsersDrawerProps): JSX.Element {
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
   const onBlur = trimInput(form);
 
-  function clearForm() {
+  function clearForm(): void {
     form.resetFields();
   }
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     setVisible(false);
   }
 
@@ -40,7 +54,7 @@ export function UsersDrawer({ form, visible, setVisible, onFinish }: UsersDrawer
         style={{ flex: 1 }}
         name="search-users"
         autoComplete="off"
-        initialValues={{ lockRequests: "-1" }}
+        initialValues={{ lockRequests: '-1' }}
       >
         <Divider orientation="left">Geral</Divider>
 
@@ -88,7 +102,7 @@ export function UsersDrawer({ form, visible, setVisible, onFinish }: UsersDrawer
             size="large"
             type="primary"
             htmlType="submit"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             Pesquisar
           </Button>
@@ -103,7 +117,7 @@ export function UsersDrawer({ form, visible, setVisible, onFinish }: UsersDrawer
           <Button
             icon={<DeleteOutlined />}
             size="large"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             onClick={clearForm}
           >
             Limpar

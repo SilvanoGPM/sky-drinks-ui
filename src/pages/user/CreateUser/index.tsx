@@ -1,20 +1,20 @@
-import { PlusOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, Result, Select } from "antd";
-import { useForm } from "antd/lib/form/Form";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { PlusOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Form, Input, Result, Select } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+import { useNavigate } from 'react-router-dom';
 
-import routes from "src/routes";
-import endpoints from "src/api/api";
-import { useTitle } from "src/hooks/useTitle";
-import { useFavicon } from "src/hooks/useFavicon";
-import { cpfMask } from "src/utils/cpfMask";
-import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
-import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
-import { showNotification } from "src/utils/showNotification";
-import { trimInput } from "src/utils/trimInput";
+import routes from 'src/routes';
+import endpoints from 'src/api/api';
+import { useTitle } from 'src/hooks/useTitle';
+import { useFavicon } from 'src/hooks/useFavicon';
+import { cpfMask } from 'src/utils/cpfMask';
+import { formatToDatabaseDate } from 'src/utils/formatDatabaseDate';
+import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { showNotification } from 'src/utils/showNotification';
+import { trimInput } from 'src/utils/trimInput';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface UserCreateForm {
   name: string;
@@ -25,9 +25,9 @@ interface UserCreateForm {
   birthDay: any;
 }
 
-export function CreateUser() {
-  useTitle("SkyDrinks - Criar usuário");
-  useFavicon("green");
+export function CreateUser(): JSX.Element {
+  useTitle('SkyDrinks - Criar usuário');
+  useFavicon('green');
 
   const [form] = useForm();
 
@@ -36,20 +36,20 @@ export function CreateUser() {
   const [createLoading, setCreateLoading] = useState(false);
   const [created, setCreated] = useState(false);
 
-  function handleCPFChange(any: React.ChangeEvent<HTMLInputElement>) {
+  function handleCPFChange(any: React.ChangeEvent<HTMLInputElement>): void {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 
-  function goBack() {
+  function goBack(): void {
     navigate(`/${routes.MANAGE_USERS}`);
   }
 
-  function stay() {
+  function stay(): void {
     form.resetFields();
     setCreated(false);
   }
 
-  async function handleFormFinish(values: UserCreateForm) {
+  async function handleFormFinish(values: UserCreateForm): Promise<void> {
     try {
       setCreateLoading(true);
 
@@ -59,8 +59,8 @@ export function CreateUser() {
       });
 
       showNotification({
-        type: "success",
-        message: "Usuário(s) criado(s) com sucesso",
+        type: 'success',
+        message: 'Usuário(s) criado(s) com sucesso',
         description: `Nome: ${user.name} / Email: ${user.email}`,
         duration: 2,
       });
@@ -68,7 +68,7 @@ export function CreateUser() {
       setCreated(true);
     } catch (error: any) {
       const description = getFieldErrorsDescription(error);
-      const fallback = "Aconteceu um erro ao tentar criar o usuário";
+      const fallback = 'Aconteceu um erro ao tentar criar o usuário';
 
       handleError({ error, fallback, description });
     } finally {
@@ -83,7 +83,7 @@ export function CreateUser() {
       {created ? (
         <div>
           <Result
-            icon={<UserAddOutlined style={{ color: "#52c41a" }} />}
+            icon={<UserAddOutlined style={{ color: '#52c41a' }} />}
             title="Usuário foi criado com sucesso!"
             subTitle="Você deseja voltar para o gerenciamento de usuários, ou continuar criando usuários?"
             extra={[
@@ -109,18 +109,18 @@ export function CreateUser() {
               onFinish={handleFormFinish}
               layout="horizontal"
               name="create-user"
-              initialValues={{ role: "USER" }}
+              initialValues={{ role: 'USER' }}
             >
               <Form.Item
                 name="name"
                 label="Nome"
                 hasFeedback
                 rules={[
-                  { required: true, message: "Insira o nome do usuário" },
+                  { required: true, message: 'Insira o nome do usuário' },
                   {
                     min: 3,
                     max: 250,
-                    message: "O nome precisa ter entre 3 e 250 caracteres",
+                    message: 'O nome precisa ter entre 3 e 250 caracteres',
                   },
                 ]}
               >
@@ -132,8 +132,8 @@ export function CreateUser() {
                 label="Email"
                 hasFeedback
                 rules={[
-                  { required: true, message: "Insira o email do usuário" },
-                  { type: "email", message: "Insira um email válido" },
+                  { required: true, message: 'Insira o email do usuário' },
+                  { type: 'email', message: 'Insira um email válido' },
                 ]}
               >
                 <Input onBlur={onBlur} />
@@ -146,11 +146,11 @@ export function CreateUser() {
                 rules={[
                   {
                     required: true,
-                    message: "Insira uma senha para o usuário",
+                    message: 'Insira uma senha para o usuário',
                   },
                   {
                     min: 8,
-                    message: "A senha precisa ter pelo menos 8 caracteres",
+                    message: 'A senha precisa ter pelo menos 8 caracteres',
                   },
                 ]}
               >
@@ -162,15 +162,15 @@ export function CreateUser() {
                 label="Confirmar Senha"
                 hasFeedback
                 rules={[
-                  { required: true, message: "Confirme a senha do usuário" },
+                  { required: true, message: 'Confirme a senha do usuário' },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (!value || getFieldValue("password") === value) {
+                      if (!value || getFieldValue('password') === value) {
                         return Promise.resolve();
                       }
 
                       return Promise.reject(
-                        new Error("As senhas não são iguais!")
+                        new Error('As senhas não são iguais!')
                       );
                     },
                   }),
@@ -184,10 +184,10 @@ export function CreateUser() {
                 label="CPF"
                 hasFeedback
                 rules={[
-                  { required: true, message: "Insira o CPF do usuário" },
+                  { required: true, message: 'Insira o CPF do usuário' },
                   {
                     pattern: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-                    message: "Insira um CPF válido",
+                    message: 'Insira um CPF válido',
                   },
                 ]}
               >
@@ -204,7 +204,7 @@ export function CreateUser() {
                 rules={[
                   {
                     required: true,
-                    message: "Insira a data de nascimento do usuário",
+                    message: 'Insira a data de nascimento do usuário',
                   },
                 ]}
               >
@@ -216,7 +216,7 @@ export function CreateUser() {
                 label="Tipo"
                 hasFeedback
                 rules={[
-                  { required: true, message: "Escolha o tipo do usuário" },
+                  { required: true, message: 'Escolha o tipo do usuário' },
                 ]}
               >
                 <Select>
@@ -241,7 +241,7 @@ export function CreateUser() {
                   size="large"
                   type="primary"
                   htmlType="submit"
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                 >
                   Criar Usuário
                 </Button>

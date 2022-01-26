@@ -1,22 +1,25 @@
-import { Button, FormInstance, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, FormInstance, Result } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
-import routes from "src/routes";
-import { DrinkIcon } from "src/components/custom/CustomIcons";
+import routes from 'src/routes';
+import { DrinkIcon } from 'src/components/custom/CustomIcons';
 
 interface DrinkCreatedProps {
   form: FormInstance;
   setCreated: (created: boolean) => void;
 }
 
-export function DrinkCreated({ form, setCreated }: DrinkCreatedProps) {
+export function DrinkCreated({
+  form,
+  setCreated,
+}: DrinkCreatedProps): JSX.Element {
   const navigate = useNavigate();
 
-  function goBack() {
+  function goBack(): void {
     navigate(`/${routes.MANAGE_DRINKS}`);
   }
 
-  function stay() {
+  function stay(): void {
     form.resetFields();
     setCreated(false);
   }
@@ -24,7 +27,7 @@ export function DrinkCreated({ form, setCreated }: DrinkCreatedProps) {
   return (
     <div>
       <Result
-        icon={<DrinkIcon style={{ color: "#52c41a" }} />}
+        icon={<DrinkIcon style={{ color: '#52c41a' }} />}
         title="Bebida foi criada com sucesso!"
         subTitle="Você deseja voltar para o gerenciamento de bebidas, ou continuar criando bebidas?"
         extra={[

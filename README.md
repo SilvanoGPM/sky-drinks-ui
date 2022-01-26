@@ -16,8 +16,8 @@ O site pode demorar um pouco para carregar de inicio, porque o servidor deve est
 
 ### :mag_right: Requisitos:
 
-* NodeJS
-* NPM ou Yarn.
+- NodeJS
+- NPM ou Yarn.
 
 Para rodar todas as funções do site, lembre-se de ter [o servidor](https://github.com/SkyG0D/sky-drinks-api) rodando na sua máquina.
 
@@ -35,6 +35,7 @@ O servidor rodará na porta 3000, e você poderá acessar pelo link `localhost:3
 O arquivo `.env` na raiz do projeto precisa estar apontando para a URL [do servidor](https://github.com/SkyG0D/sky-drinks-api).
 
 Exemplo:
+
 ```
 REACT_APP_API_URL=http://localhost:8080/api/v1
 ```
@@ -45,5 +46,5 @@ REACT_APP_API_URL=http://localhost:8080/api/v1
 - [Ant Design](https://ant.design/), biblioteca de estilos número 2 do react.
 - [React Router](https://reactrouter.com/) é uma biblioteca para uso de rotas dinâmicas dentro da sua aplicação.
 - [Sass](https://sass-lang.com/) é um preprocessador CSS.
-- [ChartJS](https://www.chartjs.org/) 
-é uma biblioteca para mostrar gráficos com JavaScript.
+- [ChartJS](https://www.chartjs.org/)
+  é uma biblioteca para mostrar gráficos com JavaScript.

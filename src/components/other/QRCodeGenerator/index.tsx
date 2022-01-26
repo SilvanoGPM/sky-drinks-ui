@@ -1,13 +1,15 @@
-import { useEffect, useRef } from "react";
-import QRCode from "easyqrcodejs";
+import { useEffect, useRef } from 'react';
+import QRCode from 'easyqrcodejs';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface QRCodeGeneratorProps {
   text: string;
 }
 
-export function QRCodeGenerator({ text = "" }: QRCodeGeneratorProps) {
+export function QRCodeGenerator({
+  text = '',
+}: QRCodeGeneratorProps): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export function QRCodeGenerator({ text = "" }: QRCodeGeneratorProps) {
         logoHeight: 40,
         width: 150,
         height: 150,
-        logoBackgroundColor: "#ffffff",
+        logoBackgroundColor: '#ffffff',
       });
     }
   }, [text]);

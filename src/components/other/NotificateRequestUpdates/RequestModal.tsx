@@ -1,14 +1,13 @@
-import { Modal } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Modal } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import routes from "src/routes";
-import { Loading } from "src/components/layout/Loading";
-import { RequestType } from "src/types/requests";
-import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { getStatusBadge } from "src/utils/getStatusBadge";
+import routes from 'src/routes';
+import { Loading } from 'src/components/layout/Loading';
+import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { getStatusBadge } from 'src/utils/getStatusBadge';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface RequestModalProps {
   title: string;
@@ -26,17 +25,17 @@ export function RequestModal({
   loading,
   request,
   setVisible,
-}: RequestModalProps) {
+}: RequestModalProps): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
-  function closeModal() {
+  function closeModal(): void {
     setVisible(false);
   }
 
-  function viewRequest(uuid: string) {
+  function viewRequest(requestUUID: string): () => void {
     return () => {
-      const path = routes.VIEW_REQUEST.replace(":uuid", uuid);
+      const path = routes.VIEW_REQUEST.replace(':uuid', requestUUID);
 
       if (location.pathname.includes(path)) {
         navigate(0);
@@ -46,6 +45,10 @@ export function RequestModal({
 
       closeModal();
     };
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -59,24 +62,22 @@ export function RequestModal({
       destroyOnClose
     >
       <div className={styles.modalContainer}>
-        {loading ? (
-          <Loading />
-        ) : request.uuid ? (
+        {request.uuid ? (
           <div className={styles.requestInfo}>
             <p>Preço: {formatDisplayPrice(request.totalPrice)}</p>
 
             <p>
-              Status:{" "}
+              Status:{' '}
               <span className={styles.badge}>
                 {getStatusBadge(request.status)}
               </span>
             </p>
 
             <p>
-              Pedido realizado em: {formatDisplayDate(request.createdAt || "")}
+              Pedido realizado em: {formatDisplayDate(request.createdAt || '')}
             </p>
 
-            {request.status === "FINISHED" &&
+            {request.status === 'FINISHED' &&
               (request.delivered ? (
                 <p className={styles.bold}>Seu pedido foi entregue!</p>
               ) : request.table ? (
@@ -85,13 +86,15 @@ export function RequestModal({
                     Seu pedido será entregue na mesa n° {request.table.number}!
                   </p>
                   <p className={styles.bold}>
-                    Para confirmar o seu pedido, mostre seu{" "}
+                    Para confirmar o seu pedido, mostre seu{' '}
                     <span
                       onClick={viewRequest(request.uuid)}
+                      role="button"
+                      tabIndex={0}
                       className={styles.link}
                     >
                       QRCode do pedido
-                    </span>{" "}
+                    </span>{' '}
                     para o garçom que for entregar.
                   </p>
                 </>
@@ -99,9 +102,11 @@ export function RequestModal({
                 <>
                   <p className={styles.bold}>Vá pegar seu pedido no balcão.</p>
                   <p className={styles.bold}>
-                    Lembre-se de ir com o{" "}
+                    Lembre-se de ir com o{' '}
                     <span
                       onClick={viewRequest(request.uuid)}
+                      role="button"
+                      tabIndex={0}
                       className={styles.link}
                     >
                       QRCode do pedido
@@ -111,7 +116,7 @@ export function RequestModal({
                 </>
               ))}
 
-            {request.status === "CANCELED" && (
+            {request.status === 'CANCELED' && (
               <p className={styles.bold}>
                 Vá até o balcão para mais informações sobre o cancelamento.
               </p>

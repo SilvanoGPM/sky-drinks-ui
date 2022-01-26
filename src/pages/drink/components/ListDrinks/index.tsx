@@ -1,33 +1,18 @@
-import { Empty, Form, Pagination } from "antd";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import qs from "query-string";
+import { useEffect, useState } from 'react';
+import { Empty, Form, Pagination } from 'antd';
+import { useSearchParams } from 'react-router-dom';
+import qs from 'query-string';
 
-import endpoints from "src/api/api";
-import { Loading } from "src/components/layout/Loading";
-import { handleError } from "src/utils/handleError";
-import { pluralize } from "src/utils/pluralize";
-import { DrinkDrawer } from "./DrinkDrawer";
-import { PaginationType } from "src/types/types";
+import endpoints from 'src/api/api';
+import { Loading } from 'src/components/layout/Loading';
+import { handleError } from 'src/utils/handleError';
+import { pluralize } from 'src/utils/pluralize';
+import { useCreateParams } from 'src/hooks/useCreateParams';
 
-import {
-  DrinkPaginatedType,
-  DrinkSearchForm,
-  DrinkSearchParams,
-} from "src/types/drinks";
+import { DrinkDrawer } from './DrinkDrawer';
+import { DrinkCard } from '../DrinkCard';
 
-import { DrinkCard } from "../DrinkCard";
-
-import styles from "./styles.module.scss";
-import { useCreateParams } from "src/hooks/useCreateParams";
-
-interface ActionRenderType {
-  uuid: string;
-  data: DrinkPaginatedType;
-  pagination: PaginationType;
-  setData: React.Dispatch<React.SetStateAction<DrinkPaginatedType>>;
-  setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
-}
+import styles from './styles.module.scss';
 
 interface ListDrinksProps {
   loading: boolean;
@@ -38,6 +23,13 @@ interface ListDrinksProps {
   setDrawerVisible: (drawerVisible: boolean) => void;
 }
 
+interface PriceAndVolumeType {
+  greaterThanOrEqualToVolume?: number;
+  lessThanOrEqualToVolume?: number;
+  greaterThanOrEqualPrice?: number;
+  lessThanOrEqualToPrice?: number;
+}
+
 export function ListDrinks({
   loading,
   drawerVisible,
@@ -45,7 +37,7 @@ export function ListDrinks({
   setLoading,
   setDrawerVisible,
   showBuyAction = true,
-}: ListDrinksProps) {
+}: ListDrinksProps): JSX.Element {
   const [form] = Form.useForm();
 
   const [, setSearchParams] = useSearchParams();
@@ -79,11 +71,11 @@ export function ListDrinks({
   });
 
   useEffect(() => {
-    async function loadDrinks() {
+    async function loadDrinks(): Promise<void> {
       try {
         const { page, size } = pagination;
 
-        const data = await endpoints.searchDrink({
+        const dataFound = await endpoints.searchDrink({
           ...params,
           page,
           size,
@@ -96,11 +88,11 @@ export function ListDrinks({
           })
         );
 
-        setData(data);
+        setData(dataFound);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível pesquisar as bebidas",
+          fallback: 'Não foi possível pesquisar as bebidas',
         });
       } finally {
         setLoading(false);
@@ -112,22 +104,29 @@ export function ListDrinks({
     }
   }, [loading, pagination, params, setSearchParams, setLoading]);
 
-  function handlePaginationChange(page: number) {
-    setPagination((pagination) => ({ ...pagination, page: page - 1 }));
+  useEffect(() => {
+    return () => setLoading(false);
+  }, [setLoading]);
+
+  function handlePaginationChange(page: number): void {
+    setPagination((oldPagination) => ({ ...oldPagination, page: page - 1 }));
 
     setLoading(true);
   }
 
-  function getPriceAndVolume(price: number[], volume: number[]) {
+  function getPriceAndVolume(
+    price: number[],
+    volume: number[]
+  ): PriceAndVolumeType {
     return {
-      ...(form.isFieldTouched("volume")
+      ...(form.isFieldTouched('volume')
         ? {
             greaterThanOrEqualToVolume: volume[0],
             lessThanOrEqualToVolume: volume[1],
           }
         : {}),
 
-      ...(form.isFieldTouched("price")
+      ...(form.isFieldTouched('price')
         ? {
             greaterThanOrEqualToPrice: price[0],
             lessThanOrEqualToPrice: price[1],
@@ -136,21 +135,21 @@ export function ListDrinks({
     };
   }
 
-  function handleFormFinish(values: DrinkSearchForm) {
+  function handleFormFinish(values: DrinkSearchForm): void {
     const { name, description, additional, alcoholic, price, volume } = values;
 
-    const params: DrinkSearchParams = {
+    const paramsCreated: DrinkSearchParams = {
       name,
       description,
       alcoholic,
-      additional: additional?.join(";"),
+      additional: additional?.join(';'),
       ...getPriceAndVolume(price, volume),
     };
 
     setDrawerVisible(false);
 
     setPagination({ ...pagination, page: 0 });
-    setParams(params);
+    setParams(paramsCreated);
     setLoading(true);
   }
 
@@ -165,11 +164,11 @@ export function ListDrinks({
           {data.content.length !== 0 ? (
             <>
               <h2 className={styles.drinksFounded}>
-                {data.totalElements}{" "}
+                {data.totalElements}{' '}
                 {pluralize(
                   data.totalElements,
-                  "Bebida encontrada",
-                  "Bebidas encontradas"
+                  'Bebida encontrada',
+                  'Bebidas encontradas'
                 )}
                 :
               </h2>

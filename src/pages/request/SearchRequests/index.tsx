@@ -1,22 +1,17 @@
-import { useState } from "react";
-import { useForm } from "antd/lib/form/Form";
-import moment from "moment";
-import { Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { useState } from 'react';
+import { useForm } from 'antd/lib/form/Form';
+import moment from 'moment';
+import { Button } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
-import { useTitle } from "src/hooks/useTitle";
-import { SearchRequestsDrawer } from "./SearchRequestsDrawer";
-import { ListSearchRequests } from "./ListSearchRequests";
+import { useTitle } from 'src/hooks/useTitle';
+import { SearchRequestsDrawer } from './SearchRequestsDrawer';
+import { ListSearchRequests } from './ListSearchRequests';
 
-import {
-  RequestSearchFormForAdmins,
-  RequestSearchParams,
-} from "src/types/requests";
+import styles from './styles.module.scss';
 
-import styles from "./styles.module.scss";
-
-export function SearchRequests() {
-  useTitle("SkyDrinks - Pesquisar pedidos");
+export function SearchRequests(): JSX.Element {
+  useTitle('SkyDrinks - Pesquisar pedidos');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -24,11 +19,11 @@ export function SearchRequests() {
 
   const [form] = useForm();
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 
-  function handleFinishForm(values: RequestSearchFormForAdmins) {
+  function handleFinishForm(values: RequestSearchFormForAdmins): void {
     const {
       drinkDescription,
       userCpf,
@@ -57,10 +52,10 @@ export function SearchRequests() {
       lessThanOrEqualToTotalPrice,
       greaterThanOrEqualToTotalPrice,
       createdInDateOrAfter: values.createdAt
-        ? moment(createdInDateOrAfter).format("yyyy-MM-DD")
+        ? moment(createdInDateOrAfter).format('yyyy-MM-DD')
         : undefined,
       createdInDateOrBefore: values.createdAt
-        ? moment(createdInDateOrBefore).format("yyyy-MM-DD")
+        ? moment(createdInDateOrBefore).format('yyyy-MM-DD')
         : undefined,
     });
 
@@ -76,7 +71,7 @@ export function SearchRequests() {
 
       <div className={styles.search}>
         <Button
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           loading={loading}
           type="primary"
           icon={<SearchOutlined />}
@@ -90,7 +85,6 @@ export function SearchRequests() {
         params={params}
         loading={loading}
         setLoading={setLoading}
-        setParams={setParams}
       />
 
       <SearchRequestsDrawer

@@ -1,16 +1,13 @@
-import { useContext, useEffect, useState } from "react";
-import { Modal } from "antd";
+import { useContext, useEffect, useState } from 'react';
+import { Modal } from 'antd';
 
-import { DrinkType } from "src/types/drinks";
-import { RequestType } from "src/types/requests";
-import { TableType } from "src/types/tables";
-import { getUserAge } from "src/utils/getUserAge";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import { showNotification } from "src/utils/showNotification";
+import { getUserAge } from 'src/utils/getUserAge';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
+import { showNotification } from 'src/utils/showNotification';
 
-import { AuthContext } from "../AuthContext";
+import { AuthContext } from '../AuthContext';
 
-export const REQUEST_KEY = "request";
+export const REQUEST_KEY = 'request';
 
 export const MINORITY = 18;
 
@@ -18,19 +15,19 @@ const { confirm } = Modal;
 
 const initialRequestState = {
   drinks: [] as DrinkType[],
-  status: "PROCESSING",
+  status: 'PROCESSING',
 } as RequestType;
 
-export function useRequest() {
+export function useRequest(): RequestContextType {
   const { userInfo } = useContext(AuthContext);
 
   const [request, setRequest] = useState<RequestType>(initialRequestState);
 
   useEffect(() => {
-    const request = localStorage.getItem(REQUEST_KEY);
+    const requestFound = localStorage.getItem(REQUEST_KEY);
 
-    if (request) {
-      setRequest(JSON.parse(request));
+    if (requestFound) {
+      setRequest(JSON.parse(requestFound));
     }
   }, []);
 
@@ -40,21 +37,21 @@ export function useRequest() {
 
   const permissions = getUserPermissions(userInfo.role);
 
-  function add(drink: DrinkType) {
+  function add(drink: DrinkType): void {
     setRequest({ ...request, drinks: [...request.drinks, drink] });
 
     showNotification({
-      type: "success",
-      message: "Bebida foi adicionada ao pedido com sucesso!",
+      type: 'success',
+      message: 'Bebida foi adicionada ao pedido com sucesso!',
       duration: 2,
     });
   }
 
-  function addDrink(drink: DrinkType) {
+  function addDrink(drink: DrinkType): void {
     if (userInfo.lockRequests) {
       showNotification({
-        type: "info",
-        message: "Seus pedidos foram temporariamente desabilitados!",
+        type: 'info',
+        message: 'Seus pedidos foram temporariamente desabilitados!',
         duration: 2,
       });
 
@@ -67,7 +64,7 @@ export function useRequest() {
 
       if (isAlcoholicAndUserIsMinor) {
         showNotification({
-          type: "info",
+          type: 'info',
           message: `Usuário não possuí ${MINORITY} anos!`,
           description: `É preciso ter ${MINORITY} anos ou mais para fazer o pedido de uma bebida alcoólica!`,
           duration: 2,
@@ -82,7 +79,7 @@ export function useRequest() {
 
       if (containsDrink) {
         confirm({
-          title: "Essa bebida já está no pedido, adicionar mais uma?",
+          title: 'Essa bebida já está no pedido, adicionar mais uma?',
           onOk: () => add(drink),
         });
 
@@ -92,18 +89,18 @@ export function useRequest() {
       add(drink);
     } else {
       showNotification({
-        type: "info",
-        message: "Somente usuários podem realizar pedidos!",
+        type: 'info',
+        message: 'Somente usuários podem realizar pedidos!',
         duration: 2,
       });
     }
   }
 
-  function clearRequest() {
+  function clearRequest(): void {
     setRequest(initialRequestState);
   }
 
-  function changeTable(table?: TableType) {
+  function changeTable(table?: TableType): void {
     setRequest({ ...request, table });
   }
 

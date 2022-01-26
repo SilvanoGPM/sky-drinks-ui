@@ -1,4 +1,4 @@
-export interface UserType {
+interface UserType {
   uuid: string;
   createdAt: string;
   updatedAt: string;
@@ -11,7 +11,7 @@ export interface UserType {
   lockRequests?: boolean;
 }
 
-export interface UserToCreate {
+interface UserToCreate {
   name: string;
   email: string;
   password: string;
@@ -20,7 +20,7 @@ export interface UserToCreate {
   cpf: string;
 }
 
-export interface UserToUpdate {
+interface UserToUpdate {
   uuid: string;
   name: string;
   email: string;
@@ -31,7 +31,7 @@ export interface UserToUpdate {
   cpf: string;
 }
 
-export interface UserSearchParams {
+interface UserSearchParams {
   name?: string;
   email?: string;
   cpf?: string;
@@ -42,12 +42,12 @@ export interface UserSearchParams {
   lockRequests?: number;
 }
 
-export interface UserPaginatedType {
+interface UserPaginatedType {
   totalElements: number;
   content: UserType[];
 }
 
-export interface UserSearchForm {
+interface UserSearchForm {
   name: string;
   email: string;
   cpf: string;

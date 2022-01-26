@@ -1,12 +1,12 @@
-import { useTitle } from "src/hooks/useTitle";
+import { useTitle } from 'src/hooks/useTitle';
 
-import { DataOfDrinks } from "./DataOfDrinks";
-import { DataOfRequests } from "./DataOfRequests";
+import { DataOfDrinks } from './DataOfDrinks';
+import { DataOfRequests } from './DataOfRequests';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
-export function Dashboard() {
-  useTitle("SkyDrinks - Dashboard");
+export function Dashboard(): JSX.Element {
+  useTitle('SkyDrinks - Dashboard');
 
   return (
     <section className={styles.container}>

@@ -1,37 +1,37 @@
-import { useContext } from "react";
-import { HeartOutlined, LogoutOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useContext } from 'react';
+import { HeartOutlined, LogoutOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
-import routes from "src/routes";
-import { AuthContext } from "src/contexts/AuthContext";
-import { useTitle } from "src/hooks/useTitle";
-import { showNotification } from "src/utils/showNotification";
-import { RequestContext } from "src/contexts/RequestContext";
+import routes from 'src/routes';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { useTitle } from 'src/hooks/useTitle';
+import { showNotification } from 'src/utils/showNotification';
+import { RequestContext } from 'src/contexts/RequestContext';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
-export function Logout() {
-  useTitle("SkyDrinks - Sair");
+export function Logout(): JSX.Element {
+  useTitle('SkyDrinks - Sair');
 
   const { handleLogout } = useContext(AuthContext);
   const { clearRequest, request } = useContext(RequestContext);
 
   const navigate = useNavigate();
 
-  function goBack() {
+  function goBack(): void {
     navigate(-1);
   }
 
-  function logout() {
+  function logout(): void {
     clearRequest();
     handleLogout();
 
     navigate(routes.LOGIN);
 
     showNotification({
-      type: "success",
-      message: "Deslogado com sucesso",
+      type: 'success',
+      message: 'Deslogado com sucesso',
     });
   }
 
@@ -52,9 +52,9 @@ export function Logout() {
             onClick={logout}
             size="large"
             style={{
-              color: "#ffffff",
-              borderColor: "#e74c3c",
-              backgroundColor: "#e74c3c",
+              color: '#ffffff',
+              borderColor: '#e74c3c',
+              backgroundColor: '#e74c3c',
             }}
           >
             Sim, eu quero sair

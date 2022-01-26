@@ -1,16 +1,8 @@
-import qs from "query-string";
+import qs from 'query-string';
 
-import { LoginError } from "src/errors/LoginError";
+import { LoginError } from 'src/errors/LoginError';
 
-import {
-  UserPaginatedType,
-  UserSearchParams,
-  UserToCreate,
-  UserToUpdate,
-  UserType,
-} from "src/types/user";
-
-import { api } from "./api";
+import { api } from './api';
 
 interface UserWantsUpdate {
   uuid: string;
@@ -21,7 +13,7 @@ interface UserWantsUpdate {
 const usersEndpoints = {
   async login(email: string, password: string): Promise<string> {
     try {
-      const { headers } = await api.post("/login", {
+      const { headers } = await api.post('/login', {
         email,
         password,
       });
@@ -31,15 +23,15 @@ const usersEndpoints = {
       const status = exception?.response?.data?.status || 0;
 
       if (status === 401) {
-        throw new LoginError("Login ou senha incorretos!");
+        throw new LoginError('Login ou senha incorretos!');
       }
 
-      throw new Error("Aconteceu um erro ao tentar conectar no servidor");
+      throw new Error('Aconteceu um erro ao tentar conectar no servidor');
     }
   },
 
   async createUser(user: UserToCreate): Promise<UserType> {
-    const { data } = await api.post<UserType>("/users/admin", user);
+    const { data } = await api.post<UserType>('/users/admin', user);
     return data;
   },
 
@@ -74,21 +66,24 @@ const usersEndpoints = {
   },
 
   async getUserInfo(): Promise<UserType> {
-    const { data } = await api.get<UserType>("/users/all/user-info");
+    const { data } = await api.get<UserType>('/users/all/user-info');
     return data;
   },
 
-  async replaceUser(user: UserToUpdate, userWantsCall: UserWantsUpdate): Promise<void> {
+  async replaceUser(
+    user: UserToUpdate,
+    userWantsCall: UserWantsUpdate
+  ): Promise<void> {
     const userFound = await this.findUserByUUID(userWantsCall.uuid);
 
     await this.login(userFound.email, userWantsCall.password);
 
-    const { newPassword, ...drinkToUpdate } = {
+    const { newPassword: _, ...drinkToUpdate } = {
       ...user,
       password: user.newPassword,
     };
 
-    await api.put("/users/user", drinkToUpdate);
+    await api.put('/users/user', drinkToUpdate);
   },
 
   async toggleUserLockReqeusts(uuid: string): Promise<UserType> {

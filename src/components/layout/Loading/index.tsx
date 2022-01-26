@@ -1,13 +1,13 @@
-import { Spin } from "antd";
+import { Spin } from 'antd';
 
-export function Loading() {
+export function Loading(): JSX.Element {
   return (
     <div
       style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginBottom: "1.5rem",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: '1.5rem',
       }}
     >
       <Spin />

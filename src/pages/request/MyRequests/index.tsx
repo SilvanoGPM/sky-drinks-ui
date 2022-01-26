@@ -1,19 +1,17 @@
-import { useState } from "react";
-import { useForm } from "antd/lib/form/Form";
-import moment from "moment";
-import { SearchOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { useState } from 'react';
+import { useForm } from 'antd/lib/form/Form';
+import moment from 'moment';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
-import { useTitle } from "src/hooks/useTitle";
-import { MyRequestsDrawer } from "./MyRequestsDrawer";
-import { ListMyRequests } from "./ListMyRequests";
+import { useTitle } from 'src/hooks/useTitle';
+import { MyRequestsDrawer } from './MyRequestsDrawer';
+import { ListMyRequests } from './ListMyRequests';
 
-import { RequestSearchForm, RequestSearchParams } from "src/types/requests";
+import styles from './styles.module.scss';
 
-import styles from "./styles.module.scss";
-
-export function MyRequests() {
-  useTitle("SkyDrinks - Meus pedidos");
+export function MyRequests(): JSX.Element {
+  useTitle('SkyDrinks - Meus pedidos');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -21,11 +19,11 @@ export function MyRequests() {
 
   const [form] = useForm();
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 
-  function handleFinishForm(values: RequestSearchForm) {
+  function handleFinishForm(values: RequestSearchForm): void {
     const { drinkDescription, drinkName, status } = values;
 
     const [greaterThanOrEqualToTotalPrice, lessThanOrEqualToTotalPrice] =
@@ -42,10 +40,10 @@ export function MyRequests() {
       lessThanOrEqualToTotalPrice,
       greaterThanOrEqualToTotalPrice,
       createdInDateOrAfter: values.createdAt
-        ? moment(createdInDateOrAfter).format("yyyy-MM-DD")
+        ? moment(createdInDateOrAfter).format('yyyy-MM-DD')
         : undefined,
       createdInDateOrBefore: values.createdAt
-        ? moment(createdInDateOrBefore).format("yyyy-MM-DD")
+        ? moment(createdInDateOrBefore).format('yyyy-MM-DD')
         : undefined,
     });
 
@@ -61,7 +59,7 @@ export function MyRequests() {
 
       <div className={styles.search}>
         <Button
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           loading={loading}
           type="primary"
           icon={<SearchOutlined />}

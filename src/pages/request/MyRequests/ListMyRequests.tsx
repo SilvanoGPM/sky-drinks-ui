@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import {
-  CloseOutlined,
-  PaperClipOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined, PaperClipOutlined } from '@ant-design/icons';
 
-import { Badge, Button, List, Tooltip, Popover, Modal } from "antd";
+import { Badge, Button, List, Tooltip, Popover, Modal } from 'antd';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-import { showNotification } from "src/utils/showNotification";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { DrinkIcon } from "src/components/custom/CustomIcons";
-import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
-import { getStatusBadge } from "src/utils/getStatusBadge";
-import { handleError } from "src/utils/handleError";
-import { imageToFullURI } from "src/utils/imageUtils";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
+import { showNotification } from 'src/utils/showNotification';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { DrinkIcon } from 'src/components/custom/CustomIcons';
+import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
+import { getStatusBadge } from 'src/utils/getStatusBadge';
+import { handleError } from 'src/utils/handleError';
+import { imageToFullURI } from 'src/utils/imageUtils';
 
-import {
-  RequestPaginatedType,
-  RequestSearchParams,
-  RequestType,
-} from "src/types/requests";
-
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface ListMyRequestsProps {
   params: RequestSearchParams;
@@ -35,7 +26,11 @@ interface ListMyRequestsProps {
 
 const { confirm } = Modal;
 
-export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsProps) {
+export function ListMyRequests({
+  params,
+  loading,
+  setLoading,
+}: ListMyRequestsProps): JSX.Element {
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
@@ -47,22 +42,22 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
   });
 
   useEffect(() => {
-    async function loadRequests() {
+    async function loadRequests(): Promise<void> {
       try {
         const { page, size } = pagination;
 
-        const data = await endpoints.getMyRequests({
+        const dataFound = await endpoints.getMyRequests({
           ...params,
-          sort: "updatedAt,desc",
+          sort: 'updatedAt,desc',
           page,
           size,
         });
 
-        setData(data);
+        setData(dataFound);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível pesquisar os pedidos",
+          fallback: 'Não foi possível pesquisar os pedidos',
         });
       } finally {
         setLoading(false);
@@ -79,15 +74,15 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
       navigator.clipboard.writeText(uuid);
 
       showNotification({
-        type: "success",
-        message: "Código copiado com sucesso!",
+        type: 'success',
+        message: 'Código copiado com sucesso!',
         duration: 2,
       });
     };
   }
 
-  function handleCancelRequest(uuid: string) {
-    async function cancelRequest() {
+  function handleCancelRequest(uuid: string): () => void {
+    async function cancelRequest(): Promise<void> {
       try {
         await endpoints.cancelRequest(uuid);
 
@@ -97,39 +92,39 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível cancelar pedido",
+          fallback: 'Não foi possível cancelar pedido',
         });
       }
     }
 
     return () => {
       confirm({
-        title: "Deseja cancelar o pedido?",
-        content: "Depois de cancelado, o pedido não poderá ser finalizado!",
-        okText: "Sim",
-        cancelText: "Não",
+        title: 'Deseja cancelar o pedido?',
+        content: 'Depois de cancelado, o pedido não poderá ser finalizado!',
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: cancelRequest,
       });
     };
   }
 
-  function handlePaginationChange(page: number) {
+  function handlePaginationChange(page: number): void {
     setLoading(true);
 
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
+    setPagination((oldPagination) => {
+      return { ...oldPagination, page: page - 1 };
     });
   }
 
-  function getDrinksContent(request: RequestType) {
+  function getDrinksContent(request: RequestType): JSX.Element {
     const drinks = getDrinksGroupedByUUID(request);
 
-    const elements = Object.keys(drinks).map((key, index) => {
+    const elements = Object.keys(drinks).map((key) => {
       const [drink] = drinks[key];
       const { length } = drinks[key];
 
       return (
-        <li className={styles.drinksItem} key={`${key} - ${index}`}>
+        <li className={styles.drinksItem} key={key}>
           <p title={drink.name}>{drink.name}</p>
           <Badge count={length} />
         </li>
@@ -144,8 +139,7 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
   }
 
   const imageWidth = window.innerWidth > 700 ? 200 : 100;
-  const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
-
+  const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
   return (
     <List
@@ -191,11 +185,11 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
                   <DrinkIcon />
                 </Button>
               </Popover>,
-              ...(status === "PROCESSING"
+              ...(status === 'PROCESSING'
                 ? [
                     <Tooltip key="cancel" title="Cancelar pedido">
                       <Button onClick={handleCancelRequest(uuid)}>
-                        <CloseOutlined style={{ color: "#e74c3c" }} />
+                        <CloseOutlined style={{ color: '#e74c3c' }} />
                       </Button>
                     </Tooltip>,
                   ]
@@ -212,7 +206,7 @@ export function ListMyRequests({ params, loading, setLoading }: ListMyRequestsPr
           >
             <List.Item.Meta
               title={
-                <Link to={`/${routes.VIEW_REQUEST.replace(":uuid", uuid)}`}>
+                <Link to={`/${routes.VIEW_REQUEST.replace(':uuid', uuid)}`}>
                   <h3 className={styles.itemTitle}>Ver pedido</h3>
                 </Link>
               }

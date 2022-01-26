@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useForm } from "antd/lib/form/Form";
+import { useState } from 'react';
+import { useForm } from 'antd/lib/form/Form';
 
-import { useTitle } from "src/hooks/useTitle";
-import { useFavicon } from "src/hooks/useFavicon";
+import { useTitle } from 'src/hooks/useTitle';
+import { useFavicon } from 'src/hooks/useFavicon';
 
-import { CreateDrinkForm } from "./CreateDrinkForm";
-import { DrinkCreated } from "./DrinkCreated";
+import { CreateDrinkForm } from './CreateDrinkForm';
+import { DrinkCreated } from './DrinkCreated';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
-export function CreateDrink() {
-  useTitle("SkyDrinks - Criar bebida");
-  useFavicon("green");
+export function CreateDrink(): JSX.Element {
+  useTitle('SkyDrinks - Criar bebida');
+  useFavicon('green');
 
   const [form] = useForm();
   const [created, setCreated] = useState(false);

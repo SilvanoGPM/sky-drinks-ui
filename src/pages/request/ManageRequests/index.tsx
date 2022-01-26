@@ -1,30 +1,29 @@
-import { useContext, useEffect, useState } from "react";
-import { Button, Empty, Modal, Pagination, Tooltip } from "antd";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from 'react';
+import { Button, Empty, Modal, Pagination, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
 
 import {
   CheckOutlined,
   CloseOutlined,
   ReloadOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { WebSocketContext } from "src/contexts/WebSocketContext";
-import { useTitle } from "src/hooks/useTitle";
-import { RequestPaginatedType } from "src/types/requests";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { handleError } from "src/utils/handleError";
-import { imageToFullURI } from "src/utils/imageUtils";
-import { pluralize } from "src/utils/pluralize";
-import { showNotification } from "src/utils/showNotification";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { WebSocketContext } from 'src/contexts/WebSocketContext';
+import { useTitle } from 'src/hooks/useTitle';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { handleError } from 'src/utils/handleError';
+import { imageToFullURI } from 'src/utils/imageUtils';
+import { pluralize } from 'src/utils/pluralize';
+import { showNotification } from 'src/utils/showNotification';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 const { confirm } = Modal;
 
-export function ManageRequest() {
-  useTitle("SkyDrinks - Gerenciar pedidos");
+export function ManageRequest(): JSX.Element {
+  useTitle('SkyDrinks - Gerenciar pedidos');
 
   const { updateRequests, setUpdateRequests } = useContext(WebSocketContext);
 
@@ -41,18 +40,18 @@ export function ManageRequest() {
   });
 
   useEffect(() => {
-    async function loadRequests() {
+    async function loadRequests(): Promise<void> {
       try {
-        const data = await endpoints.getProcessingRequests(
+        const dataFound = await endpoints.getProcessingRequests(
           pagination.page,
           pagination.size
         );
 
-        setData(data);
+        setData(dataFound);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar pedidos",
+          fallback: 'Não foi possível carregar pedidos',
         });
       } finally {
         setLoading(false);
@@ -71,7 +70,7 @@ export function ManageRequest() {
     }
   }, [updateRequests, pagination, setUpdateRequests]);
 
-  function removeRequestOfState(uuid: string) {
+  function removeRequestOfState(uuid: string): void {
     const content = data.content.filter((item) => item.uuid !== uuid);
 
     setData({ ...data, content });
@@ -82,75 +81,75 @@ export function ManageRequest() {
     }
   }
 
-  function handleCancelRequest(uuid: string) {
-    async function cancelRequest() {
+  function handleCancelRequest(uuid: string): () => void {
+    async function cancelRequest(): Promise<void> {
       try {
         await endpoints.cancelRequest(uuid);
 
         removeRequestOfState(uuid);
 
         showNotification({
-          type: "success",
-          message: "Pedido foi cancelado com sucesso!",
+          type: 'success',
+          message: 'Pedido foi cancelado com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível cancelar pedido",
+          fallback: 'Não foi possível cancelar pedido',
         });
       }
     }
 
     return () => {
       confirm({
-        title: "Deseja cancelar o pedido?",
-        content: "Depois de cancelado, o pedido não poderá ser finalizado!",
-        okText: "Sim",
-        cancelText: "Não",
+        title: 'Deseja cancelar o pedido?',
+        content: 'Depois de cancelado, o pedido não poderá ser finalizado!',
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: cancelRequest,
       });
     };
   }
 
-  function handlePaginationChange(page: number) {
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
+  function handlePaginationChange(page: number): void {
+    setPagination((oldPagination) => {
+      return { ...oldPagination, page: page - 1 };
     });
 
     setLoading(true);
   }
 
-  function handleFinishRequest(uuid: string) {
-    async function finishRequest() {
+  function handleFinishRequest(uuid: string): () => void {
+    async function finishRequest(): Promise<void> {
       try {
         await endpoints.finishRequest(uuid);
 
         removeRequestOfState(uuid);
 
         showNotification({
-          type: "success",
-          message: "Pedido foi finalizado com sucesso!",
+          type: 'success',
+          message: 'Pedido foi finalizado com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível finalizar pedido",
+          fallback: 'Não foi possível finalizar pedido',
         });
       }
     }
 
     return () => {
       confirm({
-        title: "Deseja finlizar o pedido?",
-        content: "Depois de finalizado, o pedido não poderá ser cancelado!",
-        okText: "Sim",
-        cancelText: "Não",
+        title: 'Deseja finlizar o pedido?',
+        content: 'Depois de finalizado, o pedido não poderá ser cancelado!',
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: finishRequest,
       });
     };
   }
 
-  function reloadRequests() {
+  function reloadRequests(): void {
     setLoading(true);
   }
 
@@ -160,7 +159,7 @@ export function ManageRequest() {
         <h2 className={styles.title}>Gerenciar Pedidos</h2>
       </div>
 
-      {Boolean(data.content.length) ? (
+      {data.content.length ? (
         <>
           <ul className={styles.cardContainer}>
             {data.content.map(({ uuid, user, totalPrice, drinks }) => {
@@ -172,7 +171,7 @@ export function ManageRequest() {
                   <div className={styles.card}>
                     <div className={styles.cardContent}>
                       <Link
-                        to={`/${routes.VIEW_REQUEST.replace(":uuid", uuid)}`}
+                        to={`/${routes.VIEW_REQUEST.replace(':uuid', uuid)}`}
                       >
                         <figure className={styles.cardFigure}>
                           <img alt={`Request de id ${uuid}`} src={picture} />
@@ -189,8 +188,8 @@ export function ManageRequest() {
                         <p className={styles.cardText}>
                           {`${drinksSize} ${pluralize(
                             drinksSize,
-                            "bebida",
-                            "bebidas"
+                            'bebida',
+                            'bebidas'
                           )}`}
                         </p>
 
@@ -200,7 +199,7 @@ export function ManageRequest() {
                               onClick={handleFinishRequest(uuid)}
                               shape="round"
                               icon={
-                                <CheckOutlined style={{ color: "#2ecc71" }} />
+                                <CheckOutlined style={{ color: '#2ecc71' }} />
                               }
                             />
                           </Tooltip>
@@ -210,7 +209,7 @@ export function ManageRequest() {
                               onClick={handleCancelRequest(uuid)}
                               shape="round"
                               icon={
-                                <CloseOutlined style={{ color: "#e74c3c" }} />
+                                <CloseOutlined style={{ color: '#e74c3c' }} />
                               }
                             />
                           </Tooltip>

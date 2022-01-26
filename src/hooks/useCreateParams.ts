@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import qs from "query-string";
-import { useLocation } from "react-router-dom";
-import { PaginationType } from "src/types/types";
+import { useEffect, useState } from 'react';
+import qs from 'query-string';
+import { useLocation } from 'react-router-dom';
 
 interface UseCreateParamsProps {
-  params: { [key: string]: Function };
+  params: { [key: string]: (x: any) => any };
   setLoading: (value: boolean) => void;
   setParams: (value: any) => void;
   setPagination?: React.Dispatch<React.SetStateAction<PaginationType>>;
@@ -15,13 +14,16 @@ export function useCreateParams({
   setParams,
   setLoading,
   setPagination,
-}: UseCreateParamsProps) {
+}: UseCreateParamsProps): [boolean] {
   const location = useLocation();
 
   const [creatingURL, setCreatingURL] = useState(true);
 
   useEffect(() => {
-    function getParameter(param: string, mapper: Function = String) {
+    function getParameter(
+      param: string,
+      mapper: (x: any) => any = String
+    ): any {
       const search = qs.parse(location.search);
 
       const value = search[param];
@@ -29,7 +31,6 @@ export function useCreateParams({
     }
 
     if (creatingURL) {
-
       if (location.search && creatingURL) {
         setCreatingURL(false);
 
@@ -46,7 +47,7 @@ export function useCreateParams({
 
         setPagination?.((pagination) => ({
           ...pagination,
-          page: getParameter("page", Number),
+          page: getParameter('page', Number),
         }));
       }
 

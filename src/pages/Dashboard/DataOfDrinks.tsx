@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import { Divider, Empty } from "antd";
+import { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Divider, Empty } from 'antd';
 
 import {
   Chart as ChartJS,
@@ -11,15 +11,14 @@ import {
   Title,
   Tooltip as TooltipChartJS,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-import endpoints from "src/api/api";
-import { Loading } from "src/components/layout/Loading";
-import { DataOfDrinksType } from "src/types/requests";
-import { handleError } from "src/utils/handleError";
-import { randomHotRGBColor, randomRGB } from "src/utils/rgbUtils";
+import endpoints from 'src/api/api';
+import { Loading } from 'src/components/layout/Loading';
+import { handleError } from 'src/utils/handleError';
+import { randomHotRGBColor, randomRGB } from 'src/utils/rgbUtils';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 ChartJS.register(
   CategoryScale,
@@ -31,21 +30,21 @@ ChartJS.register(
   Legend
 );
 
-export function DataOfDrinks() {
+export function DataOfDrinks(): JSX.Element {
   const [loading, setLoading] = useState(true);
   const [dataOfDrinks, setDataOfDrinks] = useState<DataOfDrinksType>(
     {} as DataOfDrinksType
   );
 
   useEffect(() => {
-    async function loadTopDrinks() {
+    async function loadTopDrinks(): Promise<void> {
       try {
-        const dataOfDrinks = await endpoints.getDataOfDrinksInRequests(10);
-        setDataOfDrinks(dataOfDrinks);
+        const dataOfDrinksFound = await endpoints.getDataOfDrinksInRequests(10);
+        setDataOfDrinks(dataOfDrinksFound);
       } catch (error) {
         handleError({
           error,
-          fallback: "Não foi possível carregar os dados das bebidas",
+          fallback: 'Não foi possível carregar os dados das bebidas',
         });
       } finally {
         setLoading(false);
@@ -71,7 +70,7 @@ export function DataOfDrinks() {
 
   return hasDataOfDrinks ? (
     <div className={styles.dataOfDrinksContainer}>
-      <Divider orientation="left" style={{ fontSize: "1.6rem" }}>
+      <Divider orientation="left" style={{ fontSize: '1.6rem' }}>
         Bebidas
       </Divider>
 
@@ -82,20 +81,20 @@ export function DataOfDrinks() {
               y: {
                 title: {
                   display: true,
-                  text: "Vezes pedida",
+                  text: 'Vezes pedida',
                 },
               },
               x: {
                 title: {
                   display: true,
-                  text: "Nome da bebida",
+                  text: 'Nome da bebida',
                 },
               },
             },
             plugins: {
               title: {
                 display: true,
-                text: "Bebidas mais pedidas",
+                text: 'Bebidas mais pedidas',
                 font: { size: 20 },
               },
               legend: {
@@ -123,20 +122,20 @@ export function DataOfDrinks() {
               y: {
                 title: {
                   display: true,
-                  text: "Vezes cancelada",
+                  text: 'Vezes cancelada',
                 },
               },
               x: {
                 title: {
                   display: true,
-                  text: "Nome da bebida",
+                  text: 'Nome da bebida',
                 },
               },
             },
             plugins: {
               title: {
                 display: true,
-                text: "Bebidas mais canceladas",
+                text: 'Bebidas mais canceladas',
                 font: { size: 20 },
               },
               legend: {

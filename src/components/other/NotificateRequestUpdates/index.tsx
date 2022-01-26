@@ -1,38 +1,37 @@
-import { Button, notification } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSubscription } from "react-stomp-hooks";
+import { useContext, useEffect, useState } from 'react';
+import { Button, notification } from 'antd';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSubscription } from 'react-stomp-hooks';
 
-import routes from "src/routes";
-import endpoints from "src/api/api";
-import { AuthContext } from "src/contexts/AuthContext";
-import { WebSocketContext } from "src/contexts/WebSocketContext";
-import { useAudio } from "src/hooks/useAudio";
-import { useBrowserNotification } from "src/hooks/useBrowserNotification";
-import { useTitle } from "src/hooks/useTitle";
-import { RequestType } from "src/types/requests";
+import routes from 'src/routes';
+import endpoints from 'src/api/api';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { WebSocketContext } from 'src/contexts/WebSocketContext';
+import { useAudio } from 'src/hooks/useAudio';
+import { useBrowserNotification } from 'src/hooks/useBrowserNotification';
+import { useTitle } from 'src/hooks/useTitle';
 
-import { RequestModal } from "./RequestModal";
+import { RequestModal } from './RequestModal';
 
-type RequestNotificationType = "FINISHED" | "CANCELED";
+type RequestNotificationType = 'FINISHED' | 'CANCELED';
 
 const publicPath = process.env.PUBLIC_URL;
 
 const requestStatusChanged = {
   FINISHED: {
-    title: "Seu pedido foi finalizado!",
+    title: 'Seu pedido foi finalizado!',
   },
 
   CANCELED: {
-    title: "Seu pedido foi cancelado!",
+    title: 'Seu pedido foi cancelado!',
   },
 
   DELIVERED: {
-    title: "Pedido foi entregue!",
+    title: 'Pedido foi entregue!',
   },
 };
 
-export function NotificateRequestUpdates() {
+export function NotificateRequestUpdates(): JSX.Element {
   const { userInfo, token } = useContext(AuthContext);
   const { setUpdateRequests, setUpdateRequest } = useContext(WebSocketContext);
 
@@ -50,11 +49,11 @@ export function NotificateRequestUpdates() {
 
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
 
   const [modalInfo, setModalInfo] = useState({
-    title: "",
-    uuid: "",
+    title: '',
+    uuid: '',
   });
 
   const [request, setRequest] = useState<RequestType>({} as RequestType);
@@ -62,10 +61,10 @@ export function NotificateRequestUpdates() {
   useTitle(title);
 
   useEffect(() => {
-    async function loadRequest() {
+    async function loadRequest(): Promise<void> {
       try {
-        const request = await endpoints.findRequestByUUID(modalInfo.uuid);
-        setRequest(request);
+        const requestFound = await endpoints.findRequestByUUID(modalInfo.uuid);
+        setRequest(requestFound);
       } finally {
         setLoading(false);
       }
@@ -79,7 +78,7 @@ export function NotificateRequestUpdates() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  function goToManageRequests() {
+  function goToManageRequests(): void {
     navigate(routes.MANAGE_REQUESTS);
     notification.destroy();
   }
@@ -94,31 +93,31 @@ export function NotificateRequestUpdates() {
 
       if (body.uuid) {
         const key = body.message as RequestNotificationType;
-        const { title } = requestStatusChanged[key];
+        const requestTitle = requestStatusChanged[key].title;
 
-        const toggle = key === "CANCELED" ? toggleCanceled : toggleFinished;
+        const toggle = key === 'CANCELED' ? toggleCanceled : toggleFinished;
 
         toggle();
 
-        createBrowsetNotification(title);
+        createBrowsetNotification(requestTitle);
 
         setModalInfo({
-          title,
+          title: requestTitle,
           uuid: body.uuid,
         });
 
-        setTitle(`SkyDrinks - ${title.toString()}`);
+        setTitle(`SkyDrinks - ${requestTitle.toString()}`);
         setLoading(true);
         setVisible(true);
 
-        const path = routes.VIEW_REQUEST.replace(":uuid", body.uuid);
+        const path = routes.VIEW_REQUEST.replace(':uuid', body.uuid);
         const onPath = location.pathname.includes(path);
 
         if (onPath) {
           setUpdateRequest(true);
         }
-      } else if (body.message === "requests-changed") {
-        const notificationMessage = "Aconteceu uma alteração nos pedidos!";
+      } else if (body.message === 'requests-changed') {
+        const notificationMessage = 'Aconteceu uma alteração nos pedidos!';
 
         setTitle(`SkyDrinks - ${notificationMessage}`);
 
@@ -131,13 +130,13 @@ export function NotificateRequestUpdates() {
         createBrowsetNotification(notificationMessage);
 
         notification.open({
-          key: "UPDATED",
-          type: "success",
+          key: 'UPDATED',
+          type: 'success',
           message: notificationMessage,
           duration: onPath ? 2 : 0,
-          placement: "bottomRight",
+          placement: 'bottomRight',
           description: !onPath ? (
-            <p style={{ textAlign: "right" }}>
+            <p style={{ textAlign: 'right' }}>
               <Button onClick={goToManageRequests} type="link">
                 Ver pedidos
               </Button>

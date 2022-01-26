@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import endpoints from "src/api/api";
-import { handleError } from "src/utils/handleError";
+import endpoints from 'src/api/api';
+import { handleError } from 'src/utils/handleError';
 
-export function useImages() {
+interface UseImagesReturn {
+  images: string[];
+  imagesLoading: boolean;
+}
+
+export function useImages(): UseImagesReturn {
   const [images, setImages] = useState<string[]>([]);
   const [imagesLoading, setImagesLoading] = useState(true);
 
   useEffect(() => {
-    async function loadImages() {
+    async function loadImages(): Promise<void> {
       try {
         const files = await endpoints.getAllImagesWithoutPagination();
 
@@ -16,7 +21,7 @@ export function useImages() {
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar as imagens das bebidas",
+          fallback: 'Não foi possível carregar as imagens das bebidas',
         });
       } finally {
         setImagesLoading(false);

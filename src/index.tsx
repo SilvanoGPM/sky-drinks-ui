@@ -1,19 +1,19 @@
-import { ConfigProvider } from "antd";
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import pt_BR from "antd/lib/locale/pt_BR";
+import ReactDOM from 'react-dom';
+import { ConfigProvider } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
+import ptBR from 'antd/lib/locale/pt_BR';
 
-import App from "./App";
+import Schema from 'async-validator';
+import App from './App';
 
-import "./index.scss";
-import { AuthProvider } from "./contexts/AuthContext";
-import { RequestProvider } from "./contexts/RequestContext";
-import { WebSocketProvider } from "./contexts/WebSocketContext";
-import { BrowserPermissionsProvider } from "./contexts/BrowserPermissionsContext";
+import './index.scss';
+import { AuthProvider } from './contexts/AuthContext';
+import { RequestProvider } from './contexts/RequestContext';
+import { WebSocketProvider } from './contexts/WebSocketContext';
+import { BrowserPermissionsProvider } from './contexts/BrowserPermissionsContext';
 
 // Disable async-validator pollution warning
-import Schema from 'async-validator';
-Schema.warning = function(){};
+Schema.warning = () => undefined;
 
 ReactDOM.render(
   <BrowserRouter>
@@ -21,7 +21,7 @@ ReactDOM.render(
       <RequestProvider>
         <WebSocketProvider>
           <BrowserPermissionsProvider>
-            <ConfigProvider locale={pt_BR}>
+            <ConfigProvider locale={ptBR}>
               <App />
             </ConfigProvider>
           </BrowserPermissionsProvider>
@@ -29,5 +29,5 @@ ReactDOM.render(
       </RequestProvider>
     </AuthProvider>
   </BrowserRouter>,
-  document.getElementById("root")
+  document.getElementById('root')
 );

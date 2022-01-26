@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-import { SearchOutlined, UserAddOutlined } from "@ant-design/icons";
-import { Button, Tooltip } from "antd";
+import { SearchOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Tooltip } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
 
-import routes from "src/routes";
-import { useTitle } from "src/hooks/useTitle";
-import { useForm } from "antd/lib/form/Form";
-import { UsersDrawer } from "./UsersDrawer";
-import { ListUsers } from "./ListUsers";
-import { formatToDatabaseDate } from "src/utils/formatDatabaseDate";
-import { UserSearchParams, UserSearchForm } from "src/types/user";
+import routes from 'src/routes';
+import { useTitle } from 'src/hooks/useTitle';
+import { formatToDatabaseDate } from 'src/utils/formatDatabaseDate';
 
-import styles from "./styles.module.scss";
-import { BlockAll } from "./BlockAll";
+import { UsersDrawer } from './UsersDrawer';
+import { ListUsers } from './ListUsers';
 
-export function ManageUsers() {
-  useTitle("SkyDrinks - Gerenciar usuários");
+import styles from './styles.module.scss';
+import { BlockAll } from './BlockAll';
+
+export function ManageUsers(): JSX.Element {
+  useTitle('SkyDrinks - Gerenciar usuários');
 
   const [form] = useForm();
 
@@ -25,22 +25,22 @@ export function ManageUsers() {
 
   const [params, setParams] = useState<UserSearchParams>({});
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     setDrawerVisible(false);
   }
 
-  function handleFormFinish(values: UserSearchForm) {
+  function handleFormFinish(values: UserSearchForm): void {
     const birthDay = values.birthDay
       ? formatToDatabaseDate(values.birthDay)
       : undefined;
 
     setParams({
       ...values,
-      role: values?.role?.join(",").toUpperCase(),
+      role: values?.role?.join(',').toUpperCase(),
       birthDay,
     });
 

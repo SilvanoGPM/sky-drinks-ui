@@ -1,6 +1,6 @@
-@import "src/scss/variables";
-@import "src/scss/shared";
-@import "src/scss/mixins";
+@import 'src/scss/variables';
+@import 'src/scss/shared';
+@import 'src/scss/mixins';
 
 .card {
   width: 200px;
@@ -25,7 +25,8 @@
     flex-direction: column;
   }
 
-  &Title, &Text {
+  &Title,
+  &Text {
     @extend %noWrapText;
     margin: 0;
   }

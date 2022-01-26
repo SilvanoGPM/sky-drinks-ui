@@ -1,9 +1,9 @@
-import { USER_CREDENTIALS_KEY } from "src/contexts/hooks/useAuth";
-import { showNotification } from "src/utils/showNotification";
+import { USER_CREDENTIALS_KEY } from 'src/contexts/hooks/useAuth';
+import { showNotification } from 'src/utils/showNotification';
 
-import { api } from "./api";
+import { api } from './api';
 
-export function tokenExpirationInterceptor() {
+export function tokenExpirationInterceptor(): void {
   api.interceptors.response.use(
     (response) => response,
     async (error: any) => {
@@ -14,15 +14,16 @@ export function tokenExpirationInterceptor() {
         localStorage.removeItem(USER_CREDENTIALS_KEY);
         sessionStorage.removeItem(USER_CREDENTIALS_KEY);
 
+        // eslint-disable-next-line no-param-reassign
         error.config.headers.Authorization = undefined;
-        api.defaults.headers.common["Authorization"] = "";
+        api.defaults.headers.common.Authorization = '';
 
         showNotification({
-          type: "info",
-          message: "Por favor, faça login novamente!",
+          type: 'info',
+          message: 'Por favor, faça login novamente!',
         });
 
-        throw new Error("Por favor, faça login novamente!");
+        throw new Error('Por favor, faça login novamente!');
       } else {
         throw error;
       }

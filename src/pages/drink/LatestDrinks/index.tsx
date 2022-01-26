@@ -1,23 +1,24 @@
-import { useState, useEffect, useRef } from "react";
-import { Empty } from "antd";
-import useDraggableScroll from "use-draggable-scroll";
+import { useState, useEffect, useRef } from 'react';
+import { Empty } from 'antd';
+import useDraggableScroll from 'use-draggable-scroll';
 
-import { DrinkCard } from "../components/DrinkCard";
-import { useTitle } from "src/hooks/useTitle";
+import { useTitle } from 'src/hooks/useTitle';
 
-import endpoints from "src/api/api";
+import endpoints from 'src/api/api';
 
-import routes from "src/routes";
-import { showNotification } from "src/utils/showNotification";
-import { useFlashNotification } from "src/hooks/useFlashNotification";
-import { handleError } from "src/utils/handleError";
-import { DrinkType } from "src/types/drinks";
+import routes from 'src/routes';
+import { showNotification } from 'src/utils/showNotification';
+import { useFlashNotification } from 'src/hooks/useFlashNotification';
+import { handleError } from 'src/utils/handleError';
 
-import styles from "./styles.module.scss";
-import drinkPlaceholder from "src/assets/drink-placeholder.png";
+import drinkPlaceholder from 'src/assets/drink-placeholder.png';
+
+import { DrinkCard } from '../components/DrinkCard';
+
+import styles from './styles.module.scss';
 
 const drinkFake = {
-  name: "Carregando...",
+  name: 'Carregando...',
   price: 0,
   picture: drinkPlaceholder,
 };
@@ -26,8 +27,8 @@ const latestDrinksFake = Array(5)
   .fill(drinkFake)
   .map((drink, uuid) => ({ ...drink, uuid }));
 
-export function LatestDrinks() {
-  useTitle("SkyDrinks - Últimas bebidas adicionadas");
+export function LatestDrinks(): JSX.Element {
+  useTitle('SkyDrinks - Últimas bebidas adicionadas');
 
   const drinksRef = useRef<HTMLUListElement>(null);
 
@@ -40,14 +41,14 @@ export function LatestDrinks() {
   useFlashNotification(routes.HOME);
 
   useEffect(() => {
-    async function loadLatestDrinks() {
+    async function loadLatestDrinks(): Promise<void> {
       try {
         const drinks = await endpoints.getLatestDrinks(5);
 
         if (drinks.length === 0) {
           showNotification({
-            type: "warn",
-            message: "Não existem drinks cadastrados!",
+            type: 'warn',
+            message: 'Não existem drinks cadastrados!',
           });
         }
 
@@ -55,7 +56,7 @@ export function LatestDrinks() {
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível pegar as últimas bebidas",
+          fallback: 'Não foi possível pegar as últimas bebidas',
         });
 
         setLatestDrinks([]);
@@ -79,20 +80,21 @@ export function LatestDrinks() {
     <section className={styles.container}>
       <h2 className={styles.title}>Últimas bebidas adicionadas:</h2>
 
-      {Boolean(latestDrinks.length) ? (
+      {latestDrinks.length ? (
         <ul
+          role="listbox"
           ref={drinksRef}
           onMouseDown={onMouseDown}
           className={styles.latestDrinks}
         >
-          {latestDrinks.map((props) => (
+          {latestDrinks.map((props: DrinkType) => (
             <DrinkCard
-              {...props}
               key={props.uuid}
               width="50%"
               minWidth={260}
               imageHeight={260}
               loading={loading}
+              {...props}
             />
           ))}
         </ul>

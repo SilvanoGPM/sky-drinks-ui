@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
 
-import drinksEndpoints from "./drinks";
-import filesEndpoints from "./files";
-import usersEndpoints from "./users";
-import requestsEndpoints from "./requests";
-import tablesEndpoints from "./tables";
-import { tokenExpirationInterceptor } from "./tokenExpirationInterceptor";
+import drinksEndpoints from './drinks';
+import filesEndpoints from './files';
+import usersEndpoints from './users';
+import requestsEndpoints from './requests';
+import tablesEndpoints from './tables';
+import { tokenExpirationInterceptor } from './tokenExpirationInterceptor';
 
 export const baseURL = process.env.REACT_APP_API_URL;
 

@@ -1,9 +1,17 @@
-import { Modal } from "antd";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
-import { AuthContext } from "./AuthContext";
+import { Modal } from 'antd';
 
-interface BrowserPermissionsContextProps {
+import { AuthContext } from './AuthContext';
+
+interface BrowserPermissionsContextType {
   notificationPermission: NotificationPermission;
   soundPermission: boolean;
   requestNotificationPermission: () => void;
@@ -15,17 +23,17 @@ interface BrowserPermissionsProviderProps {
 }
 
 export const BrowserPermissionsContext =
-  createContext<BrowserPermissionsContextProps>(
-    {} as BrowserPermissionsContextProps
+  createContext<BrowserPermissionsContextType>(
+    {} as BrowserPermissionsContextType
   );
 
-const PERMISSIONS_KEY = "@permissions";
+const PERMISSIONS_KEY = '@permissions';
 
 const { info } = Modal;
 
 export function BrowserPermissionsProvider({
   children,
-}: BrowserPermissionsProviderProps) {
+}: BrowserPermissionsProviderProps): JSX.Element {
   const { userInfo, authenticated } = useContext(AuthContext);
 
   const [notificationPermission, setNotificationPermission] =
@@ -59,47 +67,55 @@ export function BrowserPermissionsProvider({
     }
   }, [soundPermission, userInfo, authenticated]);
 
-  function requestNotificationPermission() {
-    async function request() {
+  const requestNotificationPermission = useCallback(() => {
+    async function request(): Promise<void> {
       const response = await Notification.requestPermission();
       setNotificationPermission(response);
     }
 
-    if (notificationPermission !== "granted") {
+    if (notificationPermission !== 'granted') {
       const content =
-        notificationPermission === "denied"
-          ? "Você bloqueou as notificações, caso tenha mudado de ideia, acesse as configurações do seu navegador e permita as notificações por lá."
-          : "Por favor, permita as notificações para podermos te enviar informações.";
+        notificationPermission === 'denied'
+          ? 'Você bloqueou as notificações, caso tenha mudado de ideia, acesse as configurações do seu navegador e permita as notificações por lá.'
+          : 'Por favor, permita as notificações para podermos te enviar informações.';
 
       info({
-        title: "Permitir notificações",
+        title: 'Permitir notificações',
         content,
-        okText: "Certo",
+        okText: 'Certo',
         onOk: request,
         onCancel: request,
       });
     } else {
       info({
-        title: "Bloquear notificações",
+        title: 'Bloquear notificações',
         content:
-          "Como você já aceitou as notificações, a única maneira de bloqueá-las, é acessando as configurações do navegador.",
-        okText: "Certo",
+          'Como você já aceitou as notificações, a única maneira de bloqueá-las, é acessando as configurações do navegador.',
+        okText: 'Certo',
         onOk: request,
         onCancel: request,
       });
     }
-  }
+  }, [notificationPermission]);
 
-  function toggleSoundPermission() {
+  const toggleSoundPermission = useCallback(() => {
     setSoundPermission(!soundPermission);
-  }
+  }, [soundPermission]);
 
-  const value = {
-    notificationPermission,
-    requestNotificationPermission,
-    soundPermission,
-    toggleSoundPermission,
-  };
+  const value = useMemo(
+    () => ({
+      notificationPermission,
+      requestNotificationPermission,
+      soundPermission,
+      toggleSoundPermission,
+    }),
+    [
+      notificationPermission,
+      requestNotificationPermission,
+      soundPermission,
+      toggleSoundPermission,
+    ]
+  );
 
   return (
     <BrowserPermissionsContext.Provider value={value}>

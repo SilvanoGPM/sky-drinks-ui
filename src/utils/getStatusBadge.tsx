@@ -1,6 +1,4 @@
-import { Badge } from "antd";
-
-import { RequestStatusType } from "src/types/requests";
+import { Badge } from 'antd';
 
 /**
  * Pega uma determinada {@link Badge badge} para um determinado {@link RequestStatusType status}.

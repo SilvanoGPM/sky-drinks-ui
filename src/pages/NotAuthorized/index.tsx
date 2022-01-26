@@ -1,14 +1,14 @@
-import { Result, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Result, Button } from 'antd';
+import { Link } from 'react-router-dom';
 
-import { useFlashNotification } from "src/hooks/useFlashNotification";
+import { useFlashNotification } from 'src/hooks/useFlashNotification';
 
-import { useTitle } from "src/hooks/useTitle";
+import { useTitle } from 'src/hooks/useTitle';
 
-import routes from "src/routes";
+import routes from 'src/routes';
 
-export function NotAuthorized() {
-  useTitle("SkyDrinks - Não autorizado");
+export function NotAuthorized(): JSX.Element {
+  useTitle('SkyDrinks - Não autorizado');
 
   useFlashNotification(routes.NOT_AUTHORIZED);
 

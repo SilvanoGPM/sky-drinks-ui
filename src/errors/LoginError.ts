@@ -3,8 +3,7 @@ export class LoginError extends Error {
 
   constructor(message: string) {
     super(message);
-    this.name = "LoginError";
+    this.name = 'LoginError';
     this.login = true;
   }
-
 }

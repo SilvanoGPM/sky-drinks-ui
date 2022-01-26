@@ -1,4 +1,4 @@
-import { showNotification } from "./showNotification";
+import { showNotification } from './showNotification';
 
 interface HandleErrorProps {
   error: any;
@@ -7,13 +7,15 @@ interface HandleErrorProps {
   maxDetailsChars?: number;
   description?: string;
 }
+
 /**
  * Pega os campos com erros.
- * @param {any} error Erro que aconteceu.
+ * @param error Erro que aconteceu.
  */
-export function getFieldErrorsDescription(error: any) {
+// eslint-disable-next-line
+export function getFieldErrorsDescription(error: any): string {
   const errors = error?.response?.data?.fieldErrors;
-  return errors ? Object.values(errors).flat().join("\n") : "";
+  return errors ? Object.values(errors).flat().join('\n') : '';
 }
 
 /**
@@ -26,20 +28,20 @@ export function getFieldErrorsDescription(error: any) {
  */
 export function handleError({
   error,
-  fallback = "",
+  fallback = '',
   title,
   maxDetailsChars = 200,
-  description = "",
+  description = '',
 }: HandleErrorProps): void {
   const details = error?.response?.data?.details || error.message || fallback;
 
   const message =
-    details.length >= maxDetailsChars || details.includes("is undefined")
+    details.length >= maxDetailsChars || details.includes('is undefined')
       ? fallback
       : details;
 
   showNotification({
-    type: "warn",
+    type: 'warn',
     message: title || message,
     description,
   });

@@ -1,26 +1,26 @@
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Divider, Modal } from "antd";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { Button, Divider, Modal } from 'antd';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { Loading } from "src/components/layout/Loading";
-import { QRCodeGenerator } from "src/components/other/QRCodeGenerator";
-import { AuthContext } from "src/contexts/AuthContext";
-import { WebSocketContext } from "src/contexts/WebSocketContext";
-import { useTitle } from "src/hooks/useTitle";
-import { RequestStatusType, RequestType } from "src/types/requests";
-import { formatDisplayDate } from "src/utils/formatDatabaseDate";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { getStatusBadge } from "src/utils/getStatusBadge";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import { handleError } from "src/utils/handleError";
-import { isUUID } from "src/utils/isUUID";
-import { showNotification } from "src/utils/showNotification";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { Loading } from 'src/components/layout/Loading';
+import { QRCodeGenerator } from 'src/components/other/QRCodeGenerator';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { WebSocketContext } from 'src/contexts/WebSocketContext';
+import { useTitle } from 'src/hooks/useTitle';
+import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { getStatusBadge } from 'src/utils/getStatusBadge';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
+import { handleError } from 'src/utils/handleError';
+import { isUUID } from 'src/utils/isUUID';
+import { showNotification } from 'src/utils/showNotification';
 
-import styles from "./styles.module.scss";
-import { DrinkList } from "./DrinkList";
+import { DrinkList } from './DrinkList';
+
+import styles from './styles.module.scss';
 
 interface UpdatedRequest {
   status?: RequestStatusType;
@@ -29,8 +29,8 @@ interface UpdatedRequest {
 
 const { confirm } = Modal;
 
-export function ViewRequest() {
-  useTitle("SkyDrinks - Visualizar pedido");
+export function ViewRequest(): JSX.Element {
+  useTitle('SkyDrinks - Visualizar pedido');
 
   const { userInfo } = useContext(AuthContext);
   const { updateRequest: updateRequestView } = useContext(WebSocketContext);
@@ -48,16 +48,16 @@ export function ViewRequest() {
 
   const redirect = useCallback(() => {
     const path = location?.state?.path
-      ? `/${location.state.path}`
+      ? `/${location?.state?.path}`
       : routes.HOME;
 
     navigate(path);
   }, [location, navigate]);
 
   useEffect(() => {
-    const uuid = params.uuid || "";
+    const uuid = params.uuid || '';
 
-    async function loadRequest() {
+    async function loadRequest(): Promise<void> {
       if (isUUID(uuid)) {
         try {
           const request = await endpoints.findRequestByUUID(uuid);
@@ -65,7 +65,7 @@ export function ViewRequest() {
         } catch (error: any) {
           handleError({
             error,
-            fallback: "Não foi possível carregar o pedido",
+            fallback: 'Não foi possível carregar o pedido',
           });
 
           redirect();
@@ -74,8 +74,8 @@ export function ViewRequest() {
         }
       } else {
         showNotification({
-          type: "warn",
-          message: "Pesquise por um código válido!",
+          type: 'warn',
+          message: 'Pesquise por um código válido!',
         });
 
         redirect();
@@ -95,96 +95,96 @@ export function ViewRequest() {
     }
   }, [updateRequestView]);
 
-  function updateRequest(request: UpdatedRequest) {
+  function updateRequest(request: UpdatedRequest): void {
     setRequestFound({ ...requestFound, ...request });
   }
 
-  function handleCancelRequest() {
-    async function cancelRequest() {
+  function handleCancelRequest(): void {
+    async function cancelRequest(): Promise<void> {
       try {
         await endpoints.cancelRequest(requestFound.uuid);
 
-        updateRequest({ status: "CANCELED" });
+        updateRequest({ status: 'CANCELED' });
 
         showNotification({
-          type: "success",
-          message: "Pedido foi cancelado com sucesso!",
+          type: 'success',
+          message: 'Pedido foi cancelado com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível cancelar o pedido",
+          fallback: 'Não foi possível cancelar o pedido',
         });
       }
     }
 
     confirm({
-      title: "Deseja cancelar o pedido?",
-      content: "Depois de cancelado, o pedido não poderá ser finalizado!",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Deseja cancelar o pedido?',
+      content: 'Depois de cancelado, o pedido não poderá ser finalizado!',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk: cancelRequest,
     });
   }
 
-  function handleFinishRequest() {
-    async function finishRequest() {
+  function handleFinishRequest(): void {
+    async function finishRequest(): Promise<void> {
       try {
         await endpoints.finishRequest(requestFound.uuid);
 
-        updateRequest({ status: "FINISHED" });
+        updateRequest({ status: 'FINISHED' });
 
         showNotification({
-          type: "success",
-          message: "Pedido foi finalizado com sucesso!",
+          type: 'success',
+          message: 'Pedido foi finalizado com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível finalizar o pedido",
+          fallback: 'Não foi possível finalizar o pedido',
         });
       }
     }
 
     confirm({
-      title: "Deseja finlizar o pedido?",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Deseja finlizar o pedido?',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk: finishRequest,
     });
   }
 
-  function handleDeliverRequest() {
-    async function deliverRequest() {
+  function handleDeliverRequest(): void {
+    async function deliverRequest(): Promise<void> {
       try {
         await endpoints.deliverRequest(requestFound.uuid);
 
-        updateRequest({ status: "FINISHED", delivered: true });
+        updateRequest({ status: 'FINISHED', delivered: true });
 
         showNotification({
-          type: "success",
-          message: "Pedido foi entregue com sucesso!",
+          type: 'success',
+          message: 'Pedido foi entregue com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível entregar o pedido",
+          fallback: 'Não foi possível entregar o pedido',
         });
       }
     }
 
     confirm({
-      title: "Deseja entregar o pedido?",
-      content: "Depois de entregado, o pedido não poderá ser cancelado!",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Deseja entregar o pedido?',
+      content: 'Depois de entregado, o pedido não poderá ser cancelado!',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk: deliverRequest,
     });
   }
 
   const permissions = getUserPermissions(userInfo.role);
 
-  function showActions() {
+  function showActions(): JSX.Element {
     const { isBarmen, isWaiter } = permissions;
 
     const isStaff = isBarmen || isWaiter;
@@ -193,22 +193,22 @@ export function ViewRequest() {
     const hasPermission = isStaff || isRequestOwner;
 
     const ownerCannotCancel =
-      isRequestOwner && requestFound.status === "FINISHED" && !isStaff;
+      isRequestOwner && requestFound.status === 'FINISHED' && !isStaff;
 
     const invalidFlags =
-      requestFound.status === "CANCELED" ||
+      requestFound.status === 'CANCELED' ||
       !hasPermission ||
       ownerCannotCancel ||
       requestFound.delivered;
 
     if (invalidFlags) {
-      return;
+      return <div />;
     }
 
     return (
       <>
         <Divider
-          style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+          style={{ fontSize: '1.5rem', margin: '2rem 0' }}
           orientation="left"
         >
           Ações
@@ -216,24 +216,24 @@ export function ViewRequest() {
 
         <div className={styles.actions}>
           {isStaff &&
-            requestFound.status === "FINISHED" &&
+            requestFound.status === 'FINISHED' &&
             !requestFound.delivered && (
               <Button
                 onClick={handleDeliverRequest}
                 shape="round"
                 size="large"
-                icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
+                icon={<CheckOutlined style={{ color: '#2ecc71' }} />}
               >
                 Entregar pedido
               </Button>
             )}
 
-          {isStaff && requestFound.status === "PROCESSING" && (
+          {isStaff && requestFound.status === 'PROCESSING' && (
             <Button
               onClick={handleFinishRequest}
               shape="round"
               size="large"
-              icon={<CheckOutlined style={{ color: "#2ecc71" }} />}
+              icon={<CheckOutlined style={{ color: '#2ecc71' }} />}
             >
               Finalizar pedido
             </Button>
@@ -244,7 +244,7 @@ export function ViewRequest() {
               onClick={handleCancelRequest}
               shape="round"
               size="large"
-              icon={<CloseOutlined style={{ color: "#e74c3c" }} />}
+              icon={<CloseOutlined style={{ color: '#e74c3c' }} />}
             >
               Cancelar pedido
             </Button>
@@ -255,7 +255,7 @@ export function ViewRequest() {
   }
 
   const showQRCode =
-    requestFound.status === "FINISHED" &&
+    requestFound.status === 'FINISHED' &&
     !requestFound.delivered &&
     userInfo.uuid === requestFound.user?.uuid;
 
@@ -287,19 +287,19 @@ export function ViewRequest() {
             {showActions()}
 
             <Divider
-              style={{ fontSize: "1.5rem", margin: "2rem 0" }}
+              style={{ fontSize: '1.5rem', margin: '2rem 0' }}
               orientation="left"
             >
               Geral
             </Divider>
 
             <h3>
-              Código do pedido:{" "}
+              Código do pedido:{' '}
               <span className={styles.bold}>{requestFound.uuid}</span>
             </h3>
 
             <p>
-              Usuário:{" "}
+              Usuário:{' '}
               <span className={styles.bold}>
                 {requestFound.user?.name} - {requestFound.user?.email}
               </span>
@@ -310,38 +310,38 @@ export function ViewRequest() {
               {getStatusBadge(requestFound.status)}
             </div>
 
-            {requestFound.status === "FINISHED" && !requestFound.delivered && (
+            {requestFound.status === 'FINISHED' && !requestFound.delivered && (
               <p className={styles.warnMessage}>
                 {requestFound.table
                   ? `Seu pedido será entregue na mesa n° ${requestFound.table?.number}!`
-                  : "Vá pegar seu pedido no balcão."}
+                  : 'Vá pegar seu pedido no balcão.'}
               </p>
             )}
 
-            {requestFound.status === "CANCELED" && (
+            {requestFound.status === 'CANCELED' && (
               <p className={styles.warnMessage}>
                 Vá até o balcão para mais informações sobre o cancelamento.
               </p>
             )}
 
-            {requestFound.status === "FINISHED" && requestFound.delivered && (
+            {requestFound.status === 'FINISHED' && requestFound.delivered && (
               <p className={styles.warnMessage}>O pedido já foi entregado.</p>
             )}
 
             <p>
-              Pedido realizado em{" "}
+              Pedido realizado em{' '}
               <span className={styles.bold}>
                 {formatDisplayDate(requestFound?.createdAt)}
               </span>
             </p>
             <p>
-              Pedido atualizado em{" "}
+              Pedido atualizado em{' '}
               <span className={styles.bold}>
                 {formatDisplayDate(requestFound?.updatedAt)}
               </span>
             </p>
             <p>
-              Preço estimado:{" "}
+              Preço estimado:{' '}
               <span className={styles.bold}>
                 {formatDisplayPrice(requestFound.totalPrice)}
               </span>

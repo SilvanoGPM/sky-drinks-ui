@@ -1,43 +1,43 @@
-import React, { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { StompSessionProvider } from 'react-stomp-hooks';
+import { StompSessionProviderProps } from 'react-stomp-hooks/dist/interfaces/StompSessionProviderProps';
 
-import routes from "./routes";
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
-import { NotFound } from "./pages/NotFound";
-import { LatestDrinks } from "./pages/drink/LatestDrinks";
-import { DrinkView } from "./pages/drink/DrinkView";
-import { SearchDrinks } from "./pages/drink/SearchDrinks";
-import { AuthContext } from "./contexts/AuthContext";
-import { Logout } from "./pages/Logout";
-import { PrivateRoute } from "./components/custom/PrivateRoute";
-import { ManageDrinks } from "./pages/drink/ManageDrinks";
-import { EditDrink } from "./pages/drink/EditDrink";
-import { CreateDrink } from "./pages/drink/CreateDrink";
-import { ManageUsers } from "./pages/user/ManageUsers";
-import { CreateUser } from "./pages/user/CreateUser";
-import { EditUser } from "./pages/user/EditUser";
-import { NotAuthorized } from "./pages/NotAuthorized";
-import { MyAccount } from "./pages/user/MyAccount";
-import { FinalizeRequest } from "./pages/request/FinalizeRequest";
-import { RequestCreated } from "./pages/request/RequestCreated";
-import { FindRequest } from "./pages/request/FindRequest";
-import { ViewRequest } from "./pages/request/ViewRequest";
-import { MyRequests } from "./pages/request/MyRequests";
-import { ListImages } from "./pages/drink/ListImages";
-import { StompSessionProvider } from "react-stomp-hooks";
-import { baseURL } from "./api/api";
-import { StompSessionProviderProps } from "react-stomp-hooks/dist/interfaces/StompSessionProviderProps";
-import { NotificateRequestUpdates } from "./components/other/NotificateRequestUpdates";
-import { ManageRequest } from "./pages/request/ManageRequests";
-import { SearchRequests } from "./pages/request/SearchRequests";
-import { ManageTables } from "./pages/table/ManageTables";
-import { Dashboard } from "./pages/Dashboard";
-import { UserMetrics } from "./pages/user/UserMetrics";
+import routes from './routes';
+import { Home } from './pages/Home';
+import { Login } from './pages/Login';
+import { NotFound } from './pages/NotFound';
+import { LatestDrinks } from './pages/drink/LatestDrinks';
+import { DrinkView } from './pages/drink/DrinkView';
+import { SearchDrinks } from './pages/drink/SearchDrinks';
+import { AuthContext } from './contexts/AuthContext';
+import { Logout } from './pages/Logout';
+import { PrivateRoute } from './components/custom/PrivateRoute';
+import { ManageDrinks } from './pages/drink/ManageDrinks';
+import { EditDrink } from './pages/drink/EditDrink';
+import { CreateDrink } from './pages/drink/CreateDrink';
+import { ManageUsers } from './pages/user/ManageUsers';
+import { CreateUser } from './pages/user/CreateUser';
+import { EditUser } from './pages/user/EditUser';
+import { NotAuthorized } from './pages/NotAuthorized';
+import { MyAccount } from './pages/user/MyAccount';
+import { FinalizeRequest } from './pages/request/FinalizeRequest';
+import { RequestCreated } from './pages/request/RequestCreated';
+import { FindRequest } from './pages/request/FindRequest';
+import { ViewRequest } from './pages/request/ViewRequest';
+import { MyRequests } from './pages/request/MyRequests';
+import { ListImages } from './pages/drink/ListImages';
+import { baseURL } from './api/api';
+import { NotificateRequestUpdates } from './components/other/NotificateRequestUpdates';
+import { ManageRequest } from './pages/request/ManageRequests';
+import { SearchRequests } from './pages/request/SearchRequests';
+import { ManageTables } from './pages/table/ManageTables';
+import { Dashboard } from './pages/Dashboard';
+import { UserMetrics } from './pages/user/UserMetrics';
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
-function App() {
+function App(): JSX.Element {
   const { authenticated, token } = useContext(AuthContext);
 
   const Wrapper = authenticated ? StompSessionProvider : React.Fragment;
@@ -78,7 +78,7 @@ function App() {
             path={routes.LIST_IMAGES}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                requiredPerms={{ type: 'and', perms: ['isBarmen'] }}
               >
                 <ListImages />
               </PrivateRoute>
@@ -89,7 +89,7 @@ function App() {
             path={routes.MANAGE_DRINKS}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                requiredPerms={{ type: 'and', perms: ['isBarmen'] }}
               >
                 <ManageDrinks />
               </PrivateRoute>
@@ -100,7 +100,7 @@ function App() {
             path={routes.CREATE_DRINK}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                requiredPerms={{ type: 'and', perms: ['isBarmen'] }}
               >
                 <CreateDrink />
               </PrivateRoute>
@@ -111,7 +111,7 @@ function App() {
             path={routes.EDIT_DRINK}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "and", perms: ["isBarmen"] }}
+                requiredPerms={{ type: 'and', perms: ['isBarmen'] }}
               >
                 <EditDrink />
               </PrivateRoute>
@@ -121,7 +121,7 @@ function App() {
           <Route
             path={routes.MANAGE_USERS}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isAdmin'] }}>
                 <ManageUsers />
               </PrivateRoute>
             }
@@ -130,7 +130,7 @@ function App() {
           <Route
             path={routes.CREATE_USER}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isAdmin'] }}>
                 <CreateUser />
               </PrivateRoute>
             }
@@ -139,7 +139,7 @@ function App() {
           <Route
             path={routes.EDIT_USER}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isUser'] }}>
                 <EditUser />
               </PrivateRoute>
             }
@@ -148,7 +148,7 @@ function App() {
           <Route
             path={routes.USER_METRICS}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isAdmin'] }}>
                 <UserMetrics />
               </PrivateRoute>
             }
@@ -166,7 +166,7 @@ function App() {
           <Route
             path={routes.FINALIZE_REQUEST}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isUser'] }}>
                 <FinalizeRequest />
               </PrivateRoute>
             }
@@ -175,7 +175,7 @@ function App() {
           <Route
             path={routes.REQUEST_CREATED}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isUser'] }}>
                 <RequestCreated />
               </PrivateRoute>
             }
@@ -202,7 +202,7 @@ function App() {
           <Route
             path={routes.MY_REQUESTS}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isUser"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isUser'] }}>
                 <MyRequests />
               </PrivateRoute>
             }
@@ -212,7 +212,7 @@ function App() {
             path={routes.MANAGE_REQUESTS}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
+                requiredPerms={{ type: 'or', perms: ['isBarmen', 'isWaiter'] }}
               >
                 <ManageRequest />
               </PrivateRoute>
@@ -223,7 +223,7 @@ function App() {
             path={routes.SEARCH_REQUESTS}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "or", perms: ["isBarmen", "isWaiter"] }}
+                requiredPerms={{ type: 'or', perms: ['isBarmen', 'isWaiter'] }}
               >
                 <SearchRequests />
               </PrivateRoute>
@@ -234,7 +234,7 @@ function App() {
             path={routes.MANANGE_TABLES}
             element={
               <PrivateRoute
-                requiredPerms={{ type: "and", perms: ["isWaiter"] }}
+                requiredPerms={{ type: 'and', perms: ['isWaiter'] }}
               >
                 <ManageTables />
               </PrivateRoute>
@@ -244,7 +244,7 @@ function App() {
           <Route
             path={routes.DASHBOARD}
             element={
-              <PrivateRoute requiredPerms={{ type: "and", perms: ["isAdmin"] }}>
+              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isAdmin'] }}>
                 <Dashboard />
               </PrivateRoute>
             }

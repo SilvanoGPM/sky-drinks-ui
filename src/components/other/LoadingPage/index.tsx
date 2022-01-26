@@ -1,11 +1,11 @@
-import { Spin } from "antd";
+import { Spin } from 'antd';
 
-import { useTitle } from "src/hooks/useTitle";
+import { useTitle } from 'src/hooks/useTitle';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
-export function LoadingPage() {
-  useTitle("SkyDrinks - Carregando. . .");
+export function LoadingPage(): JSX.Element {
+  useTitle('SkyDrinks - Carregando. . .');
 
   return (
     <div className={styles.loading}>

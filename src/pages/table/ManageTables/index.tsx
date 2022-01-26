@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import qs from "query-string";
+import { useEffect, useState } from 'react';
+import qs from 'query-string';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
 import {
   Button,
@@ -18,25 +19,19 @@ import {
   Select,
   Slider,
   Tooltip,
-} from "antd";
+} from 'antd';
 
-import endpoints from "src/api/api";
-import { TableIcon } from "src/components/custom/CustomIcons";
-import { useTitle } from "src/hooks/useTitle";
-import { pluralize } from "src/utils/pluralize";
-import { showNotification } from "src/utils/showNotification";
-import { PersistTable } from "./PersistTable";
-import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
+import endpoints from 'src/api/api';
+import { TableIcon } from 'src/components/custom/CustomIcons';
+import { useTitle } from 'src/hooks/useTitle';
+import { pluralize } from 'src/utils/pluralize';
+import { showNotification } from 'src/utils/showNotification';
+import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { useCreateParams } from 'src/hooks/useCreateParams';
 
-import {
-  TablePaginetedType,
-  TableSearchParams,
-  TableType,
-} from "src/types/tables";
+import { PersistTable } from './PersistTable';
 
-import styles from "./styles.module.scss";
-import { useCreateParams } from "src/hooks/useCreateParams";
-import { useSearchParams } from "react-router-dom";
+import styles from './styles.module.scss';
 
 interface TableSearchForm {
   seats: number[];
@@ -51,8 +46,8 @@ interface TablePersistForm {
 const { confirm } = Modal;
 const { Option } = Select;
 
-export function ManageTables() {
-  useTitle("SkyDrinks - Gerenciar mesas");
+export function ManageTables(): JSX.Element {
+  useTitle('SkyDrinks - Gerenciar mesas');
 
   const [, setSearchParams] = useSearchParams();
 
@@ -92,11 +87,11 @@ export function ManageTables() {
   });
 
   useEffect(() => {
-    async function loadTables() {
+    async function loadTables(): Promise<void> {
       const { page, size } = pagination;
 
       try {
-        const data = await endpoints.searchTables({
+        const dataFound = await endpoints.searchTables({
           ...params,
           page,
           size,
@@ -109,9 +104,9 @@ export function ManageTables() {
           })
         );
 
-        setData(data);
+        setData(dataFound);
       } catch (error: any) {
-        handleError({ error, fallback: "Não foi possível carregar as mesas" });
+        handleError({ error, fallback: 'Não foi possível carregar as mesas' });
       } finally {
         setLoading(false);
       }
@@ -122,8 +117,8 @@ export function ManageTables() {
     }
   }, [loading, pagination, params, setSearchParams]);
 
-  function handleRemoveTable(uuid: string) {
-    async function remove() {
+  function handleRemoveTable(uuid: string): () => void {
+    async function remove(): Promise<void> {
       try {
         setRemoveTableLoading(true);
 
@@ -147,13 +142,13 @@ export function ManageTables() {
         }
 
         showNotification({
-          type: "success",
-          message: "Mesa removida com sucesso",
+          type: 'success',
+          message: 'Mesa removida com sucesso',
         });
       } catch {
         showNotification({
-          type: "warn",
-          message: "Não foi possível remover mesa",
+          type: 'warn',
+          message: 'Não foi possível remover mesa',
         });
       } finally {
         setRemoveTableLoading(false);
@@ -162,24 +157,24 @@ export function ManageTables() {
 
     return () => {
       confirm({
-        title: "Realmente deseja remover esta mesa?",
-        okText: "Sim",
-        cancelText: "Não",
+        title: 'Realmente deseja remover esta mesa?',
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: remove,
       });
     };
   }
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     setDrawerVisible(false);
   }
 
-  function handleTableOccupied(uuid: string, occuppied: boolean) {
-    async function toggleTableOccupied() {
+  function handleTableOccupied(uuid: string, occuppied: boolean): () => void {
+    async function toggleTableOccupied(): Promise<void> {
       try {
         await endpoints.toggleTableOccupied(uuid);
 
@@ -194,45 +189,45 @@ export function ManageTables() {
         setData({ ...data, content });
 
         const message = occuppied
-          ? "Mesa desocupada com sucesso!"
-          : "Mesa ocupada com sucesso!";
+          ? 'Mesa desocupada com sucesso!'
+          : 'Mesa ocupada com sucesso!';
 
         showNotification({
-          type: "success",
+          type: 'success',
           message,
           duration: 2,
         });
       } catch {
         showNotification({
-          type: "warn",
-          message: "Não foi possível alternar ocupação da mesa",
+          type: 'warn',
+          message: 'Não foi possível alternar ocupação da mesa',
         });
       }
     }
 
     return () => {
       const title = occuppied
-        ? "Deseja desocupar a mesa?"
-        : "Deseja ocupar a mesa?";
+        ? 'Deseja desocupar a mesa?'
+        : 'Deseja ocupar a mesa?';
 
       confirm({
         title,
-        okText: "Sim",
-        cancelText: "Não",
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: toggleTableOccupied,
       });
     };
   }
 
-  function handlePaginationChange(page: number) {
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
+  function handlePaginationChange(page: number): void {
+    setPagination((oldPagination) => {
+      return { ...oldPagination, page: page - 1 };
     });
 
     setLoading(true);
   }
 
-  function handleFormFinish(values: TableSearchForm) {
+  function handleFormFinish(values: TableSearchForm): void {
     const { occupied, seats } = values;
 
     const [greaterThanOrEqualToSeats, lessThanOrEqualToSeats] = seats;
@@ -249,31 +244,33 @@ export function ManageTables() {
     setLoading(true);
   }
 
-  function clearForm() {
+  function clearForm(): void {
     form.resetFields();
   }
 
-  function showPersistTable() {
+  function showPersistTable(): void {
     setPersistTableShow(true);
   }
 
-  function closePersistTable() {
+  function closePersistTable(): void {
     setPersistTableShow(false);
     setSelectedTable(undefined);
   }
 
   function selectTable(uuid: string) {
     return () => {
-      const selectedTable = data.content.find((item) => item.uuid === uuid);
+      const selectedTableFound = data.content.find(
+        (item) => item.uuid === uuid
+      );
 
-      if (selectedTable) {
-        setSelectedTable(selectedTable);
+      if (selectedTableFound) {
+        setSelectedTable(selectedTableFound);
         showPersistTable();
       }
     };
   }
 
-  async function handleCreateTable(values: TablePersistForm) {
+  async function handleCreateTable(values: TablePersistForm): Promise<void> {
     try {
       setPersistTableLoading(true);
 
@@ -285,8 +282,8 @@ export function ManageTables() {
       });
 
       showNotification({
-        type: "success",
-        message: "Mesa foi criada com sucesso!",
+        type: 'success',
+        message: 'Mesa foi criada com sucesso!',
       });
 
       closePersistTable();
@@ -296,20 +293,20 @@ export function ManageTables() {
       handleError({
         error,
         description,
-        fallback: "Não foi criar mesa",
+        fallback: 'Não foi criar mesa',
       });
     } finally {
       setPersistTableLoading(false);
     }
   }
 
-  async function updateSelectedTable(values: TablePersistForm) {
+  async function updateSelectedTable(values: TablePersistForm): Promise<void> {
     try {
       setPersistTableLoading(true);
 
       await endpoints.updateTable({
         ...values,
-        uuid: selectedTable?.uuid || "",
+        uuid: selectedTable?.uuid || '',
       });
 
       const content = data.content.map((item) => {
@@ -327,8 +324,8 @@ export function ManageTables() {
       });
 
       showNotification({
-        type: "success",
-        message: "Mesa foi atualizada com sucesso!",
+        type: 'success',
+        message: 'Mesa foi atualizada com sucesso!',
       });
 
       closePersistTable();
@@ -338,7 +335,7 @@ export function ManageTables() {
       handleError({
         error,
         description,
-        fallback: "Não foi atualizar mesa",
+        fallback: 'Não foi atualizar mesa',
       });
     } finally {
       setPersistTableLoading(false);
@@ -360,32 +357,34 @@ export function ManageTables() {
       </div>
 
       <ul className={styles.list}>
-        {data.content.map(({ uuid = "", number, occupied, seats }) => (
+        {data.content.map(({ uuid = '', number, occupied, seats }) => (
           <li key={uuid}>
             <div className={styles.table}>
               <Tooltip
                 placement="left"
                 title={
                   occupied
-                    ? "Clique para desocupar a mesa"
-                    : "Clique para ocupar mesa"
+                    ? 'Clique para desocupar a mesa'
+                    : 'Clique para ocupar mesa'
                 }
               >
                 <div
                   onClick={handleTableOccupied(uuid, occupied)}
+                  role="button"
+                  tabIndex={0}
                   className={styles.tableInfo}
                 >
                   <p>
-                    A mesa contém{" "}
+                    A mesa contém{' '}
                     <span className={styles.bold}>
-                      {`${seats} ${pluralize(seats, "assento", "assentos")}`}
+                      {`${seats} ${pluralize(seats, 'assento', 'assentos')}`}
                     </span>
                   </p>
                   <p>
-                    A mesa{" "}
+                    A mesa{' '}
                     <span className={styles.bold}>
-                      {occupied ? "está" : "não está"}
-                    </span>{" "}
+                      {occupied ? 'está' : 'não está'}
+                    </span>{' '}
                     ocupada
                   </p>
                 </div>
@@ -395,8 +394,8 @@ export function ManageTables() {
                 <p
                   className={styles.tableNumber}
                   style={{
-                    fontSize: "1.5rem",
-                    color: occupied ? "#e74c3c" : "#2ecc71",
+                    fontSize: '1.5rem',
+                    color: occupied ? '#e74c3c' : '#2ecc71',
                   }}
                 >
                   {number}
@@ -405,7 +404,7 @@ export function ManageTables() {
                 <TableIcon
                   style={{
                     fontSize: 80,
-                    color: occupied ? "#e74c3c" : "#2ecc71",
+                    color: occupied ? '#e74c3c' : '#2ecc71',
                   }}
                 />
 
@@ -424,7 +423,7 @@ export function ManageTables() {
                       onClick={handleRemoveTable(uuid)}
                       loading={removeTableLoading}
                       icon={<DeleteOutlined />}
-                      style={{ color: "#e74c3c" }}
+                      style={{ color: '#e74c3c' }}
                     />
                   </Tooltip>
                 </div>
@@ -459,7 +458,7 @@ export function ManageTables() {
       </div>
 
       <PersistTable
-        title={selectedTable ? "Atualizar mesa" : "Criar mesa"}
+        title={selectedTable ? 'Atualizar mesa' : 'Criar mesa'}
         seats={selectedTable?.seats}
         number={selectedTable?.number}
         loading={persistTableLoading}
@@ -481,7 +480,7 @@ export function ManageTables() {
           layout="vertical"
           style={{ flex: 1 }}
           initialValues={{
-            occupied: "-1",
+            occupied: '-1',
             seats: [1, 10],
           }}
           name="search-tables"
@@ -503,7 +502,7 @@ export function ManageTables() {
               min={1}
               max={50}
               tipFormatter={(value) =>
-                `${value} ${pluralize(value || 1, "assento", "assentos")}`
+                `${value} ${pluralize(value || 1, 'assento', 'assentos')}`
               }
             />
           </Form.Item>
@@ -519,7 +518,7 @@ export function ManageTables() {
               size="large"
               type="primary"
               htmlType="submit"
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
             >
               Pesquisar
             </Button>
@@ -534,7 +533,7 @@ export function ManageTables() {
             <Button
               icon={<DeleteOutlined />}
               size="large"
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               onClick={clearForm}
             >
               Limpar

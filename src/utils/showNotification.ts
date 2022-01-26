@@ -1,7 +1,7 @@
-import { notification } from "antd";
-import { NotificationPlacement,  } from "antd/lib/notification";
+import { notification } from 'antd';
+import { NotificationPlacement } from 'antd/lib/notification';
 
-type NotificationType = "success" | "warn" | "error" | "info";
+type NotificationType = 'success' | 'warn' | 'error' | 'info';
 
 interface ShowNotificationProps {
   type: NotificationType;
@@ -12,9 +12,9 @@ interface ShowNotificationProps {
 }
 
 const defaultProps: ShowNotificationProps = {
-  type: "success",
-  message: "Ocorreu um erro",
-  placement: "bottomRight",
+  type: 'success',
+  message: 'Ocorreu um erro',
+  placement: 'bottomRight',
   duration: 5,
 };
 

@@ -1,7 +1,6 @@
-@import "src/scss/shared";
+@import 'src/scss/shared';
 
 .listItemContent {
-
   p {
     @extend %noWrapText;
     margin: 0;
@@ -22,7 +21,6 @@
     margin: 0;
     margin-bottom: 0.5rem;
   }
-
 }
 
 .itemTitle {
@@ -35,7 +33,6 @@
 }
 
 .drinks {
-
   &Item {
     display: flex;
     justify-content: space-between;
@@ -55,5 +52,4 @@
     max-height: 300px;
     overflow-y: auto;
   }
-
 }

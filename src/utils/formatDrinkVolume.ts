@@ -1,4 +1,4 @@
-import { pluralize } from "./pluralize";
+import { pluralize } from './pluralize';
 /**
  * Formata um determinado volume.
  * @param {number} volume Volume a ser formatado.
@@ -9,16 +9,16 @@ import { pluralize } from "./pluralize";
 export function formatDrinkVolume(volume: number): string {
   if (volume >= 1000) {
     const liter = volume / 1000;
-    return `${liter.toFixed(1).replace(".", ",")} ${pluralize(
+    return `${liter.toFixed(1).replace('.', ',')} ${pluralize(
       liter,
-      "litro",
-      "litros"
+      'litro',
+      'litros'
     )}.`;
   }
 
-  return `${volume.toString().replace(".", ",")} ${pluralize(
+  return `${volume.toString().replace('.', ',')} ${pluralize(
     volume,
-    "mililitro",
-    "mililitros"
+    'mililitro',
+    'mililitros'
   )}.`;
 }

@@ -1,36 +1,34 @@
-import { Button, Modal } from "antd";
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Button, Modal } from 'antd';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   CloseOutlined,
   MinusOutlined,
   PlusOutlined,
   ShoppingCartOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { InputNumberSpinner } from "src/components/custom/InputNumberSpinner";
-import { AuthContext } from "src/contexts/AuthContext";
-import { RequestContext } from "src/contexts/RequestContext";
-import { useTitle } from "src/hooks/useTitle";
-import { DrinkType } from "src/types/drinks";
-import { RequestGrouped } from "src/types/requests";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
-import { handleError } from "src/utils/handleError";
-import { showNotification } from "src/utils/showNotification";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { InputNumberSpinner } from 'src/components/custom/InputNumberSpinner';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { RequestContext } from 'src/contexts/RequestContext';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
+import { handleError } from 'src/utils/handleError';
+import { showNotification } from 'src/utils/showNotification';
+import { isUUID } from 'src/utils/isUUID';
+import { useTitle } from 'src/hooks/useTitle';
 
-import { FetchTables } from "./FetchTables";
+import { FetchTables } from './FetchTables';
 
-import styles from "./styles.module.scss";
-import { isUUID } from "src/utils/isUUID";
+import styles from './styles.module.scss';
 
 const { confirm } = Modal;
 
-export function FinalizeRequest() {
-  useTitle("SkyDrinks - Finalizar Pedido");
+export function FinalizeRequest(): JSX.Element {
+  useTitle('SkyDrinks - Finalizar Pedido');
 
   const { userInfo } = useContext(AuthContext);
 
@@ -46,19 +44,21 @@ export function FinalizeRequest() {
     if (request.drinks.length === 0) {
       navigate(routes.HOME, {
         state: {
-          info: { message: "O pedido precisa conter pelo menos uma bebida" },
+          info: { message: 'O pedido precisa conter pelo menos uma bebida' },
         },
       });
     }
   }, [request, navigate]);
 
   useEffect(() => {
-    async function loadAllBlocked() {
+    async function loadAllBlocked(): Promise<void> {
       try {
-        const allBlocked = await endpoints.getAllBlocked();
+        const allBlockedFound = await endpoints.getAllBlocked();
 
-        setAllBlocked(allBlocked);
-      } catch {}
+        setAllBlocked(allBlockedFound);
+      } catch (exception: any) {
+        handleError(exception);
+      }
     }
 
     loadAllBlocked();
@@ -68,13 +68,13 @@ export function FinalizeRequest() {
     return () => setLoading(false);
   }, []);
 
-  function requestGroupedToArray(requestGrouped: RequestGrouped) {
+  function requestGroupedToArray(requestGrouped: RequestGrouped): DrinkType[] {
     return Object.keys(requestGrouped).reduce((arr, key) => {
       return [...arr, ...requestGrouped[key]];
     }, [] as DrinkType[]);
   }
 
-  async function createRequest() {
+  async function createRequest(): Promise<void> {
     try {
       setLoading(true);
 
@@ -98,10 +98,10 @@ export function FinalizeRequest() {
           setRequest({ ...request, drinks });
 
           showNotification({
-            type: "info",
-            message: "Bebida removida do pedido",
+            type: 'info',
+            message: 'Bebida removida do pedido',
             description:
-              "No seu pedido, havia uma bebida que foi removida do nosso servidor, ou que não foi encontrada, então removemos ela. Tente realizar o pedido novamente",
+              'No seu pedido, havia uma bebida que foi removida do nosso servidor, ou que não foi encontrada, então removemos ela. Tente realizar o pedido novamente',
           });
 
           return;
@@ -110,28 +110,28 @@ export function FinalizeRequest() {
 
       handleError({
         error,
-        fallback: "Não foi possível finalizar o pedido",
+        fallback: 'Não foi possível finalizar o pedido',
       });
     } finally {
       setLoading(false);
     }
   }
 
-  function handleCreateRequest() {
+  function handleCreateRequest(): void {
     if (userInfo.lockRequests) {
       showNotification({
-        type: "info",
-        message: "Seus pedidos foram temporariamente desabilitados",
+        type: 'info',
+        message: 'Seus pedidos foram temporariamente desabilitados',
       });
 
       return;
     }
 
     confirm({
-      type: "success",
-      title: "Realmente deseja realizar o pedido?",
-      okText: "Sim",
-      cancelText: "Não",
+      type: 'success',
+      title: 'Realmente deseja realizar o pedido?',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk: createRequest,
     });
   }
@@ -139,10 +139,10 @@ export function FinalizeRequest() {
   const drinksGrouped = getDrinksGroupedByUUID(request);
 
   const lockFinishRequestsMessage = userInfo.lockRequests
-    ? "Seus pedidos foram temporariamente bloqueados."
+    ? 'Seus pedidos foram temporariamente bloqueados.'
     : allBlocked
-    ? "Todos os pedidos foram temporariamente bloqueados."
-    : "";
+    ? 'Todos os pedidos foram temporariamente bloqueados.'
+    : '';
 
   return (
     <section className={styles.container}>
@@ -151,18 +151,18 @@ export function FinalizeRequest() {
       </div>
 
       <div>
-        {Object.keys(drinksGrouped).map((key, index) => {
+        {Object.keys(drinksGrouped).map((key) => {
           const [drink] = drinksGrouped[key];
-          const length = drinksGrouped[key].length;
+          const { length } = drinksGrouped[key];
 
           const { picture, name, price } = drink;
 
-          function beforeDecrement(value: number, decrement: () => void) {
+          function beforeDecrement(value: number, decrement: () => void): void {
             if (value === 1) {
               confirm({
-                title: "Deseja remover esta bebida?",
-                okText: "Sim",
-                cancelText: "Não",
+                title: 'Deseja remover esta bebida?',
+                okText: 'Sim',
+                cancelText: 'Não',
                 onOk: decrement,
               });
             } else {
@@ -170,11 +170,11 @@ export function FinalizeRequest() {
             }
           }
 
-          function handleIncrement() {
+          function handleIncrement(): void {
             setRequest({ ...request, drinks: [...request.drinks, drink] });
           }
 
-          function handleDecrement() {
+          function handleDecrement(): void {
             const [, ...drinks] = drinksGrouped[key];
             setRequest({
               ...request,
@@ -186,13 +186,9 @@ export function FinalizeRequest() {
           }
 
           return (
-            <div
-              title={name}
-              key={`${key} - ${index}`}
-              className={styles.drink}
-            >
+            <div title={name} key={key} className={styles.drink}>
               <div className={styles.info}>
-                <Link to={routes.VIEW_DRINK.replace(":uuid", key)}>
+                <Link to={routes.VIEW_DRINK.replace(':uuid', key)}>
                   <p className={styles.name}>{name}</p>
                 </Link>
                 <p className={styles.price}>
@@ -202,7 +198,7 @@ export function FinalizeRequest() {
                   initialValue={length}
                   decrementChildren={
                     length === 1 ? (
-                      <CloseOutlined style={{ color: "#e74c3c" }} />
+                      <CloseOutlined style={{ color: '#e74c3c' }} />
                     ) : (
                       <MinusOutlined />
                     )
@@ -240,7 +236,7 @@ export function FinalizeRequest() {
 
       <div>
         <Button
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
           disabled={userInfo.lockRequests || allBlocked}
           onClick={handleCreateRequest}
           size="large"

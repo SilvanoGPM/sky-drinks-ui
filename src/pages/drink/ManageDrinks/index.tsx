@@ -1,23 +1,21 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Popconfirm, Tooltip } from "antd";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Popconfirm, Tooltip } from 'antd';
 
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { useTitle } from "src/hooks/useTitle";
-import { showNotification } from "src/utils/showNotification";
-import { ListDrinks } from "../components/ListDrinks";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { useTitle } from 'src/hooks/useTitle';
+import { showNotification } from 'src/utils/showNotification';
+import { ListDrinks } from '../components/ListDrinks';
 
-import styles from "./styles.module.scss";
-import { DrinkPaginatedType } from "src/types/drinks";
-import { PaginationType } from "src/types/types";
+import styles from './styles.module.scss';
 
 interface RemoveDrinkType {
   uuid: string;
@@ -27,13 +25,13 @@ interface RemoveDrinkType {
   setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
 }
 
-export function ManageDrinks() {
-  useTitle("SkyDrinks - Gerenciar bebidas");
+export function ManageDrinks(): JSX.Element {
+  useTitle('SkyDrinks - Gerenciar bebidas');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 
@@ -66,13 +64,13 @@ export function ManageDrinks() {
         }
 
         showNotification({
-          type: "success",
-          message: "Bebida foi removida com sucesso",
+          type: 'success',
+          message: 'Bebida foi removida com sucesso',
         });
       } catch {
         showNotification({
-          type: "error",
-          message: "Aconteceu um erro ao tentar deletar a bebida",
+          type: 'error',
+          message: 'Aconteceu um erro ao tentar deletar a bebida',
         });
       }
     };
@@ -96,9 +94,9 @@ export function ManageDrinks() {
         setLoading={setLoading}
         setDrawerVisible={setDrawerVisible}
         showBuyAction={false}
-        renderMoreActions={(props) => [
+        renderMoreActions={(props: ActionRenderType) => [
           <Tooltip title="Editar Bebida" key="edit-drink">
-            <Link to={`${routes.EDIT_DRINK}`.replace(":uuid", props.uuid)}>
+            <Link to={`${routes.EDIT_DRINK}`.replace(':uuid', props.uuid)}>
               <Button type="link">
                 <EditOutlined />
               </Button>

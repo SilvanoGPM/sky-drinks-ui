@@ -1,20 +1,19 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Badge, Button, Image, List, Modal, Popover } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Badge, Button, Image, List, Modal, Popover } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { DrinkIcon } from "src/components/custom/CustomIcons";
-import { useTitle } from "src/hooks/useTitle";
-import { DrinkType } from "src/types/drinks";
-import { handleError } from "src/utils/handleError";
-import { imageToFullURI } from "src/utils/imageUtils";
-import { showNotification } from "src/utils/showNotification";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { DrinkIcon } from 'src/components/custom/CustomIcons';
+import { useTitle } from 'src/hooks/useTitle';
+import { handleError } from 'src/utils/handleError';
+import { imageToFullURI } from 'src/utils/imageUtils';
+import { showNotification } from 'src/utils/showNotification';
 
-import { UploadImages } from "./UploadImages";
+import { UploadImages } from './UploadImages';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface ImageFoundedType {
   image: string;
@@ -28,8 +27,8 @@ interface PaginetedDataType {
 
 const { confirm } = Modal;
 
-export function ListImages() {
-  useTitle("SkyDrinks - Visualizar imagens");
+export function ListImages(): JSX.Element {
+  useTitle('SkyDrinks - Visualizar imagens');
 
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -45,18 +44,18 @@ export function ListImages() {
   });
 
   useEffect(() => {
-    async function loadImages() {
+    async function loadImages(): Promise<void> {
       try {
-        const data = await endpoints.getAllImages(
+        const dataFound = await endpoints.getAllImages(
           pagination.page,
           pagination.size
         );
 
-        setData(data);
+        setData(dataFound);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar as imagens das bebidas",
+          fallback: 'Não foi possível carregar as imagens das bebidas',
         });
       } finally {
         setLoading(false);
@@ -74,8 +73,8 @@ export function ListImages() {
     };
   }, []);
 
-  function deleteImage(image: string) {
-    const remove = async () => {
+  function deleteImage(image: string): () => void {
+    async function remove(): Promise<void> {
       try {
         setLoadingDelete(true);
 
@@ -99,47 +98,47 @@ export function ListImages() {
         }
 
         showNotification({
-          type: "success",
-          message: "Imagem foi removida com sucesso!",
+          type: 'success',
+          message: 'Imagem foi removida com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível encontrar as imagens",
+          fallback: 'Não foi possível encontrar as imagens',
         });
       } finally {
         setLoadingDelete(false);
       }
-    };
+    }
 
     return () => {
       confirm({
-        type: "success",
-        title: "Realmente deseja remover essa imagem?",
-        okText: "Sim",
-        cancelText: "Não",
+        type: 'success',
+        title: 'Realmente deseja remover essa imagem?',
+        okText: 'Sim',
+        cancelText: 'Não',
         onOk: remove,
       });
     };
   }
 
-  function getDrinksContent(drinks: DrinkType[]) {
+  function getDrinksContent(drinks: DrinkType[]): JSX.Element[] {
     return drinks.map(({ uuid, name }) => (
-      <Link key={uuid} to={routes.VIEW_DRINK.replace(":uuid", uuid)}>
+      <Link key={uuid} to={routes.VIEW_DRINK.replace(':uuid', uuid)}>
         <p className={styles.drinkName}>{name}</p>
       </Link>
     ));
   }
 
-  function handlePaginationChange(page: number) {
+  function handlePaginationChange(page: number): void {
     setLoading(true);
 
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
+    setPagination((olgPagination) => {
+      return { ...olgPagination, page: page - 1 };
     });
   }
 
-  const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
+  const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
   return (
     <section className={styles.container}>
@@ -183,7 +182,7 @@ export function ListImages() {
                 key="remove"
                 shape="round"
                 loading={loadingDelete}
-                icon={<DeleteOutlined style={{ color: "#e74c3c" }} />}
+                icon={<DeleteOutlined style={{ color: '#e74c3c' }} />}
                 onClick={deleteImage(image)}
               />,
             ];

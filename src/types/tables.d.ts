@@ -1,16 +1,16 @@
-export interface TableType {
+interface TableType {
   uuid?: string;
   seats: number;
   number: number;
   occupied: boolean;
 }
 
-export interface TablePaginetedType {
+interface TablePaginetedType {
   totalElements: number;
   content: TableType[];
 }
 
-export interface TableSearchParams {
+interface TableSearchParams {
   greaterThanOrEqualToSeats?: number;
   lessThanOrEqualToSeats?: number;
   occupied?: number;
@@ -18,12 +18,12 @@ export interface TableSearchParams {
   size?: number;
 }
 
-export interface TableToCreate {
+interface TableToCreate {
   seats: number;
   number: number;
 }
 
-export interface TableToUpdate {
+interface TableToUpdate {
   uuid: string;
   seats: number;
   number: number;

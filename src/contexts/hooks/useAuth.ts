@@ -1,34 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import endpoints, { api } from "src/api/api";
-import { UserType } from "src/types/user";
-import { handleError } from "src/utils/handleError";
+import endpoints, { api } from 'src/api/api';
+import { handleError } from 'src/utils/handleError';
 
-interface LoginProps {
-  email: string;
-  password: string;
-  remember: boolean
-}
+export const USER_CREDENTIALS_KEY = 'userCredentials';
 
-export const USER_CREDENTIALS_KEY = "userCredentials";
-
-export function useAuth() {
+export function useAuth(): AuthContenxtType {
   const [userInfo, setUserInfo] = useState<UserType>({} as UserType);
   const [authenticated, setAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState('');
 
   useEffect(() => {
-    async function loadUserInfo() {
+    async function loadUserInfo(): Promise<void> {
       try {
-        const userInfo = await endpoints.getUserInfo();
+        const userInfoFound = await endpoints.getUserInfo();
 
-        setUserInfo(userInfo);
+        setUserInfo(userInfoFound);
         setAuthenticated(true);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar informação do usuário",
+          fallback: 'Não foi possível carregar informação do usuário',
         });
       } finally {
         setAuthLoading(false);
@@ -39,11 +32,12 @@ export function useAuth() {
     const userCredentialsSession = sessionStorage.getItem(USER_CREDENTIALS_KEY);
 
     if (userCredentialsLocal || userCredentialsSession) {
-      const { token } = JSON.parse(
-        userCredentialsLocal || userCredentialsSession || ""
-      );
-      api.defaults.headers.common["Authorization"] = token;
-      setToken(token);
+      const usetToken = JSON.parse(
+        userCredentialsLocal || userCredentialsSession || ''
+      ).token;
+
+      api.defaults.headers.common.Authorization = usetToken;
+      setToken(usetToken);
       loadUserInfo();
     } else {
       setAuthLoading(false);
@@ -52,34 +46,41 @@ export function useAuth() {
     return () => setAuthLoading(false);
   }, []);
 
-  async function handleLogin({ email, password, remember }: LoginProps) {
+  async function handleLogin({
+    email,
+    password,
+    remember,
+  }: LoginProps): Promise<void> {
     setAuthLoading(true);
 
     try {
-      const token = await endpoints.login(email, password);
+      const userToken = await endpoints.login(email, password);
 
       const storage = remember ? localStorage : sessionStorage;
 
-      storage.setItem(USER_CREDENTIALS_KEY, JSON.stringify({ token }));
+      storage.setItem(
+        USER_CREDENTIALS_KEY,
+        JSON.stringify({ token: userToken })
+      );
 
-      api.defaults.headers.common["Authorization"] = token;
+      api.defaults.headers.common.Authorization = userToken;
 
-      const userInfo = await endpoints.getUserInfo();
+      const userInfoFound = await endpoints.getUserInfo();
 
-      setToken(token);
-      setUserInfo(userInfo);
+      setToken(userToken);
+      setUserInfo(userInfoFound);
       setAuthenticated(true);
     } finally {
       setAuthLoading(false);
     }
   }
 
-  function handleLogout() {
+  function handleLogout(): void {
     setAuthenticated(false);
-    setToken("");
+    setToken('');
     localStorage.removeItem(USER_CREDENTIALS_KEY);
     sessionStorage.removeItem(USER_CREDENTIALS_KEY);
-    api.defaults.headers.common["Authorization"] = "";
+    api.defaults.headers.common.Authorization = '';
   }
 
   return {

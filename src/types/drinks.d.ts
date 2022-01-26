@@ -1,4 +1,4 @@
-export interface DrinkType {
+interface DrinkType {
   uuid: string;
   createdAt: string;
   updatedAt: string;
@@ -12,12 +12,12 @@ export interface DrinkType {
   alcoholic: boolean;
 }
 
-export interface DrinkPaginatedType {
+interface DrinkPaginatedType {
   totalElements: number;
   content: DrinkType[];
-};
+}
 
-export interface DrinkToCreate {
+interface DrinkToCreate {
   volume: number;
   name: string;
   picture?: File | string;
@@ -25,9 +25,9 @@ export interface DrinkToCreate {
   price: number;
   additional: string;
   alcoholic: boolean;
-};
+}
 
-export interface DrinkToUpdate {
+interface DrinkToUpdate {
   uuid: string;
   volume: number;
   name: string;
@@ -36,9 +36,9 @@ export interface DrinkToUpdate {
   price: number;
   additional: string;
   alcoholic: boolean;
-};
+}
 
-export interface DrinkSearchParams {
+interface DrinkSearchParams {
   name?: string;
   description?: string;
   additional?: string;
@@ -49,9 +49,9 @@ export interface DrinkSearchParams {
   lessThanOrEqualToVolume?: number;
   page?: number;
   size?: number;
-};
+}
 
-export interface DrinkSearchForm {
+interface DrinkSearchForm {
   name: string;
   description: string;
   alcoholic: string;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { useEffect, useState } from 'react';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 
 import {
   Button,
@@ -12,17 +12,17 @@ import {
   Select,
   Switch,
   Upload,
-} from "antd";
+} from 'antd';
 
-import endpoints from "src/api/api";
-import { showNotification } from "src/utils/showNotification";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { trimInput } from "src/utils/trimInput";
-import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
-import { imageToFullURI, normalizeImage } from "src/utils/imageUtils";
+import endpoints from 'src/api/api';
+import { showNotification } from 'src/utils/showNotification';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { trimInput } from 'src/utils/trimInput';
+import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { imageToFullURI, normalizeImage } from 'src/utils/imageUtils';
 
-import styles from "./styles.module.scss";
-import { useImages } from "../hooks/useImages";
+import styles from './styles.module.scss';
+import { useImages } from '../hooks/useImages';
 
 interface DrinkCreateFormProps {
   form: FormInstance;
@@ -41,7 +41,10 @@ interface DrinkCreateForm {
 
 const { Option } = Select;
 
-export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
+export function CreateDrinkForm({
+  form,
+  setCreated,
+}: DrinkCreateFormProps): JSX.Element {
   const [image, setImage] = useState<File | string>();
 
   const [createLoading, setCreateLoading] = useState(false);
@@ -50,13 +53,19 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
 
   const { images, imagesLoading } = useImages();
 
-  async function handleFormFinish(values: DrinkCreateForm) {
+  useEffect(() => {
+    return () => {
+      setCreateLoading(false);
+    };
+  }, []);
+
+  async function handleFormFinish(values: DrinkCreateForm): Promise<void> {
     try {
       setCreateLoading(true);
 
       const additional = values.additional
-        ? values.additional.join(";").toLowerCase()
-        : "";
+        ? values.additional.join(';').toLowerCase()
+        : '';
 
       const drink = await endpoints.createDrink({
         ...values,
@@ -66,8 +75,8 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
       });
 
       showNotification({
-        type: "success",
-        message: "Bebida adicionada com sucesso!",
+        type: 'success',
+        message: 'Bebida adicionada com sucesso!',
         description: `Nome: ${drink.name} / Preço: ${formatDisplayPrice(
           drink.price
         )}`,
@@ -80,7 +89,7 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
       handleError({
         error,
         description,
-        fallback: "Aconteceu um erro ao tentar criar bebida!",
+        fallback: 'Aconteceu um erro ao tentar criar bebida!',
       });
 
       form.resetFields();
@@ -89,20 +98,20 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
     }
   }
 
-  function dummyRequest({ file, onSuccess }: any) {
+  function dummyRequest({ file, onSuccess }: any): Promise<void> {
     setImage(file);
     return new Promise(() => onSuccess(file));
   }
 
-  function clearImage() {
+  function clearImage(): void {
     setImage(undefined);
   }
 
-  function handleSelectChange(value: string) {
+  function handleSelectChange(value: string): void {
     setImage(normalizeImage(value));
   }
 
-  function handleRadioChange(event: RadioChangeEvent) {
+  function handleRadioChange(event: RadioChangeEvent): void {
     setUseExistsImage(event.target.value);
   }
 
@@ -114,8 +123,8 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
         <Radio.Group
           value={useExistsImage}
           options={[
-            { label: "Imagem já existente", value: true },
-            { label: "Upar imagem", value: false },
+            { label: 'Imagem já existente', value: true },
+            { label: 'Upar imagem', value: false },
           ]}
           onChange={handleRadioChange}
           optionType="button"
@@ -133,7 +142,7 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
         <Form.Item
           name="picture"
           label="Imagem"
-          {...(!useExistsImage ? { valuePropName: "fileLists" } : {})}
+          {...(!useExistsImage ? { valuePropName: 'fileLists' } : {})}
         >
           {useExistsImage ? (
             <Select
@@ -143,11 +152,11 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
               onClear={clearImage}
               allowClear
             >
-              {images.map((image) => (
-                <Option key={image} value={image}>
+              {images.map((innerImage) => (
+                <Option key={innerImage} value={innerImage}>
                   <div className={styles.imageItem}>
-                    <img alt={image} src={imageToFullURI(image)} />
-                    <p title={image}>{image}</p>
+                    <img alt={innerImage} src={imageToFullURI(innerImage)} />
+                    <p title={innerImage}>{innerImage}</p>
                   </div>
                 </Option>
               ))}
@@ -174,13 +183,13 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
           rules={[
             {
               required: true,
-              message: "Insira o nome da bebida",
+              message: 'Insira o nome da bebida',
               whitespace: false,
             },
             {
               min: 3,
               max: 100,
-              message: "O nome precisa ter entre 3 e 100 caracteres",
+              message: 'O nome precisa ter entre 3 e 100 caracteres',
             },
           ]}
         >
@@ -208,14 +217,14 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
           hasFeedback
           rules={[
             {
-              type: "number",
+              type: 'number',
               required: true,
-              message: "Insira o preço da bebida",
+              message: 'Insira o preço da bebida',
             },
             {
-              type: "number",
+              type: 'number',
               min: 0,
-              message: "O preço deve ser maior que zero",
+              message: 'O preço deve ser maior que zero',
             },
           ]}
         >
@@ -228,16 +237,16 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
           tooltip="A quantidade em mililitros dessa bebida"
           hasFeedback
           rules={[
-            { required: true, message: "Insira o volume da bebida" },
+            { required: true, message: 'Insira o volume da bebida' },
             {
-              type: "number",
+              type: 'number',
               min: 0,
-              message: "O volume deve ser maior que zero",
+              message: 'O volume deve ser maior que zero',
             },
             {
-              type: "number",
+              type: 'number',
               max: 4000,
-              message: "O volume deve ser menor que quatro mil",
+              message: 'O volume deve ser menor que quatro mil',
             },
           ]}
         >
@@ -260,7 +269,7 @@ export function CreateDrinkForm({ form, setCreated }: DrinkCreateFormProps) {
             size="large"
             type="primary"
             htmlType="submit"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             Adicionar Bebida
           </Button>

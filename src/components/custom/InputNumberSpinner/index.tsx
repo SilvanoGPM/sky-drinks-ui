@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Button, Input } from "antd";
+import { useState } from 'react';
+import { Button, Input } from 'antd';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface InputNumberSpinnerProps {
   initialValue: number;
@@ -19,16 +19,16 @@ export function InputNumberSpinner({
   initialValue = 0,
   min = 0,
   max = 100,
-  decrementChildren = "-",
-  incrementChildren = "+",
+  decrementChildren = '-',
+  incrementChildren = '+',
   beforeDecrement = (_, fn) => fn(),
   beforeIncrement = (_, fn) => fn(),
   onDecrement = () => undefined,
   onIncrement = () => undefined,
-}: InputNumberSpinnerProps) {
+}: InputNumberSpinnerProps): JSX.Element {
   const [value, setValue] = useState(initialValue);
 
-  function decrement() {
+  function decrement(): void {
     beforeDecrement(value, () => {
       const newValue = Math.max(value - 1, min);
       setValue(newValue);
@@ -36,7 +36,7 @@ export function InputNumberSpinner({
     });
   }
 
-  function increment() {
+  function increment(): void {
     beforeIncrement(value, () => {
       const newValue = Math.min(value + 1, max);
       setValue(newValue);

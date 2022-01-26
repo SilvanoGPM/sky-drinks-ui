@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import {
   DeleteOutlined,
@@ -7,20 +7,19 @@ import {
   EyeOutlined,
   LockOutlined,
   UnlockOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import { Avatar, Button, List, Pagination, Popconfirm, Tooltip } from "antd";
+import { Avatar, Button, List, Pagination, Popconfirm, Tooltip } from 'antd';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { formatDisplayRole } from "src/utils/formatDisplayRole";
-import { showNotification } from "src/utils/showNotification";
-import { handleError } from "src/utils/handleError";
-import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
-import { UserPaginatedType, UserSearchParams } from "src/types/user";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { formatDisplayRole } from 'src/utils/formatDisplayRole';
+import { showNotification } from 'src/utils/showNotification';
+import { handleError } from 'src/utils/handleError';
+import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
 
-import styles from "./styles.module.scss";
-import avatar from "src/assets/avatar.png";
+import avatar from 'src/assets/avatar.png';
+import styles from './styles.module.scss';
 
 interface ListUsersProps {
   loading: boolean;
@@ -28,7 +27,11 @@ interface ListUsersProps {
   setLoading: (loading: boolean) => void;
 }
 
-export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
+export function ListUsers({
+  params,
+  loading,
+  setLoading,
+}: ListUsersProps): JSX.Element {
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
@@ -40,7 +43,7 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
   });
 
   useEffect(() => {
-    async function loadUsers() {
+    async function loadUsers(): Promise<void> {
       try {
         const { page, size } = pagination;
 
@@ -59,18 +62,18 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
             content: [content],
           });
         } else {
-          const data = await endpoints.searchUser({
+          const dataFound = await endpoints.searchUser({
             ...params,
             page,
             size,
           });
 
-          setData(data);
+          setData(dataFound);
         }
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível pesquisar os usuários",
+          fallback: 'Não foi possível pesquisar os usuários',
         });
       } finally {
         setLoading(false);
@@ -105,13 +108,13 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
         }
 
         showNotification({
-          type: "success",
-          message: "Usuário foi removido com sucesso!",
+          type: 'success',
+          message: 'Usuário foi removido com sucesso!',
         });
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Aconteceu um erro ao tentar remover usuário",
+          fallback: 'Aconteceu um erro ao tentar remover usuário',
         });
       }
     };
@@ -132,29 +135,29 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
         });
 
         const message = lockRequests
-          ? "Pedidos do usuário foram bloqueados!"
-          : "Pedidos do usuário foram desbloqueados!";
+          ? 'Pedidos do usuário foram bloqueados!'
+          : 'Pedidos do usuário foram desbloqueados!';
 
         showNotification({
-          type: "success",
+          type: 'success',
           message,
         });
 
         setData({ ...data, content });
       } catch {
         showNotification({
-          type: "warn",
-          message: "Não foi possível alternar os pedidos do usuário.",
+          type: 'warn',
+          message: 'Não foi possível alternar os pedidos do usuário.',
         });
       }
     };
   }
 
-  function handlePaginationChange(page: number) {
+  function handlePaginationChange(page: number): void {
     setLoading(true);
 
-    setPagination((pagination) => {
-      return { ...pagination, page: page - 1 };
+    setPagination((oldPagination) => {
+      return { ...oldPagination, page: page - 1 };
     });
   }
 
@@ -206,7 +209,7 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
                 </Popconfirm>
               </Tooltip>,
               <Tooltip key="edit" title="Editar usuário" placement="bottom">
-                <Link to={routes.EDIT_USER.replace(":uuid", uuid)}>
+                <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
                   <Button
                     shape="round"
                     icon={<EditOutlined style={{ fontSize: 18 }} />}
@@ -217,20 +220,20 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
                 key="block"
                 title={
                   lockRequests
-                    ? "Desbloquear pedidos do usuário"
-                    : "Bloquear pedidos do usuário"
+                    ? 'Desbloquear pedidos do usuário'
+                    : 'Bloquear pedidos do usuário'
                 }
                 placement="bottom"
               >
                 <Popconfirm
                   title={
                     lockRequests
-                      ? "Desbloquear pedidos do usuário?"
-                      : "Bloquear pedidos do usuário?"
+                      ? 'Desbloquear pedidos do usuário?'
+                      : 'Bloquear pedidos do usuário?'
                   }
                   onConfirm={toggleLockRequests(uuid)}
                   placement="top"
-                  okText={lockRequests ? "Desbloquear" : "Bloquear"}
+                  okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
                   cancelText="Cancelar"
                 >
                   {lockRequests ? (
@@ -247,7 +250,7 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
                 </Popconfirm>
               </Tooltip>,
               <Tooltip title="Ver métricas do usuário" placement="bottom">
-                <Link to={routes.USER_METRICS.replace(":uuid", uuid)}>
+                <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
                   <Button
                     shape="round"
                     icon={<EyeOutlined style={{ fontSize: 18 }} />}
@@ -269,23 +272,23 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
                 CPF: <span className={styles.bold}>{cpf}</span>
               </p>
               <p>
-                Tipo:{" "}
+                Tipo:{' '}
                 <span className={styles.bold}>{formatDisplayRole(role)}</span>
               </p>
               <p>
-                Data de nascimento:{" "}
+                Data de nascimento:{' '}
                 <span className={styles.bold}>
                   {formatDatabaseDate(birthDay)}
                 </span>
               </p>
               <p>
-                Conta criada em:{" "}
+                Conta criada em:{' '}
                 <span className={styles.bold}>
                   {formatDatabaseDate(createdAt)}
                 </span>
               </p>
               <p>
-                Conta atualizada em:{" "}
+                Conta atualizada em:{' '}
                 <span className={styles.bold}>
                   {formatDatabaseDate(updatedAt)}
                 </span>
@@ -293,7 +296,7 @@ export function ListUsers({ params, loading, setLoading }: ListUsersProps) {
 
               {lockRequests && (
                 <p>
-                  Usuário bloqueado em:{" "}
+                  Usuário bloqueado em:{' '}
                   <span className={styles.bold}>
                     {formatDatabaseDate(lockRequestsTimestamp)}
                   </span>

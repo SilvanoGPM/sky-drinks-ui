@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Doughnut, Line } from "react-chartjs-2";
-import moment from "moment";
+import { useEffect, useState } from 'react';
+import { Doughnut, Line } from 'react-chartjs-2';
+import moment from 'moment';
 
 import {
   Card,
@@ -11,7 +11,7 @@ import {
   Select,
   Statistic,
   Tooltip,
-} from "antd";
+} from 'antd';
 
 import {
   ArrowDownOutlined,
@@ -20,19 +20,7 @@ import {
   CloseOutlined,
   DollarOutlined,
   LoadingOutlined,
-} from "@ant-design/icons";
-
-import endpoints from "src/api/api";
-import { handleError } from "src/utils/handleError";
-import { Loading } from "src/components/layout/Loading";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-import { sum } from "src/utils/sum";
-
-import {
-  RequestData,
-  RequestLengthAndPrice,
-  RequestsData,
-} from "src/types/requests";
+} from '@ant-design/icons';
 
 import {
   Chart as ChartJS,
@@ -44,10 +32,16 @@ import {
   Tooltip as TooltipChartJS,
   Legend,
   ArcElement,
-} from "chart.js";
+} from 'chart.js';
 
-import styles from "./styles.module.scss";
-import { formatDatabaseDate } from "src/utils/formatDatabaseDate";
+import endpoints from 'src/api/api';
+import { handleError } from 'src/utils/handleError';
+import { Loading } from 'src/components/layout/Loading';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { sum } from 'src/utils/sum';
+import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
+
+import styles from './styles.module.scss';
 
 ChartJS.register(
   ArcElement,
@@ -62,9 +56,9 @@ ChartJS.register(
 
 const { Option } = Select;
 
-const ALL_TIME = "0";
+const ALL_TIME = '0';
 
-export function DataOfRequests() {
+export function DataOfRequests(): JSX.Element {
   const [requestsData, setRequestsData] = useState<RequestsData>(
     {} as RequestsData
   );
@@ -76,14 +70,14 @@ export function DataOfRequests() {
   const [monthsLoading, setMonthsLoading] = useState(true);
 
   useEffect(() => {
-    async function loadMonths() {
+    async function loadMonths(): Promise<void> {
       try {
-        const months = await endpoints.getAllMonths();
-        setMonths(months);
+        const monthsFound = await endpoints.getAllMonths();
+        setMonths(monthsFound);
       } catch (error) {
         handleError({
           error,
-          fallback: "Não foi possível carregar os meses",
+          fallback: 'Não foi possível carregar os meses',
         });
       } finally {
         setMonthsLoading(false);
@@ -96,23 +90,24 @@ export function DataOfRequests() {
   }, [monthsLoading]);
 
   useEffect(() => {
-    async function loadRequestsDelivered() {
+    async function loadRequestsDelivered(): Promise<void> {
       try {
         const allTime = selectedMonth === ALL_TIME;
 
         const startMonth = allTime ? months[months.length - 1] : undefined;
         const endMonth = allTime ? months[0] : undefined;
 
-        const requestsData = await endpoints.getRequestsData(
+        const requestsDataFound = await endpoints.getRequestsData(
           selectedMonth,
           startMonth,
           endMonth
         );
-        setRequestsData(requestsData);
+
+        setRequestsData(requestsDataFound);
       } catch (error) {
         handleError({
           error,
-          fallback: "Não foi possível carregar os dados dos pedidos",
+          fallback: 'Não foi possível carregar os dados dos pedidos',
         });
       } finally {
         setRequestsDataLoading(false);
@@ -131,7 +126,7 @@ export function DataOfRequests() {
     };
   }, []);
 
-  function getMonthsInRequestsData() {
+  function getMonthsInRequestsData(): string[] {
     return Object.values(requestsData)
       .map(Object.keys)
       .flat()
@@ -142,20 +137,20 @@ export function DataOfRequests() {
   function mapRequestData(
     requestData: RequestData,
     attr: keyof RequestLengthAndPrice
-  ) {
+  ): number[] {
     if (!requestData) return [];
 
     return getMonthsInRequestsData().map((month) => {
       const value = requestData[month]?.[attr];
-      return value ? value : 0;
+      return value || 0;
     });
   }
 
-  function sumRequestData(requestData: RequestData) {
+  function sumRequestData(requestData: RequestData): number {
     return sum(Object.values(requestData), (n) => n.price);
   }
 
-  function getRevenues() {
+  function getRevenues(): number[] {
     const { requestsDelivered, requestsCanceled } = requestsData;
 
     const totalDelivered = sumRequestData(requestsDelivered);
@@ -164,7 +159,7 @@ export function DataOfRequests() {
     return [totalDelivered, totalCanceled];
   }
 
-  function handleSelectedMonth(month: string) {
+  function handleSelectedMonth(month: string): void {
     setSelectedMonth(month);
     setRequestsDataLoading(true);
   }
@@ -176,17 +171,17 @@ export function DataOfRequests() {
 
   const requestsDelivered = mapRequestData(
     requestsData.requestsDelivered,
-    "length"
+    'length'
   );
 
   const requestsCanceled = mapRequestData(
     requestsData.requestsCanceled,
-    "length"
+    'length'
   );
 
   const requestsProcessing = mapRequestData(
     requestsData.requestsProcessing,
-    "length"
+    'length'
   );
 
   let delayed = false;
@@ -196,235 +191,233 @@ export function DataOfRequests() {
   }
 
   return (
-    <>
-      <div>
-        <Divider orientation="left" style={{ fontSize: "1.6rem" }}>
-          Pedidos
-        </Divider>
+    <div>
+      <Divider orientation="left" style={{ fontSize: '1.6rem' }}>
+        Pedidos
+      </Divider>
 
-        <div className={styles.selectMonth}>
-          <p>Mês:</p>
-          <Select
-            className={styles.select}
-            loading={monthsLoading}
-            disabled={monthsLoading}
-            defaultValue={ALL_TIME}
-            value={selectedMonth}
-            onChange={handleSelectedMonth}
-          >
-            {months.map((month) => (
-              <Option key={month} value={month}>
-                {moment(month).format("MMMM [de] YYYY")}
-              </Option>
-            ))}
-            <Option value={ALL_TIME}>Todos os meses</Option>
-          </Select>
-        </div>
-
-        {hasRequests ? (
-          <>
-            <div className={styles.revenues}>
-              <Doughnut
-                options={{
-                  responsive: true,
-                  rotation: 180,
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: "Receita/Perda do mês",
-                      font: {
-                        size: 20,
-                      },
-                    },
-                    legend: { display: false },
-                    tooltip: {
-                      callbacks: {
-                        label({ label, formattedValue }) {
-                          return `${label} de ${formatDisplayPrice(
-                            Number(formattedValue)
-                          )}`;
-                        },
-                      },
-                    },
-                  },
-                }}
-                data={{
-                  labels: ["Receita", "Perda"],
-                  datasets: [
-                    {
-                      backgroundColor: [
-                        "rgba(46, 204, 113, 0.3)",
-                        "rgba(231, 76, 60, 0.3)",
-                      ],
-                      borderColor: ["rgb(46, 204, 113)", "rgb(231, 76, 60)"],
-                      data: revenues,
-                    },
-                  ],
-                }}
-              />
-            </div>
-
-            <Row gutter={[8, 8]}>
-              <Col xs={24} sm={12}>
-                <Tooltip
-                  title="Receita dos pedidos já entregues"
-                  placement="bottom"
-                >
-                  <Card>
-                    <Statistic
-                      title="Receita"
-                      value={formatDisplayPrice(revenues[0])}
-                      precision={2}
-                      valueStyle={{ color: "#2ecc71" }}
-                      prefix={<ArrowUpOutlined />}
-                    />
-                  </Card>
-                </Tooltip>
-              </Col>
-              <Col xs={24} sm={12}>
-                <Tooltip
-                  title="Pedidos cancelados geram perda de receita"
-                  placement="bottom"
-                >
-                  <Card>
-                    <Statistic
-                      title="Perda"
-                      value={formatDisplayPrice(revenues[1])}
-                      precision={2}
-                      valueStyle={{ color: "#e74c3c" }}
-                      prefix={<ArrowDownOutlined />}
-                    />
-                  </Card>
-                </Tooltip>
-              </Col>
-            </Row>
-
-            <div className={styles.requestDataChart}>
-              <Line
-                options={{
-                  animation: {
-                    onComplete: () => {
-                      delayed = true;
-                    },
-                    delay: (context: any) => {
-                      let delay = 0;
-                      if (
-                        context.type === "data" &&
-                        context.mode === "default" &&
-                        !delayed
-                      ) {
-                        delay =
-                          context.dataIndex * 50 + context.datasetIndex * 100;
-                      }
-                      return delay;
-                    },
-                  },
-                  scales: {
-                    y: {
-                      title: {
-                        display: true,
-                        text: "Quantidade de pedidos",
-                      },
-                    },
-                    x: {
-                      title: {
-                        display: true,
-                        text: "Datas",
-                      },
-                      ticks: {
-                        maxRotation: 90,
-                        minRotation: 30,
-                      },
-                    },
-                  },
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: "Pedidos realizados no mês",
-                      font: {
-                        size: 20,
-                      },
-                    },
-                  },
-                }}
-                data={{
-                  labels: getMonthsInRequestsData().map(formatDatabaseDate),
-                  datasets: [
-                    {
-                      label: "Pedidos entregues",
-                      backgroundColor: "#2ecc71",
-                      borderColor: "#2ecc71",
-                      data: requestsDelivered,
-                    },
-                    {
-                      label: "Pedidos cancelados",
-                      backgroundColor: "#e74c3c",
-                      borderColor: "#e74c3c",
-                      data: requestsCanceled,
-                    },
-                    {
-                      label: "Pedidos sendo processados",
-                      backgroundColor: "#1890ff",
-                      borderColor: "#1890ff",
-                      data: requestsProcessing,
-                    },
-                  ],
-                }}
-              />
-
-              <div className={styles.requestDataInfo}>
-                <Row gutter={[8, 8]}>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Total"
-                        value={sum([
-                          ...requestsDelivered,
-                          ...requestsCanceled,
-                          ...requestsProcessing,
-                        ])}
-                        prefix={<DollarOutlined />}
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Entregados"
-                        value={sum(requestsDelivered)}
-                        valueStyle={{ color: "#2ecc71" }}
-                        prefix={<CheckOutlined />}
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Cancelados"
-                        value={sum(requestsCanceled)}
-                        valueStyle={{ color: "#e74c3c" }}
-                        prefix={<CloseOutlined />}
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Processando"
-                        value={sum(requestsProcessing)}
-                        valueStyle={{ color: "#1890ff" }}
-                        prefix={<LoadingOutlined />}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-              </div>
-            </div>
-          </>
-        ) : (
-          <Empty description="Não há pedidos" />
-        )}
+      <div className={styles.selectMonth}>
+        <p>Mês:</p>
+        <Select
+          className={styles.select}
+          loading={monthsLoading}
+          disabled={monthsLoading}
+          defaultValue={ALL_TIME}
+          value={selectedMonth}
+          onChange={handleSelectedMonth}
+        >
+          {months.map((month) => (
+            <Option key={month} value={month}>
+              {moment(month).format('MMMM [de] YYYY')}
+            </Option>
+          ))}
+          <Option value={ALL_TIME}>Todos os meses</Option>
+        </Select>
       </div>
-    </>
+
+      {hasRequests ? (
+        <>
+          <div className={styles.revenues}>
+            <Doughnut
+              options={{
+                responsive: true,
+                rotation: 180,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Receita/Perda do mês',
+                    font: {
+                      size: 20,
+                    },
+                  },
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: {
+                      label({ label, formattedValue }) {
+                        return `${label} de ${formatDisplayPrice(
+                          Number(formattedValue)
+                        )}`;
+                      },
+                    },
+                  },
+                },
+              }}
+              data={{
+                labels: ['Receita', 'Perda'],
+                datasets: [
+                  {
+                    backgroundColor: [
+                      'rgba(46, 204, 113, 0.3)',
+                      'rgba(231, 76, 60, 0.3)',
+                    ],
+                    borderColor: ['rgb(46, 204, 113)', 'rgb(231, 76, 60)'],
+                    data: revenues,
+                  },
+                ],
+              }}
+            />
+          </div>
+
+          <Row gutter={[8, 8]}>
+            <Col xs={24} sm={12}>
+              <Tooltip
+                title="Receita dos pedidos já entregues"
+                placement="bottom"
+              >
+                <Card>
+                  <Statistic
+                    title="Receita"
+                    value={formatDisplayPrice(revenues[0])}
+                    precision={2}
+                    valueStyle={{ color: '#2ecc71' }}
+                    prefix={<ArrowUpOutlined />}
+                  />
+                </Card>
+              </Tooltip>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Tooltip
+                title="Pedidos cancelados geram perda de receita"
+                placement="bottom"
+              >
+                <Card>
+                  <Statistic
+                    title="Perda"
+                    value={formatDisplayPrice(revenues[1])}
+                    precision={2}
+                    valueStyle={{ color: '#e74c3c' }}
+                    prefix={<ArrowDownOutlined />}
+                  />
+                </Card>
+              </Tooltip>
+            </Col>
+          </Row>
+
+          <div className={styles.requestDataChart}>
+            <Line
+              options={{
+                animation: {
+                  onComplete: () => {
+                    delayed = true;
+                  },
+                  delay: (context: any) => {
+                    let delay = 0;
+                    if (
+                      context.type === 'data' &&
+                      context.mode === 'default' &&
+                      !delayed
+                    ) {
+                      delay =
+                        context.dataIndex * 50 + context.datasetIndex * 100;
+                    }
+                    return delay;
+                  },
+                },
+                scales: {
+                  y: {
+                    title: {
+                      display: true,
+                      text: 'Quantidade de pedidos',
+                    },
+                  },
+                  x: {
+                    title: {
+                      display: true,
+                      text: 'Datas',
+                    },
+                    ticks: {
+                      maxRotation: 90,
+                      minRotation: 30,
+                    },
+                  },
+                },
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Pedidos realizados no mês',
+                    font: {
+                      size: 20,
+                    },
+                  },
+                },
+              }}
+              data={{
+                labels: getMonthsInRequestsData().map(formatDatabaseDate),
+                datasets: [
+                  {
+                    label: 'Pedidos entregues',
+                    backgroundColor: '#2ecc71',
+                    borderColor: '#2ecc71',
+                    data: requestsDelivered,
+                  },
+                  {
+                    label: 'Pedidos cancelados',
+                    backgroundColor: '#e74c3c',
+                    borderColor: '#e74c3c',
+                    data: requestsCanceled,
+                  },
+                  {
+                    label: 'Pedidos sendo processados',
+                    backgroundColor: '#1890ff',
+                    borderColor: '#1890ff',
+                    data: requestsProcessing,
+                  },
+                ],
+              }}
+            />
+
+            <div className={styles.requestDataInfo}>
+              <Row gutter={[8, 8]}>
+                <Col span={12}>
+                  <Card>
+                    <Statistic
+                      title="Total"
+                      value={sum([
+                        ...requestsDelivered,
+                        ...requestsCanceled,
+                        ...requestsProcessing,
+                      ])}
+                      prefix={<DollarOutlined />}
+                    />
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card>
+                    <Statistic
+                      title="Entregados"
+                      value={sum(requestsDelivered)}
+                      valueStyle={{ color: '#2ecc71' }}
+                      prefix={<CheckOutlined />}
+                    />
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card>
+                    <Statistic
+                      title="Cancelados"
+                      value={sum(requestsCanceled)}
+                      valueStyle={{ color: '#e74c3c' }}
+                      prefix={<CloseOutlined />}
+                    />
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card>
+                    <Statistic
+                      title="Processando"
+                      value={sum(requestsProcessing)}
+                      valueStyle={{ color: '#1890ff' }}
+                      prefix={<LoadingOutlined />}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Empty description="Não há pedidos" />
+      )}
+    </div>
   );
 }

@@ -1,6 +1,4 @@
-import { DrinkType } from "src/types/drinks";
-
-import { imageToFullURI } from "./imageUtils";
+import { imageToFullURI } from './imageUtils';
 
 /**
  * Adiciona a URI da imagem completa a uma bebida.

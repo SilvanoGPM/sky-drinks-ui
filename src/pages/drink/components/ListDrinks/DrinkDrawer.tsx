@@ -1,4 +1,4 @@
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 
 import {
   Button,
@@ -9,10 +9,9 @@ import {
   Input,
   Select,
   Slider,
-} from "antd";
+} from 'antd';
 
-import { DrinkSearchForm } from "src/types/drinks";
-import { trimInput } from "src/utils/trimInput";
+import { trimInput } from 'src/utils/trimInput';
 
 interface DrinkDrawerProps {
   form: FormInstance;
@@ -28,12 +27,12 @@ export function DrinkDrawer({
   onFinish,
   visible,
   setVisible,
-}: DrinkDrawerProps) {
-  function closeDrawer() {
+}: DrinkDrawerProps): JSX.Element {
+  function closeDrawer(): void {
     setVisible(false);
   }
 
-  function clearForm() {
+  function clearForm(): void {
     form.resetFields();
   }
 
@@ -55,7 +54,7 @@ export function DrinkDrawer({
         layout="vertical"
         style={{ flex: 1 }}
         initialValues={{
-          alcoholic: "-1",
+          alcoholic: '-1',
           volume: [110, 2000],
           price: [10, 90],
         }}
@@ -87,10 +86,10 @@ export function DrinkDrawer({
             min={1}
             max={1000}
             marks={{
-              1: "R$ 1",
-              250: "R$ 250",
-              500: "R$ 500",
-              1000: "R$ 1000",
+              1: 'R$ 1',
+              250: 'R$ 250',
+              500: 'R$ 500',
+              1000: 'R$ 1000',
             }}
           />
         </Form.Item>
@@ -102,15 +101,15 @@ export function DrinkDrawer({
             max={4000}
             tipFormatter={(value) => `${value}ml`}
             marks={{
-              100: "100 ml",
-              2000: "2000 ml",
-              4000: "4000 ml",
+              100: '100 ml',
+              2000: '2000 ml',
+              4000: '4000 ml',
             }}
           />
         </Form.Item>
 
         <Form.Item label="Adicionais" name="additional">
-          <Select mode="tags" placeholder="ex: gelo"></Select>
+          <Select mode="tags" placeholder="ex: gelo" />
         </Form.Item>
 
         <Form.Item
@@ -124,7 +123,7 @@ export function DrinkDrawer({
             size="large"
             type="primary"
             htmlType="submit"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             Pesquisar
           </Button>
@@ -139,7 +138,7 @@ export function DrinkDrawer({
           <Button
             icon={<DeleteOutlined />}
             size="large"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             onClick={clearForm}
           >
             Limpar

@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { Form, InputNumber, Modal } from "antd";
+import { useEffect } from 'react';
+import { Form, InputNumber, Modal } from 'antd';
 
 interface PersistTableProps {
   visible: boolean;
@@ -17,12 +17,13 @@ export function PersistTable({
   seats = 1,
   number = 1,
   loading = false,
-  onFinish = () => {},
-  onCancel = () => {},
-}: PersistTableProps) {
+  onFinish = () => undefined,
+  onCancel = () => undefined,
+}: PersistTableProps): JSX.Element {
   const [form] = Form.useForm();
 
   useEffect(() => {
+    // eslint-disable-next-line
     if (form.__INTERNAL__.name) {
       form.setFieldsValue({
         seats,
@@ -31,7 +32,7 @@ export function PersistTable({
     }
   }, [form, seats, number]);
 
-  function onOk() {
+  function onOk(): void {
     form.submit();
 
     const allIsValid = Object.values(form.getFieldsValue()).every(

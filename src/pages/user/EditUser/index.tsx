@@ -1,25 +1,24 @@
-import { useContext, useEffect, useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Form, Input, Select } from "antd";
-import { useForm } from "antd/lib/form/Form";
-import moment from "moment";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from 'react';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, DatePicker, Form, Input, Select } from 'antd';
+import { useForm } from 'antd/lib/form/Form';
+import moment from 'moment';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import endpoints from "src/api/api";
-import routes from "src/routes";
-import { Loading } from "src/components/layout/Loading";
-import { AuthContext } from "src/contexts/AuthContext";
-import { useFavicon } from "src/hooks/useFavicon";
-import { useTitle } from "src/hooks/useTitle";
-import { UserType } from "src/types/user";
-import { cpfMask } from "src/utils/cpfMask";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import { getFieldErrorsDescription, handleError } from "src/utils/handleError";
-import { isUUID } from "src/utils/isUUID";
-import { showNotification } from "src/utils/showNotification";
-import { trimInput } from "src/utils/trimInput";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { Loading } from 'src/components/layout/Loading';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { useFavicon } from 'src/hooks/useFavicon';
+import { useTitle } from 'src/hooks/useTitle';
+import { cpfMask } from 'src/utils/cpfMask';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
+import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { isUUID } from 'src/utils/isUUID';
+import { showNotification } from 'src/utils/showNotification';
+import { trimInput } from 'src/utils/trimInput';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface UserEditForm {
   name: string;
@@ -30,9 +29,9 @@ interface UserEditForm {
   birthDay: any;
 }
 
-export function EditUser() {
-  useTitle("SkyDrinks - Editar usuário");
-  useFavicon("blue");
+export function EditUser(): JSX.Element {
+  useTitle('SkyDrinks - Editar usuário');
+  useFavicon('blue');
 
   const [form] = useForm();
 
@@ -56,23 +55,23 @@ export function EditUser() {
   useEffect(() => {
     if (!isOwnerOrAdmin) {
       navigate(routes.HOME, {
-        state: { warnMessage: "Você não possui permissão!" },
+        state: { warnMessage: 'Você não possui permissão!' },
       });
     }
   }, [params, navigate, isOwnerOrAdmin]);
 
   useEffect(() => {
-    const uuid = params.uuid || "";
+    const uuid = params.uuid || '';
 
-    async function loadUser() {
+    async function loadUser(): Promise<void> {
       if (isUUID(uuid)) {
         try {
-          const user = await endpoints.findUserByUUID(uuid);
-          setUser(user);
+          const userFound = await endpoints.findUserByUUID(uuid);
+          setUser(userFound);
         } catch (error: any) {
           handleError({
             error,
-            fallback: "Não foi possível encontrar o usuário pelo UUID",
+            fallback: 'Não foi possível encontrar o usuário pelo UUID',
           });
 
           navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
@@ -81,8 +80,8 @@ export function EditUser() {
         }
       } else {
         showNotification({
-          type: "warn",
-          message: "Insira um código de usuário válido!",
+          type: 'warn',
+          message: 'Insira um código de usuário válido!',
         });
 
         navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
@@ -98,11 +97,11 @@ export function EditUser() {
     return () => setInfoLoading(false);
   }, []);
 
-  function handleCPFChange(any: any) {
+  function handleCPFChange(any: any): void {
     form.setFieldsValue({ cpf: cpfMask(any.target.value) });
   }
 
-  async function handleFormFinish(values: UserEditForm) {
+  async function handleFormFinish(values: UserEditForm): Promise<void> {
     try {
       setEditLoading(true);
 
@@ -115,21 +114,23 @@ export function EditUser() {
       await endpoints.replaceUser(
         {
           ...values,
-          uuid: params.uuid || "",
+          uuid: params.uuid || '',
           role: values.role || user.role,
-          birthDay: values.birthDay ? moment(values.birthDay._d).format("yyyy-MM-DD") : user.birthDay,
+          birthDay: values.birthDay
+            ? moment(values.birthDay._d).format('yyyy-MM-DD')
+            : user.birthDay,
         },
         userWantsUpdate
       );
 
       if (params.uuid === userInfo.uuid) {
-        const userInfo = await endpoints.getUserInfo();
-        setUserInfo(userInfo);
+        const userInfoFound = await endpoints.getUserInfo();
+        setUserInfo(userInfoFound);
       }
 
       showNotification({
-        type: "success",
-        message: "Usuário foi atualizado com sucesso",
+        type: 'success',
+        message: 'Usuário foi atualizado com sucesso',
       });
 
       navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
@@ -140,9 +141,9 @@ export function EditUser() {
 
       handleError({
         error,
-        title: error.login ? "Senha incorreta!" : undefined,
+        title: error.login ? 'Senha incorreta!' : undefined,
         description,
-        fallback: "Não foi possível editar o usuário",
+        fallback: 'Não foi possível editar o usuário',
       });
     } finally {
       setEditLoading(false);
@@ -180,11 +181,11 @@ export function EditUser() {
               label="Nome"
               hasFeedback
               rules={[
-                { required: true, message: "Insira o nome do usuário" },
+                { required: true, message: 'Insira o nome do usuário' },
                 {
                   min: 3,
                   max: 250,
-                  message: "O nome precisa ter entre 3 e 250 caracteres",
+                  message: 'O nome precisa ter entre 3 e 250 caracteres',
                 },
               ]}
             >
@@ -196,8 +197,8 @@ export function EditUser() {
               label="Email"
               hasFeedback
               rules={[
-                { required: true, message: "Insira o email do usuário" },
-                { type: "email", message: "Insira um email válido" },
+                { required: true, message: 'Insira o email do usuário' },
+                { type: 'email', message: 'Insira um email válido' },
               ]}
             >
               <Input onBlur={onBlur} />
@@ -208,7 +209,7 @@ export function EditUser() {
               label="Senha"
               tooltip="Digite sua senha para confimar as alterações"
               hasFeedback
-              rules={[{ required: true, message: "Insira a senha do usuário" }]}
+              rules={[{ required: true, message: 'Insira a senha do usuário' }]}
             >
               <Input.Password />
             </Form.Item>
@@ -222,7 +223,7 @@ export function EditUser() {
                 rules={[
                   {
                     min: 8,
-                    message: "A senha precisa ter pelo menos 8 caracteres",
+                    message: 'A senha precisa ter pelo menos 8 caracteres',
                   },
                 ]}
               >
@@ -235,10 +236,10 @@ export function EditUser() {
               label="CPF"
               hasFeedback
               rules={[
-                { required: true, message: "Insira o CPF do usuário" },
+                { required: true, message: 'Insira o CPF do usuário' },
                 {
                   pattern: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-                  message: "Insira um CPF válido",
+                  message: 'Insira um CPF válido',
                 },
               ]}
             >
@@ -254,7 +255,7 @@ export function EditUser() {
                   rules={[
                     {
                       required: true,
-                      message: "Insira a data de nascimento do usuário",
+                      message: 'Insira a data de nascimento do usuário',
                     },
                   ]}
                 >
@@ -268,7 +269,7 @@ export function EditUser() {
                   label="Tipo"
                   hasFeedback
                   rules={[
-                    { required: true, message: "Escolha o tipo do usuário" },
+                    { required: true, message: 'Escolha o tipo do usuário' },
                   ]}
                 >
                   <Select>
@@ -295,7 +296,7 @@ export function EditUser() {
                 size="large"
                 type="primary"
                 htmlType="submit"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
               >
                 Editar Usuário
               </Button>

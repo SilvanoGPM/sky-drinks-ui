@@ -1,4 +1,4 @@
-import { randomItem } from "./randomItem";
+import { randomItem } from './randomItem';
 
 /**
  * Escolhe uma cor aleatória.

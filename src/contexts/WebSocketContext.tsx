@@ -1,6 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useMemo, useState } from 'react';
 
-interface WebSocketContextProps {
+interface WebSocketContextType {
   updateRequests: boolean;
   updateRequest: boolean;
   setUpdateRequests: (updateRequests: boolean) => void;
@@ -11,23 +11,28 @@ interface WebSocketProviderProps {
   children: React.ReactNode;
 }
 
-export const WebSocketContext = createContext<WebSocketContextProps>(
-  {} as WebSocketContextProps
+export const WebSocketContext = createContext<WebSocketContextType>(
+  {} as WebSocketContextType
 );
 
-export function WebSocketProvider({ children }: WebSocketProviderProps) {
+export function WebSocketProvider({
+  children,
+}: WebSocketProviderProps): JSX.Element {
   const [updateRequests, setUpdateRequests] = useState(false);
   const [updateRequest, setUpdateRequest] = useState(false);
 
+  const value = useMemo(
+    () => ({
+      updateRequests,
+      setUpdateRequests,
+      updateRequest,
+      setUpdateRequest,
+    }),
+    [updateRequests, setUpdateRequests, updateRequest, setUpdateRequest]
+  );
+
   return (
-    <WebSocketContext.Provider
-      value={{
-        updateRequests,
-        setUpdateRequests,
-        updateRequest,
-        setUpdateRequest,
-      }}
-    >
+    <WebSocketContext.Provider value={value}>
       {children}
     </WebSocketContext.Provider>
   );

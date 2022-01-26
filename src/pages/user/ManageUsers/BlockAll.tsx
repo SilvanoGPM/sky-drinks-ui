@@ -1,28 +1,28 @@
-import { useEffect, useState } from "react";
-import { LockOutlined, UnlockOutlined } from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { useEffect, useState } from 'react';
+import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
 
-import endpoints from "src/api/api";
-import { showNotification } from "src/utils/showNotification";
+import endpoints from 'src/api/api';
+import { showNotification } from 'src/utils/showNotification';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 const { confirm } = Modal;
 
-export function BlockAll() {
+export function BlockAll(): JSX.Element {
   const [allBlocked, setAllBlocked] = useState(false);
 
   useEffect(() => {
-    async function loadAllBlocked() {
+    async function loadAllBlocked(): Promise<void> {
       try {
-        const allBlocked = await endpoints.getAllBlocked();
+        const allBlockedFound = await endpoints.getAllBlocked();
 
-        setAllBlocked(allBlocked);
+        setAllBlocked(allBlockedFound);
       } catch {
         showNotification({
-          type: "warn",
+          type: 'warn',
           message:
-            "Não foi possível verificar se todos os pedidos estão bloqueados",
+            'Não foi possível verificar se todos os pedidos estão bloqueados',
         });
       }
     }
@@ -30,31 +30,31 @@ export function BlockAll() {
     loadAllBlocked();
   }, []);
 
-  async function toggleBlockAllRequests() {
+  async function toggleBlockAllRequests(): Promise<void> {
     try {
-      const allBlocked = await endpoints.toggleBlockAllRequests();
-      setAllBlocked(allBlocked);
+      const allBlockedFound = await endpoints.toggleBlockAllRequests();
+      setAllBlocked(allBlockedFound);
     } catch {
       showNotification({
-        type: "warn",
+        type: 'warn',
         message:
-          "Não foi possível alternar se todos os pedidos estão bloqueados",
+          'Não foi possível alternar se todos os pedidos estão bloqueados',
       });
     }
   }
 
-  function handleBlockAllRequests() {
+  function handleBlockAllRequests(): void {
     const title = allBlocked
-      ? "Desbloquear todos os pedidos"
-      : "Bloquear todos os pedidos";
-    const okText = allBlocked ? "Desbloquear" : "Bloquear";
+      ? 'Desbloquear todos os pedidos'
+      : 'Bloquear todos os pedidos';
+    const okText = allBlocked ? 'Desbloquear' : 'Bloquear';
     const icon = allBlocked ? <UnlockOutlined /> : <LockOutlined />;
 
     confirm({
       title,
       okText,
       icon,
-      cancelText: "Cancelar",
+      cancelText: 'Cancelar',
       onOk: toggleBlockAllRequests,
     });
   }
@@ -63,8 +63,8 @@ export function BlockAll() {
     <div className={styles.blockRequests}>
       <p>
         {allBlocked
-          ? "Todos os pedidos estão bloqueados!"
-          : "Todos os pedidos estão desbloqueados!"}
+          ? 'Todos os pedidos estão bloqueados!'
+          : 'Todos os pedidos estão desbloqueados!'}
       </p>
 
       <div className={styles.fullButton}>
@@ -73,7 +73,7 @@ export function BlockAll() {
           type="dashed"
           icon={allBlocked ? <UnlockOutlined /> : <LockOutlined />}
         >
-          {allBlocked ? "Desbloquear pedidos" : "Bloquear pedidos"}
+          {allBlocked ? 'Desbloquear pedidos' : 'Bloquear pedidos'}
         </Button>
       </div>
     </div>

@@ -1,22 +1,31 @@
 import { useEffect, useState } from 'react';
 
-type FaviconColors = "black" | "blue" | "red" | "green";
+type FaviconColors = 'black' | 'blue' | 'red' | 'green';
 
-function getFavicon() {
-  return document.querySelector("#favicon");
+interface UseFaviconReturn {
+  color: FaviconColors;
+  setColor: React.Dispatch<React.SetStateAction<FaviconColors>>;
 }
 
-function setFavicon(color: FaviconColors = "black") {
-  getFavicon()?.setAttribute('href', `${process.env.PUBLIC_URL}/favicon_${color}.png`);
+function getFavicon(): Element | null {
+  return document.querySelector('#favicon');
 }
 
-export function useFavicon(initialColor: FaviconColors = "black") {
+function setFavicon(color: FaviconColors = 'black'): void {
+  getFavicon()?.setAttribute(
+    'href',
+    `${process.env.PUBLIC_URL}/favicon_${color}.png`
+  );
+}
 
+export function useFavicon(
+  initialColor: FaviconColors = 'black'
+): UseFaviconReturn {
   const [color, setColor] = useState(initialColor);
 
   useEffect(() => {
     setFavicon(color);
-    return () => setFavicon("black");
+    return () => setFavicon('black');
   }, [color]);
 
   return { color, setColor };

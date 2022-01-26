@@ -1,9 +1,19 @@
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
-import { Form, Button, Drawer, Input, Divider, Select, Slider, FormInstance, DatePicker } from "antd";
-import { RequestSearchForm, RequestStatusType } from "src/types/requests";
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 
-import { getStatusBadge } from "src/utils/getStatusBadge";
-import { trimInput } from "src/utils/trimInput";
+import {
+  Form,
+  Button,
+  Drawer,
+  Input,
+  Divider,
+  Select,
+  Slider,
+  FormInstance,
+  DatePicker,
+} from 'antd';
+
+import { getStatusBadge } from 'src/utils/getStatusBadge';
+import { trimInput } from 'src/utils/trimInput';
 
 interface MyRequestsDrawerProps {
   form: FormInstance;
@@ -15,17 +25,21 @@ interface MyRequestsDrawerProps {
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const status = ["PROCESSING", "FINISHED", "CANCELED"] as RequestStatusType[];
+const status = ['PROCESSING', 'FINISHED', 'CANCELED'] as RequestStatusType[];
 
-export function MyRequestsDrawer({ form, visible, setVisible, onFinish }: MyRequestsDrawerProps) {
-
+export function MyRequestsDrawer({
+  form,
+  visible,
+  setVisible,
+  onFinish,
+}: MyRequestsDrawerProps): JSX.Element {
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     setVisible(false);
   }
 
-  function clearForm() {
+  function clearForm(): void {
     form.resetFields();
   }
 
@@ -73,10 +87,10 @@ export function MyRequestsDrawer({ form, visible, setVisible, onFinish }: MyRequ
             max={1000}
             tipFormatter={(value) => `R$ ${value}`}
             marks={{
-              1: "R$ 1",
-              250: "R$ 250",
-              500: "R$ 500",
-              1000: "R$ 1000",
+              1: 'R$ 1',
+              250: 'R$ 250',
+              500: 'R$ 500',
+              1000: 'R$ 1000',
             }}
           />
         </Form.Item>
@@ -102,7 +116,7 @@ export function MyRequestsDrawer({ form, visible, setVisible, onFinish }: MyRequ
             size="large"
             type="primary"
             htmlType="submit"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             Pesquisar
           </Button>
@@ -117,7 +131,7 @@ export function MyRequestsDrawer({ form, visible, setVisible, onFinish }: MyRequ
           <Button
             icon={<DeleteOutlined />}
             size="large"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             onClick={clearForm}
           >
             Limpar

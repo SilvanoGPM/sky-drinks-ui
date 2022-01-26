@@ -1,18 +1,10 @@
-import qs from "query-string";
+import qs from 'query-string';
 
-import {
-  TablePaginetedType,
-  TableSearchParams,
-  TableToCreate,
-  TableToUpdate,
-  TableType,
-} from "src/types/tables";
-
-import { api } from "./api";
+import { api } from './api';
 
 const tablesEndpoints = {
   async createTable(table: TableToCreate): Promise<TableType> {
-    const { data } = await api.post<TableType>("/tables/waiter/", table);
+    const { data } = await api.post<TableType>('/tables/waiter/', table);
 
     return data;
   },
@@ -36,7 +28,7 @@ const tablesEndpoints = {
   },
 
   async updateTable(table: TableToUpdate): Promise<void> {
-    await api.put("/tables/waiter/", table);
+    await api.put('/tables/waiter/', table);
   },
 
   async toggleTableOccupied(uuid: string): Promise<TableType> {

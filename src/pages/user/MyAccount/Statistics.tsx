@@ -1,8 +1,7 @@
-import { Card, Col, Divider, Empty, Modal, Row, Statistic } from "antd";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import endpoints from "src/api/api";
-import routes from "src/routes";
+import { useEffect, useState } from 'react';
+import { Card, Col, Divider, Empty, Modal, Row, Statistic } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Doughnut } from 'react-chartjs-2';
 
 import {
   Chart as ChartJS,
@@ -13,15 +12,15 @@ import {
   BarElement,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-import { Doughnut } from "react-chartjs-2";
+import endpoints from 'src/api/api';
+import routes from 'src/routes';
+import { handleError } from 'src/utils/handleError';
+import { sum } from 'src/utils/sum';
+import { Loading } from 'src/components/layout/Loading';
 
-import styles from "./styles.module.scss";
-import { handleError } from "src/utils/handleError";
-import { sum } from "src/utils/sum";
-import { Loading } from "src/components/layout/Loading";
-import { TopDrinkType, TotalDrinkType } from "src/types/requests";
+import styles from './styles.module.scss';
 
 ChartJS.register(
   ArcElement,
@@ -35,7 +34,7 @@ ChartJS.register(
 
 const { confirm } = Modal;
 
-export function Statistics() {
+export function Statistics(): JSX.Element {
   const [loadingTopFive, setLoadingTopFive] = useState(true);
   const [topFiveDrinks, setTopFiveDrinks] = useState<TopDrinkType[]>([]);
 
@@ -45,14 +44,14 @@ export function Statistics() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getData() {
+    async function getData(): Promise<void> {
       try {
         const data = await endpoints.getMyTopFiveDrinks();
         setTopFiveDrinks(data);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar as suas bebidas mais pedidas",
+          fallback: 'Não foi possível carregar as suas bebidas mais pedidas',
         });
       } finally {
         setLoadingTopFive(false);
@@ -65,14 +64,14 @@ export function Statistics() {
   }, [loadingTopFive]);
 
   useEffect(() => {
-    async function getData() {
+    async function getData(): Promise<void> {
       try {
         const data = await endpoints.getTotalOfDrinksGroupedByAlcoholic();
         setTotalDrinks(data);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar o seu total de bebidas",
+          fallback: 'Não foi possível carregar o seu total de bebidas',
         });
       } finally {
         setLoadingTotalDrinks(false);
@@ -91,20 +90,20 @@ export function Statistics() {
     };
   }, []);
 
-  function confirmNavigation(uuid: string) {
-    function onOk() {
-      navigate(routes.VIEW_DRINK.replace(":uuid", uuid));
+  function confirmNavigation(uuid: string): void {
+    function onOk(): void {
+      navigate(routes.VIEW_DRINK.replace(':uuid', uuid));
     }
 
     confirm({
-      title: "Visualizar bebida?",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Visualizar bebida?',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk,
     });
   }
 
-  function toTotal(n: TotalDrinkType) {
+  function toTotal(n: TotalDrinkType): number {
     return n.total;
   }
 
@@ -113,7 +112,7 @@ export function Statistics() {
 
   return (
     <>
-      <Divider orientation="left" style={{ fontSize: "1.5rem" }}>
+      <Divider orientation="left" style={{ fontSize: '1.5rem' }}>
         Estatísticas
       </Divider>
 
@@ -128,7 +127,7 @@ export function Statistics() {
                   plugins: {
                     title: {
                       display: true,
-                      text: "Suas bebidas mais pedidas",
+                      text: 'Suas bebidas mais pedidas',
                       font: { size: 20 },
                     },
                   },
@@ -149,18 +148,18 @@ export function Statistics() {
                     {
                       data: topFiveDrinks.map(({ total }) => total),
                       backgroundColor: [
-                        "rgba(0, 148, 50, 0.3)",
-                        "rgba(196, 229, 56, 0.3)",
-                        "rgba(255, 195, 18, 0.3)",
-                        "rgba(247, 159, 31, 0.3)",
-                        "rgba(234, 32, 39, 0.3)",
+                        'rgba(0, 148, 50, 0.3)',
+                        'rgba(196, 229, 56, 0.3)',
+                        'rgba(255, 195, 18, 0.3)',
+                        'rgba(247, 159, 31, 0.3)',
+                        'rgba(234, 32, 39, 0.3)',
                       ],
                       borderColor: [
-                        "rgb(0, 148, 50)",
-                        "rgb(196, 229, 56)",
-                        "rgb(255, 195, 18)",
-                        "rgb(247, 159, 31)",
-                        "rgb(234, 32, 39)",
+                        'rgb(0, 148, 50)',
+                        'rgb(196, 229, 56)',
+                        'rgb(255, 195, 18)',
+                        'rgb(247, 159, 31)',
+                        'rgb(234, 32, 39)',
                       ],
                     },
                   ],
@@ -192,7 +191,7 @@ export function Statistics() {
                         totalDrinks.filter(({ alcoholic }) => !alcoholic),
                         toTotal
                       )}
-                      valueStyle={{ color: "#2ecc71" }}
+                      valueStyle={{ color: '#2ecc71' }}
                     />
                   </Card>
                 </Col>
@@ -204,7 +203,7 @@ export function Statistics() {
                         totalDrinks.filter(({ alcoholic }) => alcoholic),
                         toTotal
                       )}
-                      valueStyle={{ color: "#e74c3c" }}
+                      valueStyle={{ color: '#e74c3c' }}
                     />
                   </Card>
                 </Col>

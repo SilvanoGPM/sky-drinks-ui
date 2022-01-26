@@ -1,41 +1,41 @@
-import { Badge, Button, Modal, Popover, Tooltip } from "antd";
-import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { useContext } from 'react';
+import { Badge, Button, Modal, Popover, Tooltip } from 'antd';
+import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
-import routes from "src/routes";
-import { useContext } from "react";
-import { RequestContext } from "src/contexts/RequestContext";
-import { getDrinksGroupedByUUID } from "src/utils/getDrinksGroupedByUUID";
-import { calculateDrinksPrice } from "src/utils/calculateDrinkPrice";
-import { AuthContext } from "src/contexts/AuthContext";
-import { getUserPermissions } from "src/utils/getUserPermissions";
+import routes from 'src/routes';
+import { RequestContext } from 'src/contexts/RequestContext';
+import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
+import { calculateDrinksPrice } from 'src/utils/calculateDrinkPrice';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 const { confirm } = Modal;
 
-export function RequestInfo() {
+export function RequestInfo(): JSX.Element {
   const { userInfo } = useContext(AuthContext);
   const { request, clearRequest } = useContext(RequestContext);
 
-  function handleClearRequest() {
+  function handleClearRequest(): void {
     confirm({
-      title: "Deseja mesmo limpar esse pedido?",
-      okText: "Sim",
-      cancelText: "Não",
+      title: 'Deseja mesmo limpar esse pedido?',
+      okText: 'Sim',
+      cancelText: 'Não',
       onOk: clearRequest,
     });
   }
 
-  function getDrinksContent() {
+  function getDrinksContent(): JSX.Element {
     const drinks = getDrinksGroupedByUUID(request);
 
-    const elements = Object.keys(drinks).map((key, index) => {
+    const elements = Object.keys(drinks).map((key) => {
       const [drink] = drinks[key];
       const { length } = drinks[key];
 
       return (
-        <li className={styles.drinksItem} key={`${key} - ${index}`}>
+        <li className={styles.drinksItem} key={`${key}`}>
           <p title={drink.name}>{drink.name}</p>
           <Badge count={length} />
         </li>
@@ -59,7 +59,7 @@ export function RequestInfo() {
   const permissions = getUserPermissions(userInfo.role);
 
   const containsRequest = request.drinks.length > 0;
-  const popoverTrigger = window.innerWidth > 700 ? "hover" : "click";
+  const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
   return (
     <div className={`${styles.requestInfo}`}>
@@ -74,7 +74,7 @@ export function RequestInfo() {
             <div className={styles.requestInfoTotal}>
               <p>Total de bebidas:</p>
               <Badge
-                style={{ backgroundColor: "#52c41a" }}
+                style={{ backgroundColor: '#52c41a' }}
                 count={request.drinks.length}
               />
             </div>
@@ -91,19 +91,17 @@ export function RequestInfo() {
           </Link>
         </>
       ) : (
-        <>
-          <div className={styles.noRequest}>
-            {permissions.isUser || permissions.isGuest ? (
-              <p>
-                {permissions.isUser
-                  ? "Nenhum pedido no momento"
-                  : "Faça login para realizar pedidos"}
-              </p>
-            ) : (
-              <p className={styles.niceJob}>Bom trabalho!</p>
-            )}
-          </div>
-        </>
+        <div className={styles.noRequest}>
+          {permissions.isUser || permissions.isGuest ? (
+            <p>
+              {permissions.isUser
+                ? 'Nenhum pedido no momento'
+                : 'Faça login para realizar pedidos'}
+            </p>
+          ) : (
+            <p className={styles.niceJob}>Bom trabalho!</p>
+          )}
+        </div>
       )}
     </div>
   );

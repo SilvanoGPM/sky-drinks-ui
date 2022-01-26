@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import { Menu } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { useContext } from 'react';
+import { Menu } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
 
 import {
   AppstoreOutlined,
@@ -14,11 +14,11 @@ import {
   SearchOutlined,
   ShoppingCartOutlined,
   UserOutlined,
-} from "@ant-design/icons";
+} from '@ant-design/icons';
 
-import { AuthContext } from "src/contexts/AuthContext";
-import { getUserPermissions } from "src/utils/getUserPermissions";
-import routes from "src/routes";
+import { AuthContext } from 'src/contexts/AuthContext';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
+import routes from 'src/routes';
 
 import {
   DrinkIcon,
@@ -26,9 +26,9 @@ import {
   PerformRequestIcon,
   SkyDrinksIcon,
   TableIcon,
-} from "src/components/custom/CustomIcons";
+} from 'src/components/custom/CustomIcons';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface NavMenuProps {
   menuShow: boolean;
@@ -37,12 +37,12 @@ interface NavMenuProps {
 
 const { SubMenu } = Menu;
 
-export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
+export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
   const { userInfo, authenticated } = useContext(AuthContext);
 
   const location = useLocation();
 
-  function closeMenu() {
+  function closeMenu(): void {
     if (window.innerWidth <= 700) {
       setMenuShow(false);
     }
@@ -51,11 +51,11 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
   const permissions = getUserPermissions(userInfo.role);
 
   const userName = permissions.isGuest
-    ? "Visitante"
-    : userInfo.name.split(" ")[0];
+    ? 'Visitante'
+    : userInfo.name.split(' ')[0];
 
   return (
-    <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ""}`}>
+    <div className={`${styles.menuWrapper} ${menuShow ? styles.active : ''}`}>
       <div className={styles.menuHeader}>
         <h1 className={styles.logo}>
           <Link to={routes.HOME}>
@@ -73,7 +73,7 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps) {
 
       <Menu
         theme="dark"
-        selectedKeys={[location.pathname, location.pathname.replace("/", "")]}
+        selectedKeys={[location.pathname, location.pathname.replace('/', '')]}
         className={styles.menu}
         mode="inline"
         onClick={closeMenu}

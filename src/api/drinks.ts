@@ -1,28 +1,28 @@
-import qs from "query-string";
+import qs from 'query-string';
 
-import { toFullPictureURI } from "src/utils/toFullPictureURI";
+import { toFullPictureURI } from 'src/utils/toFullPictureURI';
 
-import {
-  DrinkPaginatedType,
-  DrinkSearchParams,
-  DrinkToCreate,
-  DrinkToUpdate,
-  DrinkType,
-} from "src/types/drinks";
-
-import { api } from "./api";
-import filesEndpoints from "./files";
+import { api } from './api';
+import filesEndpoints from './files';
 
 const drinksEndpoints = {
-  async createDrink(drink: DrinkToCreate): Promise<DrinkType> {
+  async drinkUploadImage(
+    drink: DrinkToCreate | DrinkToUpdate
+  ): Promise<DrinkToCreate | DrinkToUpdate> {
     const { picture } = drink;
 
     if (picture && picture instanceof File) {
       const image = await filesEndpoints.uploadImage(picture);
-      drink.picture = image.data.fileName;
+      return { ...drink, picture: image.data.fileName };
     }
 
-    const { data } = await api.post<DrinkType>("/drinks/barmen", drink);
+    return drink;
+  },
+
+  async createDrink(drinkToCreate: DrinkToCreate): Promise<DrinkType> {
+    const drink = await this.drinkUploadImage(drinkToCreate);
+
+    const { data } = await api.post<DrinkType>('/drinks/barmen', drink);
     return data;
   },
 
@@ -45,7 +45,7 @@ const drinksEndpoints = {
     return toFullPictureURI(data);
   },
 
-  async getLatestDrinks(size: number = 5): Promise<DrinkType[]> {
+  async getLatestDrinks(size = 5): Promise<DrinkType[]> {
     const { data } = await api.get<DrinkPaginatedType>(
       `/drinks?size=${size}&page=0&sort=createdAt,desc`
     );
@@ -53,15 +53,12 @@ const drinksEndpoints = {
     return data.content.map(toFullPictureURI);
   },
 
-  async replaceDrink(drink: DrinkToUpdate): Promise<void> {
-    const { picture } = drink;
+  async replaceDrink(drinkToUpdate: DrinkToUpdate): Promise<void> {
+    const drink = await this.drinkUploadImage(drinkToUpdate);
 
-    if (picture && picture instanceof File) {
-      const image = await filesEndpoints.uploadImage(picture);
-      drink.picture = image.data.fileName;
-    }
+    console.log(drink);
 
-    await api.put("/drinks/barmen", drink);
+    await api.put('/drinks/barmen', drink);
   },
 
   async deleteDrink(uuid: string): Promise<void> {

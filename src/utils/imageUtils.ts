@@ -4,7 +4,7 @@ const baseURL = process.env.REACT_APP_API_URL;
  * @param {string} image Caminho da imagem a ser normalizado.
  */
 export function normalizeImage(image: string): string {
-  return image?.replace("images", "").replaceAll("/", "");
+  return image?.replace('images', '').replaceAll('/', '');
 }
 
 /**

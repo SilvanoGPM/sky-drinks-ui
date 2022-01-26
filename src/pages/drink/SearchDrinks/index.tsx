@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { useEffect, useState } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 
-import { useTitle } from "src/hooks/useTitle";
+import { useTitle } from 'src/hooks/useTitle';
 
-import styles from "./styles.module.scss";
-import { ListDrinks } from "../components/ListDrinks";
+import styles from './styles.module.scss';
+import { ListDrinks } from '../components/ListDrinks';
 
-export function SearchDrinks() {
-  useTitle("SkyDrinks - Pesquisar bebidas");
+export function SearchDrinks(): JSX.Element {
+  useTitle('SkyDrinks - Pesquisar bebidas');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export function SearchDrinks() {
     return () => setLoading(false);
   }, []);
 
-  function openDrawer() {
+  function openDrawer(): void {
     setDrawerVisible(true);
   }
 

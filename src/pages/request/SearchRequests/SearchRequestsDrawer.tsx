@@ -1,11 +1,19 @@
-import { DatePicker, FormInstance } from "antd";
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 
-import { Form, Button, Drawer, Input, Divider, Select, Slider } from "antd";
+import {
+  DatePicker,
+  FormInstance,
+  Form,
+  Button,
+  Drawer,
+  Input,
+  Divider,
+  Select,
+  Slider,
+} from 'antd';
 
-import { RequestSearchFormForAdmins, RequestStatusType } from "src/types/requests";
-import { getStatusBadge } from "src/utils/getStatusBadge";
-import { trimInput } from "src/utils/trimInput";
+import { getStatusBadge } from 'src/utils/getStatusBadge';
+import { trimInput } from 'src/utils/trimInput';
 
 interface SearchRequestsDrawerProps {
   form: FormInstance;
@@ -17,21 +25,21 @@ interface SearchRequestsDrawerProps {
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const status = ["PROCESSING", "FINISHED", "CANCELED"] as RequestStatusType[];
+const status = ['PROCESSING', 'FINISHED', 'CANCELED'] as RequestStatusType[];
 
 export function SearchRequestsDrawer({
   form,
   visible,
   setVisible,
   onFinish,
-}: SearchRequestsDrawerProps) {
+}: SearchRequestsDrawerProps): JSX.Element {
   const drawerWidth = window.innerWidth <= 400 ? 300 : 400;
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     setVisible(false);
   }
 
-  function clearForm() {
+  function clearForm(): void {
     form.resetFields();
   }
 
@@ -51,7 +59,7 @@ export function SearchRequestsDrawer({
         style={{ flex: 1 }}
         initialValues={{
           price: [0, 200],
-          delivered: "-1",
+          delivered: '-1',
         }}
         name="search-requests"
         autoComplete="off"
@@ -88,10 +96,10 @@ export function SearchRequestsDrawer({
             max={1000}
             tipFormatter={(value) => `R$ ${value}`}
             marks={{
-              1: "R$ 1",
-              250: "R$ 250",
-              500: "R$ 500",
-              1000: "R$ 1000",
+              1: 'R$ 1',
+              250: 'R$ 250',
+              500: 'R$ 500',
+              1000: 'R$ 1000',
             }}
           />
         </Form.Item>
@@ -131,7 +139,7 @@ export function SearchRequestsDrawer({
             size="large"
             type="primary"
             htmlType="submit"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             Pesquisar
           </Button>
@@ -146,7 +154,7 @@ export function SearchRequestsDrawer({
           <Button
             icon={<DeleteOutlined />}
             size="large"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             onClick={clearForm}
           >
             Limpar

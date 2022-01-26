@@ -1,30 +1,37 @@
-import { useState } from "react";
-import { PlayCircleOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Upload } from "antd";
+import { useState } from 'react';
+import { PlayCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Upload } from 'antd';
 
-import endpoints from "src/api/api";
-import { showNotification } from "src/utils/showNotification";
-import { UploadFile } from "antd/lib/upload/interface";
+import endpoints from 'src/api/api';
+import { showNotification } from 'src/utils/showNotification';
+import { UploadFile } from 'antd/lib/upload/interface';
 
-import styles from "./styles.module.scss";
+import styles from './styles.module.scss';
 
 interface UploadImagesProps {
   setListLoading: (listLoading: boolean) => void;
 }
 
-export function UploadImages({ setListLoading }: UploadImagesProps) {
+export function UploadImages({
+  setListLoading,
+}: UploadImagesProps): JSX.Element {
   const [images, setImages] = useState<File[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [imagesUploading, setImagesUploading] = useState(false);
 
-  function dummyRequest({ file, onSuccess }: any) {
+  function dummyRequest({ file, onSuccess }: any): void {
     setImages([...images, file]);
     setFileList([...fileList, file]);
 
     return onSuccess(file);
   }
 
-  async function uploadImages() {
+  function resetImages(): void {
+    setImages([]);
+    setFileList([]);
+  }
+
+  async function uploadImages(): Promise<void> {
     try {
       setImagesUploading(true);
 
@@ -33,23 +40,18 @@ export function UploadImages({ setListLoading }: UploadImagesProps) {
       setListLoading(true);
 
       showNotification({
-        type: "success",
-        message: "Upload realizado com sucesso!",
+        type: 'success',
+        message: 'Upload realizado com sucesso!',
       });
     } catch {
       showNotification({
-        type: "warn",
-        message: "Não foi possível realizar o upload",
+        type: 'warn',
+        message: 'Não foi possível realizar o upload',
       });
     } finally {
       setImagesUploading(false);
       resetImages();
     }
-  }
-
-  function resetImages() {
-    setImages([]);
-    setFileList([]);
   }
 
   return (
@@ -71,9 +73,9 @@ export function UploadImages({ setListLoading }: UploadImagesProps) {
             size="large"
             type="primary"
             style={{
-              color: "#ffffff",
-              borderColor: "#e74c3c",
-              backgroundColor: "#e74c3c",
+              color: '#ffffff',
+              borderColor: '#e74c3c',
+              backgroundColor: '#e74c3c',
             }}
             icon={<PlayCircleOutlined />}
             onClick={resetImages}

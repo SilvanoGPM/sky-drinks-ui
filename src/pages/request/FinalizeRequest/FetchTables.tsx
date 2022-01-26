@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { Select } from "antd";
+import { useEffect, useState } from 'react';
+import { Select } from 'antd';
 
-import endpoints from "src/api/api";
-import { Loading } from "src/components/layout/Loading";
-import { TableType } from "src/types/tables";
-import { handleError } from "src/utils/handleError";
+import endpoints from 'src/api/api';
+import { Loading } from 'src/components/layout/Loading';
+import { handleError } from 'src/utils/handleError';
 
 const { Option } = Select;
 
@@ -13,35 +12,38 @@ interface FetchTablesProps {
   onChange: (table?: TableType) => void;
 }
 
-export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
+export function FetchTables({
+  defaultTable,
+  onChange,
+}: FetchTablesProps): JSX.Element {
   const [loading, setLoading] = useState(true);
   const [tables, setTables] = useState<TableType[]>([]);
 
   useEffect(() => {
-    async function loadTables() {
+    async function loadTables(): Promise<void> {
       try {
         const data = await endpoints.getAllTables();
         setTables(data.content);
       } catch (error: any) {
         handleError({
           error,
-          fallback: "Não foi possível carregar mesas",
+          fallback: 'Não foi possível carregar mesas',
         });
       } finally {
         setLoading(false);
       }
-
-      return () => {
-        setLoading(false);
-      };
     }
 
     if (loading) {
       loadTables();
     }
+
+    return () => {
+      setLoading(false);
+    };
   }, [loading]);
 
-  function handleChange(value: string) {
+  function handleChange(value: string): void {
     const tableFound = tables.find(
       (table) => String(table.number) === String(value)
     );
@@ -52,9 +54,9 @@ export function FetchTables({ defaultTable, onChange }: FetchTablesProps) {
     <Loading />
   ) : (
     <Select
-      style={{ width: "50%" }}
+      style={{ width: '50%' }}
       onChange={handleChange}
-      defaultValue={defaultTable ? String(defaultTable.number) : "null"}
+      defaultValue={defaultTable ? String(defaultTable.number) : 'null'}
     >
       <Option value="null">Nenhuma</Option>
       {tables.map(({ number }) => (

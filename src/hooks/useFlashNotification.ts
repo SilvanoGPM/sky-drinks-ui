@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { showNotification } from "src/utils/showNotification";
+import { showNotification } from 'src/utils/showNotification';
 
-export function useFlashNotification(route: string) {
+export function useFlashNotification(route: string): void {
   const location = useLocation();
 
   const navigate = useNavigate();
@@ -12,24 +12,28 @@ export function useFlashNotification(route: string) {
     if (location?.state) {
       const { warn, error, success, info, ...state } = location.state;
 
-      const notifications: { [key: string]: { message: string, description?: string } } = {
+      const notifications: {
+        [key: string]: { message: string; description?: string };
+      } = {
         warn,
         error,
         success,
         info,
       };
 
-      const perfomedNotifications = Object.keys(notifications).map((notification) => {
-        const message = notifications[notification];
-        const type = notification as "warn" | "error" | "success" | "info";
+      const perfomedNotifications = Object.keys(notifications).map(
+        (notification) => {
+          const message = notifications[notification];
+          const type = notification as 'warn' | 'error' | 'success' | 'info';
 
-        if (message) {
-          showNotification({ type, ...message });
-          return 1;
+          if (message) {
+            showNotification({ type, ...message });
+            return 1;
+          }
+
+          return 0;
         }
-
-        return 0;
-      });
+      );
 
       const hasNotification = perfomedNotifications.includes(1);
 

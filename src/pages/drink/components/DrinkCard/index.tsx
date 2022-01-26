@@ -1,17 +1,16 @@
-import { useContext } from "react";
-import { EyeOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { Button, Card, Image, Tooltip } from "antd";
-import { Link } from "react-router-dom";
+import { useContext } from 'react';
+import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { Button, Card, Image, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
 
-import routes from "src/routes";
-import endpoints from "src/api/api";
+import routes from 'src/routes';
+import endpoints from 'src/api/api';
+import { showNotification } from 'src/utils/showNotification';
+import { RequestContext } from 'src/contexts/RequestContext';
+import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 
-import { showNotification } from "src/utils/showNotification";
-import { RequestContext } from "src/contexts/RequestContext";
-import { formatDisplayPrice } from "src/utils/formatDisplayPrice";
-
-import drinkPlaceholder from "src/assets/drink-placeholder.png";
-import drinkErrorImage from "src/assets/image-error.png";
+import drinkPlaceholder from 'src/assets/drink-placeholder.png';
+import drinkErrorImage from 'src/assets/image-error.png';
 
 interface DrinkCardProps {
   uuid: string;
@@ -39,29 +38,32 @@ export function DrinkCard({
   minWidth = width,
   showBuyAction = true,
   moreActions = [],
-}: DrinkCardProps) {
+}: DrinkCardProps): JSX.Element {
   const { addDrink } = useContext(RequestContext);
 
-  function renderCover() {
+  function renderCover(): JSX.Element {
     return (
       <Image
         height={imageHeight}
         width="100%"
         alt={`Drink - ${name}`}
-        onError={(event) => event.currentTarget.src = drinkErrorImage}
-        src={picture && !picture.endsWith("null") ? picture : drinkPlaceholder}
+        onError={(event) => {
+          // eslint-disable-next-line
+          event.currentTarget.src = drinkErrorImage;
+        }}
+        src={picture && !picture.endsWith('null') ? picture : drinkPlaceholder}
       />
     );
   }
 
-  async function addDrinkToRequest() {
+  async function addDrinkToRequest(): Promise<void> {
     try {
       const drink = await endpoints.findDrinkByUUID(uuid);
       addDrink(drink);
     } catch (e: any) {
       showNotification({
-        type: "warn",
-        message: "Não foi possível adicionar bebida ao pedido",
+        type: 'warn',
+        message: 'Não foi possível adicionar bebida ao pedido',
       });
     }
   }
@@ -75,10 +77,10 @@ export function DrinkCard({
     >
       <Card
         hoverable
-        style={{ minWidth: minWidth, width }}
+        style={{ minWidth, width }}
         actions={[
           <Tooltip title="Abrir Página" key="view-drink">
-            <Link to={`${routes.VIEW_DRINK}`.replace(":uuid", uuid)}>
+            <Link to={`${routes.VIEW_DRINK}`.replace(':uuid', uuid)}>
               <Button type="link">
                 <EyeOutlined />
               </Button>
