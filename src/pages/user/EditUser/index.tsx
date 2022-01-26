@@ -7,7 +7,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { useFavicon } from 'src/hooks/useFavicon';
 import { useTitle } from 'src/hooks/useTitle';
@@ -159,7 +159,7 @@ export function EditUser(): JSX.Element {
       </div>
 
       {infoLoading ? (
-        <Loading />
+        <LoadingIndicator />
       ) : (
         <div>
           <Form

@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { QRCodeGenerator } from 'src/components/other/QRCodeGenerator';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { WebSocketContext } from 'src/contexts/WebSocketContext';
@@ -262,7 +262,7 @@ export function ViewRequest(): JSX.Element {
   return (
     <section className={styles.container}>
       {loading ? (
-        <Loading />
+        <LoadingIndicator />
       ) : (
         <>
           <div>

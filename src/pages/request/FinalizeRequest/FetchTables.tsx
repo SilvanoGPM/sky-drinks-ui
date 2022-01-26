@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Select } from 'antd';
 
 import endpoints from 'src/api/api';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
 
 const { Option } = Select;
@@ -51,7 +51,7 @@ export function FetchTables({
   }
 
   return loading ? (
-    <Loading />
+    <LoadingIndicator />
   ) : (
     <Select
       style={{ width: '50%' }}

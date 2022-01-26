@@ -36,7 +36,7 @@ import {
 
 import endpoints from 'src/api/api';
 import { handleError } from 'src/utils/handleError';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { sum } from 'src/utils/sum';
 import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
@@ -187,7 +187,7 @@ export function DataOfRequests(): JSX.Element {
   let delayed = false;
 
   if (requestsDataLoading) {
-    return <Loading />;
+    return <LoadingIndicator />;
   }
 
   return (

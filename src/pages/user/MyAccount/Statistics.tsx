@@ -18,7 +18,7 @@ import endpoints from 'src/api/api';
 import routes from 'src/routes';
 import { handleError } from 'src/utils/handleError';
 import { sum } from 'src/utils/sum';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import styles from './styles.module.scss';
 
@@ -120,7 +120,7 @@ export function Statistics(): JSX.Element {
         <>
           <div className={styles.chart}>
             {loadingTopFive ? (
-              <Loading />
+              <LoadingIndicator />
             ) : (
               <Doughnut
                 options={{
@@ -172,7 +172,7 @@ export function Statistics(): JSX.Element {
             <h2>Total de bebidas</h2>
 
             {loadingTotalDrinks ? (
-              <Loading />
+              <LoadingIndicator />
             ) : (
               <Row gutter={[8, 8]}>
                 <Col xs={24} sm={8}>

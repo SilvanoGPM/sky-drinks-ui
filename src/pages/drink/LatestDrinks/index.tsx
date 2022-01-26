@@ -11,21 +11,10 @@ import { showNotification } from 'src/utils/showNotification';
 import { useFlashNotification } from 'src/hooks/useFlashNotification';
 import { handleError } from 'src/utils/handleError';
 
-import drinkPlaceholder from 'src/assets/drink-placeholder.png';
-
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { DrinkCard } from '../components/DrinkCard';
 
 import styles from './styles.module.scss';
-
-const drinkFake = {
-  name: 'Carregando...',
-  price: 0,
-  picture: drinkPlaceholder,
-};
-
-const latestDrinksFake = Array(5)
-  .fill(drinkFake)
-  .map((drink, uuid) => ({ ...drink, uuid }));
 
 export function LatestDrinks(): JSX.Element {
   useTitle('SkyDrinks - Últimas bebidas adicionadas');
@@ -35,8 +24,7 @@ export function LatestDrinks(): JSX.Element {
   const { onMouseDown } = useDraggableScroll(drinksRef);
 
   const [loading, setLoading] = useState(true);
-  const [latestDrinks, setLatestDrinks] =
-    useState<DrinkType[]>(latestDrinksFake);
+  const [latestDrinks, setLatestDrinks] = useState<DrinkType[]>([]);
 
   useFlashNotification(routes.HOME);
 
@@ -80,7 +68,9 @@ export function LatestDrinks(): JSX.Element {
     <section className={styles.container}>
       <h2 className={styles.title}>Últimas bebidas adicionadas:</h2>
 
-      {latestDrinks.length ? (
+      {loading ? (
+        <LoadingIndicator />
+      ) : latestDrinks.length ? (
         <ul
           role="listbox"
           ref={drinksRef}

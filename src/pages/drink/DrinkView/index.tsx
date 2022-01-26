@@ -17,6 +17,7 @@ import { handleError } from 'src/utils/handleError';
 import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
 import { formatDrinkVolume } from 'src/utils/formatDrinkVolume';
 import { getAdditionalTagColor } from 'src/utils/getAdditionalTagColor';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import drinkPlaceholder from 'src/assets/drink-placeholder.png';
 import styles from './styles.module.scss';
@@ -82,10 +83,14 @@ export function DrinkView(): JSX.Element {
     <section className={styles.container}>
       {loading ? (
         <>
-          <Skeleton.Image
-            style={{ maxWidth: '700px', width: '60vw', height: '100vh' }}
-          />
-          <Skeleton title paragraph loading={loading} />
+          <LoadingIndicator />
+
+          <div style={{ margin: 'auto' }}>
+            <Skeleton.Image
+              style={{ maxWidth: '700px', width: '60vw', height: '100vh' }}
+            />
+            <Skeleton title paragraph loading={loading} />
+          </div>
         </>
       ) : (
         <>

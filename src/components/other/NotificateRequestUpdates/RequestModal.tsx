@@ -2,7 +2,7 @@ import { Modal } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import routes from 'src/routes';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { getStatusBadge } from 'src/utils/getStatusBadge';
@@ -48,7 +48,7 @@ export function RequestModal({
   }
 
   if (loading) {
-    return <Loading />;
+    return <LoadingIndicator />;
   }
 
   return (

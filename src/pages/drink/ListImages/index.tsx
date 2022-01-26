@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Badge, Button, Image, List, Modal, Popover } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { List, Modal } from 'antd';
 
 import endpoints from 'src/api/api';
-import routes from 'src/routes';
-import { DrinkIcon } from 'src/components/custom/CustomIcons';
 import { useTitle } from 'src/hooks/useTitle';
 import { handleError } from 'src/utils/handleError';
-import { imageToFullURI } from 'src/utils/imageUtils';
 import { showNotification } from 'src/utils/showNotification';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import { UploadImages } from './UploadImages';
+import { ImageItem } from './ImageItem';
 
 import styles from './styles.module.scss';
 
@@ -27,6 +24,11 @@ interface PaginetedDataType {
 
 const { confirm } = Modal;
 
+const INITIAL_DATA = {
+  totalElements: 0,
+  content: [],
+};
+
 export function ListImages(): JSX.Element {
   useTitle('SkyDrinks - Visualizar imagens');
 
@@ -38,10 +40,7 @@ export function ListImages(): JSX.Element {
     size: 10,
   });
 
-  const [data, setData] = useState<PaginetedDataType>({
-    totalElements: 0,
-    content: [],
-  });
+  const [data, setData] = useState<PaginetedDataType>(INITIAL_DATA);
 
   useEffect(() => {
     async function loadImages(): Promise<void> {
@@ -72,6 +71,16 @@ export function ListImages(): JSX.Element {
       setLoading(false);
     };
   }, []);
+
+  function handlePaginationChange(page: number): void {
+    setPagination((olgPagination) => {
+      return { ...olgPagination, page: page - 1 };
+    });
+
+    setData(INITIAL_DATA);
+
+    setLoading(true);
+  }
 
   function deleteImage(image: string): () => void {
     async function remove(): Promise<void> {
@@ -122,24 +131,6 @@ export function ListImages(): JSX.Element {
     };
   }
 
-  function getDrinksContent(drinks: DrinkType[]): JSX.Element[] {
-    return drinks.map(({ uuid, name }) => (
-      <Link key={uuid} to={routes.VIEW_DRINK.replace(':uuid', uuid)}>
-        <p className={styles.drinkName}>{name}</p>
-      </Link>
-    ));
-  }
-
-  function handlePaginationChange(page: number): void {
-    setLoading(true);
-
-    setPagination((olgPagination) => {
-      return { ...olgPagination, page: page - 1 };
-    });
-  }
-
-  const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
-
   return (
     <section className={styles.container}>
       <div>
@@ -148,77 +139,34 @@ export function ListImages(): JSX.Element {
 
       <UploadImages setListLoading={setLoading} />
 
-      <div>
-        <List
-          loading={loading}
-          pagination={{
-            current: pagination.page + 1,
-            pageSize: pagination.size,
-            onChange: handlePaginationChange,
-            total: data.totalElements,
-            hideOnSinglePage: true,
-            responsive: true,
-            showSizeChanger: false,
-          }}
-          dataSource={data.content}
-          renderItem={({ drinks, image }) => {
-            const picture = imageToFullURI(image);
-
-            const actions = [
-              ...(drinks.length > 0
-                ? [
-                    <Popover
-                      key="drinks"
-                      trigger={popoverTrigger}
-                      title="Bebidas"
-                      content={getDrinksContent(drinks)}
-                    >
-                      <Button shape="round" icon={<DrinkIcon />} />
-                    </Popover>,
-                  ]
-                : []),
-
-              <Button
-                key="remove"
-                shape="round"
-                loading={loadingDelete}
-                icon={<DeleteOutlined style={{ color: '#e74c3c' }} />}
-                onClick={deleteImage(image)}
-              />,
-            ];
-
-            return (
-              <List.Item actions={actions} className={styles.item}>
-                <Image
-                  src={picture}
-                  alt={image}
-                  style={{ minWidth: 100 }}
-                  width={100}
-                  height={100}
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
+        <div>
+          <List
+            pagination={{
+              current: pagination.page + 1,
+              pageSize: pagination.size,
+              onChange: handlePaginationChange,
+              total: data.totalElements,
+              hideOnSinglePage: true,
+              responsive: true,
+              showSizeChanger: false,
+            }}
+            dataSource={data.content}
+            renderItem={(props, index) => {
+              return (
+                <ImageItem
+                  {...props}
+                  index={index}
+                  loadingDelete={loadingDelete}
+                  deleteImage={deleteImage}
                 />
-                <div className={styles.info}>
-                  <List.Item.Meta
-                    title={<p className={styles.imageName}>{image}</p>}
-                  />
-                  <div className={styles.badge}>
-                    {drinks.length > 0 ? (
-                      <Badge
-                        status="success"
-                        text="Essa imagem possuí bebida!"
-                      />
-                    ) : (
-                      <Badge
-                        status="error"
-                        text="Essa imagem não possuí bebida!"
-                      />
-                    )}
-                  </div>
-                </div>
-              </List.Item>
-            );
-          }}
-        />
-      </div>
+              );
+            }}
+          />
+        </div>
+      )}
     </section>
   );
 }

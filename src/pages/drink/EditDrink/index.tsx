@@ -29,7 +29,7 @@ import { useFavicon } from 'src/hooks/useFavicon';
 import { isUUID } from 'src/utils/isUUID';
 import { trimInput } from 'src/utils/trimInput';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { imageToFullURI, normalizeImage } from 'src/utils/imageUtils';
 
 import styles from './styles.module.scss';
@@ -183,7 +183,7 @@ export function EditDrink(): JSX.Element {
       <h2 className={styles.title}>Editar Bebida</h2>
 
       {drinkLoading ? (
-        <Loading />
+        <LoadingIndicator />
       ) : (
         <div>
           <div className={styles.selectImage}>

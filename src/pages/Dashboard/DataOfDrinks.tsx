@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 
 import endpoints from 'src/api/api';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
 import { randomHotRGBColor, randomRGB } from 'src/utils/rgbUtils';
 
@@ -65,7 +65,7 @@ export function DataOfDrinks(): JSX.Element {
   const hasDataOfDrinks = Boolean(Object.values(dataOfDrinks).flat().length);
 
   if (loading) {
-    return <Loading />;
+    return <LoadingIndicator />;
   }
 
   return hasDataOfDrinks ? (

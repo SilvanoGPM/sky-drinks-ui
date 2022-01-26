@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import { useAuth } from './hooks/useAuth';
 
@@ -12,6 +13,10 @@ export const AuthContext = createContext<AuthContenxtType>(
 
 export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   const auth = useAuth();
+
+  if (auth.authLoading) {
+    return <LoadingIndicator />;
+  }
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }

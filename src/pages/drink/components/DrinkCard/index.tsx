@@ -8,6 +8,7 @@ import endpoints from 'src/api/api';
 import { showNotification } from 'src/utils/showNotification';
 import { RequestContext } from 'src/contexts/RequestContext';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
+import { useSpring, animated } from 'react-spring';
 
 import drinkPlaceholder from 'src/assets/drink-placeholder.png';
 import drinkErrorImage from 'src/assets/image-error.png';
@@ -39,11 +40,21 @@ export function DrinkCard({
   showBuyAction = true,
   moreActions = [],
 }: DrinkCardProps): JSX.Element {
+  const props = useSpring({
+    to: { opacity: 1, scale: 1 },
+    from: { opacity: 0, scale: 0 },
+    config: {
+      tension: 300,
+      friction: 20,
+    },
+  });
+
   const { addDrink } = useContext(RequestContext);
 
   function renderCover(): JSX.Element {
     return (
       <Image
+        loading="lazy"
         height={imageHeight}
         width="100%"
         alt={`Drink - ${name}`}
@@ -69,42 +80,44 @@ export function DrinkCard({
   }
 
   return (
-    <Tooltip
-      mouseEnterDelay={1}
-      placement="rightTop"
-      arrowPointAtCenter
-      title={name}
-    >
-      <Card
-        hoverable
-        style={{ minWidth, width }}
-        actions={[
-          <Tooltip title="Abrir Página" key="view-drink">
-            <Link to={`${routes.VIEW_DRINK}`.replace(':uuid', uuid)}>
-              <Button type="link">
-                <EyeOutlined />
-              </Button>
-            </Link>
-          </Tooltip>,
-          ...(showBuyAction
-            ? [
-                <Tooltip title="Adicionar ao Pedido" key="add-to-request">
-                  <Button onClick={addDrinkToRequest} type="link">
-                    <ShoppingCartOutlined />
-                  </Button>
-                </Tooltip>,
-              ]
-            : []),
-          ...moreActions,
-        ]}
-        cover={renderCover()}
-        loading={loading}
+    <animated.div style={loading ? {} : props}>
+      <Tooltip
+        mouseEnterDelay={1}
+        placement="rightTop"
+        arrowPointAtCenter
+        title={name}
       >
-        <Meta
-          title={name}
-          description={`Preço: ${formatDisplayPrice(price)}`}
-        />
-      </Card>
-    </Tooltip>
+        <Card
+          hoverable
+          style={{ minWidth, width }}
+          actions={[
+            <Tooltip title="Abrir Página" key="view-drink">
+              <Link to={`${routes.VIEW_DRINK}`.replace(':uuid', uuid)}>
+                <Button type="link">
+                  <EyeOutlined />
+                </Button>
+              </Link>
+            </Tooltip>,
+            ...(showBuyAction
+              ? [
+                  <Tooltip title="Adicionar ao Pedido" key="add-to-request">
+                    <Button onClick={addDrinkToRequest} type="link">
+                      <ShoppingCartOutlined />
+                    </Button>
+                  </Tooltip>,
+                ]
+              : []),
+            ...moreActions,
+          ]}
+          cover={renderCover()}
+          loading={loading}
+        >
+          <Meta
+            title={name}
+            description={`Preço: ${formatDisplayPrice(price)}`}
+          />
+        </Card>
+      </Tooltip>
+    </animated.div>
   );
 }

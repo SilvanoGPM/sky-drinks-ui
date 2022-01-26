@@ -19,7 +19,7 @@ import routes from 'src/routes';
 import { handleError } from 'src/utils/handleError';
 import { isUUID } from 'src/utils/isUUID';
 import { showNotification } from 'src/utils/showNotification';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { formatDisplayRole } from 'src/utils/formatDisplayRole';
 import { getUserAge } from 'src/utils/getUserAge';
 import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
@@ -133,7 +133,7 @@ export function UserMetrics(): JSX.Element {
       <h2 className={styles.title}>Métricas</h2>
 
       {userLoading ? (
-        <Loading />
+        <LoadingIndicator />
       ) : (
         <Descriptions
           title={<h3 className={styles.infoTitle}>Informações</h3>}
@@ -160,7 +160,7 @@ export function UserMetrics(): JSX.Element {
       {hasRequests ? (
         <div className={styles.chart}>
           {topFiveLoading ? (
-            <Loading />
+            <LoadingIndicator />
           ) : (
             <Doughnut
               options={{

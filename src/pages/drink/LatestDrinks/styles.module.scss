@@ -14,11 +14,13 @@
     gap: 0.8rem;
     max-width: 700px;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 1rem;
     background-color: #eeeeee;
     border-radius: 0.5rem;
     transition: 0.15s ease-in-out;
-
+    min-height: 500px;
+    height: 100%;
     @media #{$mq-medium} {
       flex-direction: column;
       justify-content: center;

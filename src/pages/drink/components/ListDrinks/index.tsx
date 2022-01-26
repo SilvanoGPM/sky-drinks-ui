@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import qs from 'query-string';
 
 import endpoints from 'src/api/api';
-import { Loading } from 'src/components/layout/Loading';
+import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
 import { pluralize } from 'src/utils/pluralize';
 import { useCreateParams } from 'src/hooks/useCreateParams';
@@ -158,7 +158,7 @@ export function ListDrinks({
   return (
     <>
       {loading ? (
-        <Loading />
+        <LoadingIndicator />
       ) : (
         <div className={styles.drinksWrapper}>
           {data.content.length !== 0 ? (
