@@ -1,13 +1,9 @@
 import { useContext, useState } from 'react';
 import { Input, Form, Button, Checkbox, Spin } from 'antd';
 import { Navigate, useLocation } from 'react-router-dom';
+import { useSpring, animated, useChain, useSpringRef } from 'react-spring';
 
-import {
-  LockOutlined,
-  LoginOutlined,
-  MailOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { LockOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
 
 import routes from 'src/routes';
 import { AuthContext } from 'src/contexts/AuthContext';
@@ -18,6 +14,7 @@ import { handleError } from 'src/utils/handleError';
 
 import loginImage from 'src/assets/login-image.jpg';
 import styles from './styles.module.scss';
+import { ShakeIcon } from './ShakeIcon';
 
 interface LoginValues {
   email: string;
@@ -25,10 +22,44 @@ interface LoginValues {
   remember: boolean;
 }
 
+const animationConfig = {
+  tension: 300,
+  friction: 20,
+};
+
 export function Login(): JSX.Element {
   useTitle('SkyDrinks - Login');
 
   const location = useLocation();
+
+  const slideInRef = useSpringRef();
+  const showRef = useSpringRef();
+  const inputRef = useSpringRef();
+
+  const slideInProps = useSpring({
+    ref: slideInRef,
+    from: { y: 200 },
+    to: { y: 0 },
+    config: animationConfig,
+  });
+
+  const showOptions = {
+    from: { opacity: 0.5, scale: 0.8 },
+    to: { opacity: 1, scale: 1 },
+    config: animationConfig,
+  };
+
+  const showProps = useSpring({
+    ref: showRef,
+    ...showOptions,
+  });
+
+  const inputProps = useSpring({
+    ref: inputRef,
+    ...showOptions,
+  });
+
+  useChain([slideInRef, showRef, inputRef], [0, 0.2, 0.4]);
 
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);
 
@@ -63,12 +94,13 @@ export function Login(): JSX.Element {
 
   return (
     <main className={styles.container}>
-      <section className={styles.formContainer}>
+      <animated.section
+        className={styles.formContainer}
+        style={{ ...slideInProps, ...showProps }}
+      >
         <div className={styles.form}>
           <div className={styles.header}>
-            <div className={styles.icon}>
-              <UserOutlined />
-            </div>
+            <ShakeIcon />
 
             <h1 className={styles.title}>Login</h1>
 
@@ -92,53 +124,61 @@ export function Login(): JSX.Element {
             onFinish={handleFormLogin}
             initialValues={{ remember: true }}
           >
-            <Form.Item
-              hasFeedback
-              label="Email"
-              name="email"
-              validateTrigger="onBlur"
-              rules={[
-                {
-                  required: true,
-                  type: 'email',
-                  message: 'Insiria um E-mail válido!',
-                },
-              ]}
-            >
-              <Input prefix={<MailOutlined />} placeholder="joao@mail.com" />
-            </Form.Item>
-
-            <Form.Item
-              label="Senha"
-              name="password"
-              hasFeedback
-              rules={[{ required: true, message: 'Insira sua senha!' }]}
-            >
-              <Input.Password prefix={<LockOutlined />} />
-            </Form.Item>
-
-            <Form.Item name="remember" valuePropName="checked">
-              <Checkbox>Lembrar de mim</Checkbox>
-            </Form.Item>
-
-            <Form.Item
-              wrapperCol={{
-                span: 24,
-                offset: 0,
-              }}
-            >
-              <Button
-                style={{ width: '100%' }}
-                icon={<LoginOutlined />}
-                type="primary"
-                htmlType="submit"
-                loading={authLoading}
-                shape="round"
-                size="large"
+            <animated.div style={inputProps}>
+              <Form.Item
+                hasFeedback
+                label="Email"
+                name="email"
+                validateTrigger="onBlur"
+                rules={[
+                  {
+                    required: true,
+                    type: 'email',
+                    message: 'Insiria um E-mail válido!',
+                  },
+                ]}
               >
-                Entrar
-              </Button>
-            </Form.Item>
+                <Input prefix={<MailOutlined />} placeholder="joao@mail.com" />
+              </Form.Item>
+            </animated.div>
+
+            <animated.div style={inputProps}>
+              <Form.Item
+                label="Senha"
+                name="password"
+                hasFeedback
+                rules={[{ required: true, message: 'Insira sua senha!' }]}
+              >
+                <Input.Password prefix={<LockOutlined />} />
+              </Form.Item>
+            </animated.div>
+
+            <animated.div style={inputProps}>
+              <Form.Item name="remember" valuePropName="checked">
+                <Checkbox>Lembrar de mim</Checkbox>
+              </Form.Item>
+            </animated.div>
+
+            <animated.div style={inputProps}>
+              <Form.Item
+                wrapperCol={{
+                  span: 24,
+                  offset: 0,
+                }}
+              >
+                <Button
+                  style={{ width: '100%' }}
+                  icon={<LoginOutlined />}
+                  type="primary"
+                  htmlType="submit"
+                  loading={authLoading}
+                  shape="round"
+                  size="large"
+                >
+                  Entrar
+                </Button>
+              </Form.Item>
+            </animated.div>
           </Form>
         </div>
 
@@ -146,7 +186,7 @@ export function Login(): JSX.Element {
           {loadingImage && <Spin />}
           <img alt="" src={loginImage} onLoad={endImageLoad} />
         </figure>
-      </section>
+      </animated.section>
     </main>
   );
 }

@@ -2,9 +2,11 @@ import { useContext } from 'react';
 import { HeartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { animated } from 'react-spring';
 
 import routes from 'src/routes';
 import { AuthContext } from 'src/contexts/AuthContext';
+import { useZoomInAnimation } from 'src/hooks/useZoomInAnimation';
 import { useTitle } from 'src/hooks/useTitle';
 import { showNotification } from 'src/utils/showNotification';
 import { RequestContext } from 'src/contexts/RequestContext';
@@ -18,6 +20,8 @@ export function Logout(): JSX.Element {
   const { clearRequest, request } = useContext(RequestContext);
 
   const navigate = useNavigate();
+
+  const [props] = useZoomInAnimation();
 
   function goBack(): void {
     navigate(-1);
@@ -37,7 +41,7 @@ export function Logout(): JSX.Element {
 
   return (
     <section className={styles.container}>
-      <div className={styles.card}>
+      <animated.div className={styles.card} style={props}>
         <h2>Você quer mesmo sair?</h2>
 
         {Boolean(request.drinks.length) && (
@@ -69,7 +73,7 @@ export function Logout(): JSX.Element {
             Não, quero continuar
           </Button>
         </div>
-      </div>
+      </animated.div>
     </section>
   );
 }

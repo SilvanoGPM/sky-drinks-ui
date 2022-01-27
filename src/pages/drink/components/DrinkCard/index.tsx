@@ -8,10 +8,11 @@ import endpoints from 'src/api/api';
 import { showNotification } from 'src/utils/showNotification';
 import { RequestContext } from 'src/contexts/RequestContext';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
-import { useSpring, animated } from 'react-spring';
+import { animated } from 'react-spring';
 
 import drinkPlaceholder from 'src/assets/drink-placeholder.png';
 import drinkErrorImage from 'src/assets/image-error.png';
+import { useZoomInAnimation } from 'src/hooks/useZoomInAnimation';
 
 interface DrinkCardProps {
   uuid: string;
@@ -40,14 +41,7 @@ export function DrinkCard({
   showBuyAction = true,
   moreActions = [],
 }: DrinkCardProps): JSX.Element {
-  const props = useSpring({
-    to: { opacity: 1, scale: 1 },
-    from: { opacity: 0, scale: 0 },
-    config: {
-      tension: 300,
-      friction: 20,
-    },
-  });
+  const [props] = useZoomInAnimation();
 
   const { addDrink } = useContext(RequestContext);
 

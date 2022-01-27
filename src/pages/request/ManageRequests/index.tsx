@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Button, Empty, Modal, Pagination, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
+import { useTransition, animated, config } from 'react-spring';
 
 import {
   CheckOutlined,
@@ -20,6 +21,11 @@ import { showNotification } from 'src/utils/showNotification';
 
 import styles from './styles.module.scss';
 
+const INITIAL_DATA = {
+  totalElements: 0,
+  content: [],
+};
+
 const { confirm } = Modal;
 
 export function ManageRequest(): JSX.Element {
@@ -29,14 +35,19 @@ export function ManageRequest(): JSX.Element {
 
   const [loading, setLoading] = useState(true);
 
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<PaginationType>({
     page: 0,
     size: 9,
   });
 
-  const [data, setData] = useState<RequestPaginatedType>({
-    totalElements: 0,
-    content: [],
+  const [data, setData] = useState<RequestPaginatedType>(INITIAL_DATA);
+
+  const transitions = useTransition(data.content, {
+    keys: (item) => item.uuid,
+    trail: 100,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    config: config.stiff,
   });
 
   useEffect(() => {
@@ -112,6 +123,8 @@ export function ManageRequest(): JSX.Element {
   }
 
   function handlePaginationChange(page: number): void {
+    setData({ ...INITIAL_DATA });
+
     setPagination((oldPagination) => {
       return { ...oldPagination, page: page - 1 };
     });
@@ -162,12 +175,12 @@ export function ManageRequest(): JSX.Element {
       {data.content.length ? (
         <>
           <ul className={styles.cardContainer}>
-            {data.content.map(({ uuid, user, totalPrice, drinks }) => {
+            {transitions(({ opacity }, { uuid, user, totalPrice, drinks }) => {
               const drinksSize = drinks.length;
               const picture = imageToFullURI(drinks[0].picture);
 
               return (
-                <li key={uuid}>
+                <animated.li style={{ opacity }}>
                   <div className={styles.card}>
                     <div className={styles.cardContent}>
                       <Link
@@ -217,7 +230,7 @@ export function ManageRequest(): JSX.Element {
                       </div>
                     </div>
                   </div>
-                </li>
+                </animated.li>
               );
             })}
           </ul>

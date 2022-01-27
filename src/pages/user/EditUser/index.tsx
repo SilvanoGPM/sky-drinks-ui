@@ -135,8 +135,6 @@ export function EditUser(): JSX.Element {
 
       navigate(`/${location?.state?.back || routes.MANAGE_USERS}`);
     } catch (error: any) {
-      console.log(error);
-
       const description = getFieldErrorsDescription(error);
 
       handleError({

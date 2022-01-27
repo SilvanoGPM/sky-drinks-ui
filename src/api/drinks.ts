@@ -56,8 +56,6 @@ const drinksEndpoints = {
   async replaceDrink(drinkToUpdate: DrinkToUpdate): Promise<void> {
     const drink = await this.drinkUploadImage(drinkToUpdate);
 
-    console.log(drink);
-
     await api.put('/drinks/barmen', drink);
   },
 
