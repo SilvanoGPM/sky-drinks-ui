@@ -25,7 +25,7 @@ export function ListMyRequests({
   loading,
   setLoading,
 }: ListMyRequestsProps): JSX.Element {
-  const [pagination, setPagination] = useState({
+  const [pagination, setPagination] = useState<PaginationType>({
     page: 0,
     size: 10,
   });
