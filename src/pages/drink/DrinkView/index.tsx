@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Skeleton, Tag, Divider, Button } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import useDraggableScroll from 'use-draggable-scroll';
+import { animated, useSpring } from 'react-spring';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
@@ -37,6 +38,16 @@ export function DrinkView(): JSX.Element {
 
   const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
   const [loading, setLoading] = useState(true);
+
+  const imageProps = useSpring({
+    to: { translateX: 0, opacity: 1 },
+    from: { translateX: -300, opacity: 0.1 },
+  });
+
+  const infoProps = useSpring({
+    to: { translateX: 0, opacity: 1 },
+    from: { translateX: 300, opacity: 0.1 },
+  });
 
   useEffect(() => {
     async function findDrink(): Promise<void> {
@@ -94,16 +105,17 @@ export function DrinkView(): JSX.Element {
         </>
       ) : (
         <>
-          <div
+          <animated.div
+            style={{ ...imageProps, backgroundImage: `url(${picture})` }}
             className={styles.image}
-            style={{ backgroundImage: `url(${picture})` }}
           />
 
-          <div
+          <animated.div
             ref={infoRef}
             role="button"
             tabIndex={0}
             onMouseDown={onMouseDown}
+            style={infoProps}
             className={styles.info}
           >
             <h2>{drink.name}</h2>
@@ -166,7 +178,7 @@ export function DrinkView(): JSX.Element {
             >
               Adicionar ao Pedido
             </Button>
-          </div>
+          </animated.div>
         </>
       )}
     </section>

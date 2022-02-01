@@ -1,15 +1,19 @@
 import React, { useEffect } from 'react';
 import { Button, Result } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { animated } from 'react-spring';
 
 import routes from 'src/routes';
 import { MyRequestsIcon } from 'src/components/custom/CustomIcons';
 import { useFavicon } from 'src/hooks/useFavicon';
 import { useTitle } from 'src/hooks/useTitle';
+import { useZoomInAnimation } from 'src/hooks/useZoomInAnimation';
 
 export function RequestCreated(): JSX.Element {
   useTitle('SkyDrinks - Pedido realizado com sucesso!');
   useFavicon('green');
+
+  const [props] = useZoomInAnimation();
 
   const location = useLocation();
 
@@ -30,7 +34,7 @@ export function RequestCreated(): JSX.Element {
   }
 
   return (
-    <section>
+    <animated.section style={props}>
       <Result
         icon={<MyRequestsIcon style={{ color: '#52c41a' }} />}
         title="Pedido realizado com sucesso!"
@@ -58,6 +62,6 @@ export function RequestCreated(): JSX.Element {
           </Button>,
         ]}
       />
-    </section>
+    </animated.section>
   );
 }
