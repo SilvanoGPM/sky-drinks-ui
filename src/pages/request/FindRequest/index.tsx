@@ -42,13 +42,6 @@ export function FindRequest(): JSX.Element {
     navigate(`/${routes.VIEW_REQUEST.replace(':uuid', requestUUID)}`);
   }
 
-  function handleQRCodeScannerError(): void {
-    showNotification({
-      type: 'warn',
-      message: 'Aconteceu um erro no escaneador de QRCode',
-    });
-  }
-
   const { isAdmin, isBarmen, isWaiter } = getUserPermissions(userInfo.role);
   const isStaff = isAdmin || isBarmen || isWaiter;
 
@@ -70,12 +63,7 @@ export function FindRequest(): JSX.Element {
 
       {isStaff && (
         <div className={styles.qrcodeScanner}>
-          <QRCodeScanner
-            fps={10}
-            qrbox={250}
-            onSuccess={goToRequest}
-            onError={handleQRCodeScannerError}
-          />
+          <QRCodeScanner fps={10} qrbox={250} onSuccess={goToRequest} />
         </div>
       )}
     </section>

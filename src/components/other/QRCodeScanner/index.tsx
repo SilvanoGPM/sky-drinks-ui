@@ -6,7 +6,7 @@ interface QRCodeScannerProps {
   qrbox: number;
   verbose?: boolean;
   onSuccess: (decodedText: string) => void;
-  onError: () => void;
+  onError?: () => void;
 }
 
 const qrcodeID = 'html5qr-code-full-region';
