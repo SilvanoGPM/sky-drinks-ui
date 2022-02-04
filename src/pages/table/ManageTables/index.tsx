@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import qs from 'query-string';
 import { useSearchParams } from 'react-router-dom';
+import { useTransition, animated, config } from 'react-spring';
 
 import {
   DeleteOutlined,
@@ -73,6 +74,14 @@ export function ManageTables(): JSX.Element {
   const [data, setData] = useState<TablePaginetedType>({
     totalElements: 0,
     content: [],
+  });
+
+  const transitions = useTransition(data.content, {
+    keys: (item) => item.uuid,
+    trail: 100,
+    from: { opacity: 0, scale: 0 },
+    enter: { opacity: 1, scale: 1 },
+    config: config.stiff,
   });
 
   useCreateParams({
@@ -357,8 +366,8 @@ export function ManageTables(): JSX.Element {
       </div>
 
       <ul className={styles.list}>
-        {data.content.map(({ uuid = '', number, occupied, seats }) => (
-          <li key={uuid}>
+        {transitions((style, { uuid, number, occupied, seats }) => (
+          <animated.li style={style}>
             <div className={styles.table}>
               <Tooltip
                 placement="left"
@@ -429,7 +438,7 @@ export function ManageTables(): JSX.Element {
                 </div>
               </div>
             </div>
-          </li>
+          </animated.li>
         ))}
       </ul>
 

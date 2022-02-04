@@ -1,5 +1,5 @@
 interface TableType {
-  uuid?: string;
+  uuid: string;
   seats: number;
   number: number;
   occupied: boolean;
