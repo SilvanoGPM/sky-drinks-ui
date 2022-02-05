@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { animated, config, useSpring } from 'react-spring';
 
 import {
   DeleteOutlined,
@@ -40,6 +41,12 @@ export function ListUsers({
   const [data, setData] = useState<UserPaginatedType>({
     totalElements: 0,
     content: [],
+  });
+
+  const props = useSpring({
+    from: { opacity: 0, scale: 0 },
+    to: { opacity: 1, scale: 1 },
+    config: config.stiff,
   });
 
   useEffect(() => {
@@ -191,119 +198,125 @@ export function ListUsers({
           lockRequests,
           lockRequestsTimestamp,
         }) => (
-          <List.Item
-            className={styles.item}
-            actions={[
-              <Tooltip key="remove" title="Deletar usuário" placement="bottom">
-                <Popconfirm
-                  title="Deletar usuário?"
-                  placement="top"
-                  okText="Remover"
-                  onConfirm={removeUser(uuid)}
-                  cancelText="Cancelar"
+          <animated.div style={props}>
+            <List.Item
+              className={styles.item}
+              actions={[
+                <Tooltip
+                  key="remove"
+                  title="Deletar usuário"
+                  placement="bottom"
                 >
-                  <Button
-                    shape="round"
-                    icon={<DeleteOutlined style={{ fontSize: 18 }} />}
-                  />
-                </Popconfirm>
-              </Tooltip>,
-              <Tooltip key="edit" title="Editar usuário" placement="bottom">
-                <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
-                  <Button
-                    shape="round"
-                    icon={<EditOutlined style={{ fontSize: 18 }} />}
-                  />
-                </Link>
-              </Tooltip>,
-              <Tooltip
-                key="block"
-                title={
-                  lockRequests
-                    ? 'Desbloquear pedidos do usuário'
-                    : 'Bloquear pedidos do usuário'
-                }
-                placement="bottom"
-              >
-                <Popconfirm
+                  <Popconfirm
+                    title="Deletar usuário?"
+                    placement="top"
+                    okText="Remover"
+                    onConfirm={removeUser(uuid)}
+                    cancelText="Cancelar"
+                  >
+                    <Button
+                      shape="round"
+                      icon={<DeleteOutlined style={{ fontSize: 18 }} />}
+                    />
+                  </Popconfirm>
+                </Tooltip>,
+                <Tooltip key="edit" title="Editar usuário" placement="bottom">
+                  <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
+                    <Button
+                      shape="round"
+                      icon={<EditOutlined style={{ fontSize: 18 }} />}
+                    />
+                  </Link>
+                </Tooltip>,
+                <Tooltip
+                  key="block"
                   title={
                     lockRequests
-                      ? 'Desbloquear pedidos do usuário?'
-                      : 'Bloquear pedidos do usuário?'
+                      ? 'Desbloquear pedidos do usuário'
+                      : 'Bloquear pedidos do usuário'
                   }
-                  onConfirm={toggleLockRequests(uuid)}
-                  placement="top"
-                  okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
-                  cancelText="Cancelar"
+                  placement="bottom"
                 >
-                  {lockRequests ? (
+                  <Popconfirm
+                    title={
+                      lockRequests
+                        ? 'Desbloquear pedidos do usuário?'
+                        : 'Bloquear pedidos do usuário?'
+                    }
+                    onConfirm={toggleLockRequests(uuid)}
+                    placement="top"
+                    okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
+                    cancelText="Cancelar"
+                  >
+                    {lockRequests ? (
+                      <Button
+                        shape="round"
+                        icon={<UnlockOutlined style={{ fontSize: 18 }} />}
+                      />
+                    ) : (
+                      <Button
+                        shape="round"
+                        icon={<LockOutlined style={{ fontSize: 18 }} />}
+                      />
+                    )}
+                  </Popconfirm>
+                </Tooltip>,
+                <Tooltip title="Ver métricas do usuário" placement="bottom">
+                  <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
                     <Button
                       shape="round"
-                      icon={<UnlockOutlined style={{ fontSize: 18 }} />}
+                      icon={<EyeOutlined style={{ fontSize: 18 }} />}
                     />
-                  ) : (
-                    <Button
-                      shape="round"
-                      icon={<LockOutlined style={{ fontSize: 18 }} />}
-                    />
-                  )}
-                </Popconfirm>
-              </Tooltip>,
-              <Tooltip title="Ver métricas do usuário" placement="bottom">
-                <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
-                  <Button
-                    shape="round"
-                    icon={<EyeOutlined style={{ fontSize: 18 }} />}
-                  />
-                </Link>
-              </Tooltip>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={avatar} />}
-              title={<p className={styles.name}>{name}</p>}
-              description={<p className={styles.email}>Email: {email}</p>}
-            />
-            <div>
-              <p>
-                UUID: <span className={styles.bold}>{uuid}</span>
-              </p>
-              <p>
-                CPF: <span className={styles.bold}>{cpf}</span>
-              </p>
-              <p>
-                Tipo:{' '}
-                <span className={styles.bold}>{formatDisplayRole(role)}</span>
-              </p>
-              <p>
-                Data de nascimento:{' '}
-                <span className={styles.bold}>
-                  {formatDatabaseDate(birthDay)}
-                </span>
-              </p>
-              <p>
-                Conta criada em:{' '}
-                <span className={styles.bold}>
-                  {formatDatabaseDate(createdAt)}
-                </span>
-              </p>
-              <p>
-                Conta atualizada em:{' '}
-                <span className={styles.bold}>
-                  {formatDatabaseDate(updatedAt)}
-                </span>
-              </p>
-
-              {lockRequests && (
+                  </Link>
+                </Tooltip>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={avatar} />}
+                title={<p className={styles.name}>{name}</p>}
+                description={<p className={styles.email}>Email: {email}</p>}
+              />
+              <div>
                 <p>
-                  Usuário bloqueado em:{' '}
+                  UUID: <span className={styles.bold}>{uuid}</span>
+                </p>
+                <p>
+                  CPF: <span className={styles.bold}>{cpf}</span>
+                </p>
+                <p>
+                  Tipo:{' '}
+                  <span className={styles.bold}>{formatDisplayRole(role)}</span>
+                </p>
+                <p>
+                  Data de nascimento:{' '}
                   <span className={styles.bold}>
-                    {formatDatabaseDate(lockRequestsTimestamp)}
+                    {formatDatabaseDate(birthDay)}
                   </span>
                 </p>
-              )}
-            </div>
-          </List.Item>
+                <p>
+                  Conta criada em:{' '}
+                  <span className={styles.bold}>
+                    {formatDatabaseDate(createdAt)}
+                  </span>
+                </p>
+                <p>
+                  Conta atualizada em:{' '}
+                  <span className={styles.bold}>
+                    {formatDatabaseDate(updatedAt)}
+                  </span>
+                </p>
+
+                {lockRequests && (
+                  <p>
+                    Usuário bloqueado em:{' '}
+                    <span className={styles.bold}>
+                      {formatDatabaseDate(lockRequestsTimestamp)}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </List.Item>
+          </animated.div>
         )}
       />
     </div>
