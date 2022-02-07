@@ -139,7 +139,7 @@ function App(): JSX.Element {
           <Route
             path={routes.EDIT_USER}
             element={
-              <PrivateRoute requiredPerms={{ type: 'and', perms: ['isUser'] }}>
+              <PrivateRoute>
                 <EditUser />
               </PrivateRoute>
             }
