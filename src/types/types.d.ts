@@ -29,3 +29,8 @@ interface ActionRenderType {
   setData: React.Dispatch<React.SetStateAction<DrinkPaginatedType>>;
   setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
 }
+
+interface ResetPasswordType {
+  email: string;
+  token: string;
+}

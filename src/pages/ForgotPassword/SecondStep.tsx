@@ -14,12 +14,14 @@ interface VerifyTokenValues {
 }
 
 interface SecondStepProps {
-  email: string;
+  info: ResetPasswordType;
+  setInfo: (info: ResetPasswordType) => void;
   setCurrent: (current: number) => void;
 }
 
 export function SecondStep({
-  email,
+  info,
+  setInfo,
   setCurrent,
 }: SecondStepProps): JSX.Element {
   useTitle('SkyDrinks - Confirmar código');
@@ -37,11 +39,12 @@ export function SecondStep({
       setVerify(true);
 
       await endpoints.verifyPasswordResetToken({
-        email,
+        email: info.email,
         token: values.token.trim(),
       });
 
       setCurrent(2);
+      setInfo({ ...info, token: values.token.trim() });
     } catch (error: any) {
       const fallback = 'Erro ao tentar verificar código.';
 
@@ -61,7 +64,7 @@ export function SecondStep({
 
         <p className={styles.disclaimer}>
           O código de confirmação foi enviado para o E-mail{' '}
-          <strong>{email}</strong>
+          <strong>{info.email}</strong>
           <br />
           Caso não tenha recebido,{' '}
           <span

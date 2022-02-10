@@ -20,15 +20,15 @@ interface SendTokenValues {
 }
 
 interface FirstStepProps {
-  email: string;
+  info: ResetPasswordType;
+  setInfo: (info: ResetPasswordType) => void;
   setCurrent: (current: number) => void;
-  handleFinish: (values: SendTokenValues) => void;
 }
 
 export function FirstStep({
-  email,
+  info,
   setCurrent,
-  handleFinish,
+  setInfo,
 }: FirstStepProps): JSX.Element {
   useTitle('SkyDrinks - Enviar E-mail');
 
@@ -39,7 +39,7 @@ export function FirstStep({
   async function nextStep(): Promise<void> {
     try {
       await form.validateFields();
-      handleFinish(form.getFieldsValue());
+      setInfo({ ...form.getFieldsValue() });
       setCurrent(1);
     } catch (error: any) {
       console.error(error);
@@ -95,7 +95,7 @@ export function FirstStep({
         name="send-reset-token"
         layout="vertical"
         onFinish={handleSendToken}
-        initialValues={{ email }}
+        initialValues={{ email: info.email }}
       >
         <Form.Item
           name="email"
