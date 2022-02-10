@@ -9,20 +9,29 @@ import {
   WalletOutlined,
 } from '@ant-design/icons';
 
+import { useTitle } from 'src/hooks/useTitle';
 import endpoints from 'src/api/api';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 
 import styles from './styles.module.scss';
 
-interface FirstStepProps {
-  setCurrent: (current: number) => void;
-}
-
 interface SendTokenValues {
   email: string;
 }
 
-export function FirstStep({ setCurrent }: FirstStepProps): JSX.Element {
+interface FirstStepProps {
+  email: string;
+  setCurrent: (current: number) => void;
+  handleFinish: (values: SendTokenValues) => void;
+}
+
+export function FirstStep({
+  email,
+  setCurrent,
+  handleFinish,
+}: FirstStepProps): JSX.Element {
+  useTitle('SkyDrinks - Enviar E-mail');
+
   const [form] = useForm();
 
   const [sending, setSending] = useState(false);
@@ -30,6 +39,7 @@ export function FirstStep({ setCurrent }: FirstStepProps): JSX.Element {
   async function nextStep(): Promise<void> {
     try {
       await form.validateFields();
+      handleFinish(form.getFieldsValue());
       setCurrent(1);
     } catch (error: any) {
       console.error(error);
@@ -37,18 +47,20 @@ export function FirstStep({ setCurrent }: FirstStepProps): JSX.Element {
   }
 
   async function handleSendToken(values: SendTokenValues): Promise<void> {
-    const { email } = values;
+    const { email: newEmail } = values;
 
     try {
       setSending(true);
 
-      await endpoints.sendPasswordResetToken(email);
+      await endpoints.sendPasswordResetToken(newEmail.trim());
       await nextStep();
-
-      setSending(false);
     } catch (error: any) {
+      const fallback = 'Erro ao tentar enviar E-mail.';
+
       const description = getFieldErrorsDescription(error);
-      handleError({ error, description });
+      handleError({ error, fallback, description });
+    } finally {
+      setSending(false);
     }
   }
 
@@ -83,7 +95,7 @@ export function FirstStep({ setCurrent }: FirstStepProps): JSX.Element {
         name="send-reset-token"
         layout="vertical"
         onFinish={handleSendToken}
-        initialValues={{ remember: true }}
+        initialValues={{ email }}
       >
         <Form.Item
           name="email"

@@ -4,11 +4,13 @@ import { FirstStep } from './FirstStep';
 import { SecondStep } from './SecondStep';
 
 import styles from './styles.module.scss';
+import { ThridStep } from './ThridStep';
 
 const { Step } = Steps;
 
 export function ForgotPassword(): JSX.Element {
   const [current, setCurrent] = useState<number>(0);
+  const [email, setEmail] = useState<string>('');
 
   function goToStep(newCurrent: number) {
     return () => {
@@ -29,10 +31,13 @@ export function ForgotPassword(): JSX.Element {
     },
   ];
 
-  const stepsComponents = [
-    <FirstStep setCurrent={setCurrent} />,
-    <SecondStep />,
-  ];
+  function handleFinish(values: { email: string }): void {
+    setEmail(values.email);
+  }
+
+  const stepsComponents = [FirstStep, SecondStep, ThridStep];
+
+  const CurrentStep = stepsComponents[current];
 
   return (
     <main className={styles.container}>
@@ -45,7 +50,11 @@ export function ForgotPassword(): JSX.Element {
       </div>
 
       <section className={styles.forgotContainer}>
-        {stepsComponents[current]}
+        <CurrentStep
+          email={email}
+          setCurrent={setCurrent}
+          handleFinish={handleFinish}
+        />
       </section>
     </main>
   );
