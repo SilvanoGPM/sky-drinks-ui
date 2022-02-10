@@ -18,6 +18,7 @@ import { formatDisplayRole } from 'src/utils/formatDisplayRole';
 import { showNotification } from 'src/utils/showNotification';
 import { handleError } from 'src/utils/handleError';
 import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
+import { getUserPermissions } from 'src/utils/getUserPermissions';
 
 import avatar from 'src/assets/avatar.png';
 import styles from './styles.module.scss';
@@ -228,39 +229,43 @@ export function ListUsers({
                     />
                   </Link>
                 </Tooltip>,
-                <Tooltip
-                  key="block"
-                  title={
-                    lockRequests
-                      ? 'Desbloquear pedidos do usuário'
-                      : 'Bloquear pedidos do usuário'
-                  }
-                  placement="bottom"
-                >
-                  <Popconfirm
-                    title={
-                      lockRequests
-                        ? 'Desbloquear pedidos do usuário?'
-                        : 'Bloquear pedidos do usuário?'
-                    }
-                    onConfirm={toggleLockRequests(uuid)}
-                    placement="top"
-                    okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
-                    cancelText="Cancelar"
-                  >
-                    {lockRequests ? (
-                      <Button
-                        shape="round"
-                        icon={<UnlockOutlined style={{ fontSize: 18 }} />}
-                      />
-                    ) : (
-                      <Button
-                        shape="round"
-                        icon={<LockOutlined style={{ fontSize: 18 }} />}
-                      />
-                    )}
-                  </Popconfirm>
-                </Tooltip>,
+                ...(getUserPermissions(role).isUser
+                  ? [
+                      <Tooltip
+                        key="block"
+                        title={
+                          lockRequests
+                            ? 'Desbloquear pedidos do usuário'
+                            : 'Bloquear pedidos do usuário'
+                        }
+                        placement="bottom"
+                      >
+                        <Popconfirm
+                          title={
+                            lockRequests
+                              ? 'Desbloquear pedidos do usuário?'
+                              : 'Bloquear pedidos do usuário?'
+                          }
+                          onConfirm={toggleLockRequests(uuid)}
+                          placement="top"
+                          okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
+                          cancelText="Cancelar"
+                        >
+                          {lockRequests ? (
+                            <Button
+                              shape="round"
+                              icon={<UnlockOutlined style={{ fontSize: 18 }} />}
+                            />
+                          ) : (
+                            <Button
+                              shape="round"
+                              icon={<LockOutlined style={{ fontSize: 18 }} />}
+                            />
+                          )}
+                        </Popconfirm>
+                      </Tooltip>,
+                    ]
+                  : []),
                 <Tooltip title="Ver métricas do usuário" placement="bottom">
                   <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
                     <Button
