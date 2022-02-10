@@ -34,6 +34,7 @@ import { SearchRequests } from './pages/request/SearchRequests';
 import { ManageTables } from './pages/table/ManageTables';
 import { Dashboard } from './pages/Dashboard';
 import { UserMetrics } from './pages/user/UserMetrics';
+import { ForgotPassword } from './pages/ForgotPassword';
 
 const SOCKET_URL = `${baseURL}/sky-drinks`;
 
@@ -252,6 +253,7 @@ function App(): JSX.Element {
         </Route>
 
         <Route path={routes.LOGIN} element={<Login />} />
+        <Route path={routes.FORGOT_PASSWORD} element={<ForgotPassword />} />
         <Route path={routes.NOT_AUTHORIZED} element={<NotAuthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

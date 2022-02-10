@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
-import { Input, Form, Button, Checkbox, Spin } from 'antd';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Input, Form, Button, Checkbox, Spin, Typography } from 'antd';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useSpring, animated, useChain, useSpringRef } from 'react-spring';
 
 import { LockOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
@@ -150,6 +150,12 @@ export function Login(): JSX.Element {
                 rules={[{ required: true, message: 'Insira sua senha!' }]}
               >
                 <Input.Password prefix={<LockOutlined />} />
+
+                <div className={styles.forgotPassword}>
+                  <Link to={routes.FORGOT_PASSWORD}>
+                    <Typography.Link>Esqueceu a senha?</Typography.Link>
+                  </Link>
+                </div>
               </Form.Item>
             </animated.div>
 

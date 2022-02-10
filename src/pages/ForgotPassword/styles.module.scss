@@ -1,0 +1,77 @@
+@import 'src/scss/variables';
+@import 'src/scss/mixins';
+
+.container {
+  @include centeredElement();
+
+  flex-direction: column;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.steps {
+  margin-bottom: 1rem;
+}
+
+.forgotContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+  max-width: 500px;
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+
+  padding: 1rem;
+
+  @media #{$mq-medium} {
+    padding: 0;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 1rem;
+
+  @media #{$mq-medium} {
+    justify-content: space-between;
+    background-color: #1890ff;
+    color: #ffffff;
+    overflow: hidden;
+  }
+}
+
+.content {
+  padding: 1rem;
+}
+
+.curve {
+  display: none;
+
+  @media #{$mq-medium} {
+    display: block;
+    margin-bottom: -1px;
+  }
+}
+
+.title {
+  text-align: center;
+  color: inherit;
+  font-size: 1.5rem;
+}
+
+.sendToken {
+  margin-top: 1rem;
+}
+
+.disclaimer {
+  text-align: center;
+  max-width: 400px;
+  padding: 0.5rem;
+}

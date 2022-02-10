@@ -5,6 +5,7 @@ import filesEndpoints from './files';
 import usersEndpoints from './users';
 import requestsEndpoints from './requests';
 import tablesEndpoints from './tables';
+import passwordEndpoints from './password';
 import { tokenExpirationInterceptor } from './tokenExpirationInterceptor';
 
 export const baseURL = process.env.REACT_APP_API_URL;
@@ -21,6 +22,7 @@ const endpoints = {
   ...filesEndpoints,
   ...requestsEndpoints,
   ...tablesEndpoints,
+  ...passwordEndpoints,
 };
 
 export default endpoints;

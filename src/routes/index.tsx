@@ -29,6 +29,8 @@ const routes = {
   MANANGE_TABLES: 'tables/manage',
 
   DASHBOARD: 'dashboard',
+
+  FORGOT_PASSWORD: '/forgot-password',
 };
 
 export default routes;
