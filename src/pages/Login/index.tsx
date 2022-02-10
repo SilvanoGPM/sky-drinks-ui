@@ -3,7 +3,12 @@ import { Input, Form, Button, Checkbox, Spin, Typography } from 'antd';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useSpring, animated, useChain, useSpringRef } from 'react-spring';
 
-import { LockOutlined, LoginOutlined, MailOutlined } from '@ant-design/icons';
+import {
+  LockOutlined,
+  LoginOutlined,
+  MailOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 import routes from 'src/routes';
 import { AuthContext } from 'src/contexts/AuthContext';
@@ -11,10 +16,10 @@ import { useTitle } from 'src/hooks/useTitle';
 import { showNotification } from 'src/utils/showNotification';
 import { useFlashNotification } from 'src/hooks/useFlashNotification';
 import { handleError } from 'src/utils/handleError';
+import { ShakeIcon } from 'src/components/other/ShakeIcon';
 
 import loginImage from 'src/assets/login-image.jpg';
 import styles from './styles.module.scss';
-import { ShakeIcon } from './ShakeIcon';
 
 interface LoginValues {
   email: string;
@@ -100,7 +105,9 @@ export function Login(): JSX.Element {
       >
         <div className={styles.form}>
           <div className={styles.header}>
-            <ShakeIcon />
+            <ShakeIcon>
+              <UserOutlined style={{ fontSize: '3rem' }} />
+            </ShakeIcon>
 
             <h1 className={styles.title}>Login</h1>
 
@@ -150,13 +157,15 @@ export function Login(): JSX.Element {
                 rules={[{ required: true, message: 'Insira sua senha!' }]}
               >
                 <Input.Password prefix={<LockOutlined />} />
-
-                <div className={styles.forgotPassword}>
-                  <Link to={routes.FORGOT_PASSWORD}>
-                    <Typography.Link>Esqueceu a senha?</Typography.Link>
-                  </Link>
-                </div>
               </Form.Item>
+            </animated.div>
+
+            <animated.div style={inputProps}>
+              <div className={styles.forgotPassword}>
+                <Link to={routes.FORGOT_PASSWORD}>
+                  <Typography.Link>Esqueceu a senha?</Typography.Link>
+                </Link>
+              </div>
             </animated.div>
 
             <animated.div style={inputProps}>

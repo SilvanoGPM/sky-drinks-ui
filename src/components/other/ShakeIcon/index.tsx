@@ -1,4 +1,3 @@
-import { UserOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 
@@ -6,7 +5,11 @@ import styles from './styles.module.scss';
 
 const defaultConfig = { x: 0, rotate: 0, scale: 0 };
 
-export function ShakeIcon(): JSX.Element {
+interface ShakeIconProps {
+  children: JSX.Element;
+}
+
+export function ShakeIcon({ children }: ShakeIconProps): JSX.Element {
   const [shaking, setShaking] = useState<boolean>(false);
 
   const { x, rotate, scale } = useSpring({
@@ -44,7 +47,7 @@ export function ShakeIcon(): JSX.Element {
         scale: scaleInterpolate,
       }}
     >
-      <UserOutlined />
+      {children}
     </animated.div>
   );
 }

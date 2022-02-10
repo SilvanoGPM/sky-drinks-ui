@@ -6,6 +6,7 @@ import { useForm } from 'antd/lib/form/Form';
 import endpoints from 'src/api/api';
 import { useTitle } from 'src/hooks/useTitle';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { ShakeIcon } from 'src/components/other/ShakeIcon';
 
 import styles from './styles.module.scss';
 
@@ -58,7 +59,9 @@ export function SecondStep({
   return (
     <>
       <div className={styles.header}>
-        <MailFilled style={{ fontSize: '3rem' }} />
+        <ShakeIcon>
+          <MailFilled style={{ fontSize: '3rem' }} />
+        </ShakeIcon>
 
         <h2 className={styles.title}>Código de Confirmação</h2>
 

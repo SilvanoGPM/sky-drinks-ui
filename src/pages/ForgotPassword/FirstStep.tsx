@@ -12,6 +12,7 @@ import {
 import { useTitle } from 'src/hooks/useTitle';
 import endpoints from 'src/api/api';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
+import { ShakeIcon } from 'src/components/other/ShakeIcon';
 
 import styles from './styles.module.scss';
 
@@ -67,7 +68,9 @@ export function FirstStep({
   return (
     <>
       <div className={styles.header}>
-        <LockFilled style={{ fontSize: '3rem' }} />
+        <ShakeIcon>
+          <LockFilled style={{ fontSize: '3rem' }} />
+        </ShakeIcon>
 
         <h2 className={styles.title}>Restaurar Senha</h2>
 

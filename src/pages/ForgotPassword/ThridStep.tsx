@@ -9,6 +9,7 @@ import { useTitle } from 'src/hooks/useTitle';
 import endpoints from 'src/api/api';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 import routes from 'src/routes';
+import { ShakeIcon } from 'src/components/other/ShakeIcon';
 
 import styles from './styles.module.scss';
 
@@ -53,7 +54,9 @@ export function ThridStep({ info }: ThridStepProps): JSX.Element {
   return (
     <>
       <div className={styles.header}>
-        <SafetyOutlined style={{ fontSize: '3rem' }} />
+        <ShakeIcon>
+          <SafetyOutlined style={{ fontSize: '3rem' }} />
+        </ShakeIcon>
 
         <h2 className={styles.title}>Restaurar Senha</h2>
 
