@@ -1,4 +1,9 @@
-import { Steps } from 'antd';
+import { Button, Steps, Tooltip } from 'antd';
+import { Link } from 'react-router-dom';
+import { HomeOutlined } from '@ant-design/icons';
+
+import routes from 'src/routes';
+
 import { useState } from 'react';
 import { FirstStep } from './FirstStep';
 import { SecondStep } from './SecondStep';
@@ -41,6 +46,19 @@ export function ForgotPassword(): JSX.Element {
       <section className={styles.forgotContainer}>
         <CurrentStep info={info} setInfo={setInfo} setCurrent={setCurrent} />
       </section>
+
+      <div className={styles.bottomButton}>
+        <Tooltip title="Voltar para tela de login" placement="left">
+          <Link to={routes.LOGIN}>
+            <Button
+              style={{ minWidth: 50, minHeight: 50 }}
+              shape="circle"
+              type="primary"
+              icon={<HomeOutlined style={{ fontSize: 25 }} />}
+            />
+          </Link>
+        </Tooltip>
+      </div>
     </main>
   );
 }
