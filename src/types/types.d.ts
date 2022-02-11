@@ -1,3 +1,8 @@
+interface SortType {
+  order: string;
+  sort: string;
+}
+
 interface UserPermissions {
   isGuest: boolean;
   isAdmin: boolean;

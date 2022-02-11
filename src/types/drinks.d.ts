@@ -49,6 +49,7 @@ interface DrinkSearchParams {
   lessThanOrEqualToVolume?: number;
   page?: number;
   size?: number;
+  sort?: string;
 }
 
 interface DrinkSearchForm {
@@ -58,4 +59,5 @@ interface DrinkSearchForm {
   price: number[];
   volume: number[];
   additional: string[];
+  sort: SortType;
 }

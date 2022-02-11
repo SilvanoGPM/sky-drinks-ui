@@ -27,6 +27,7 @@ export function useCreateParams({
       const search = qs.parse(location.search);
 
       const value = search[param];
+
       return value ? mapper(value) : undefined;
     }
 

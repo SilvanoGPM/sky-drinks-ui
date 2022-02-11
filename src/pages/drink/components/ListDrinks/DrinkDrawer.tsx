@@ -1,4 +1,9 @@
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  SearchOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 
 import {
   Button,
@@ -9,6 +14,7 @@ import {
   Input,
   Select,
   Slider,
+  Space,
 } from 'antd';
 
 import { trimInput } from 'src/utils/trimInput';
@@ -56,7 +62,11 @@ export function DrinkDrawer({
         initialValues={{
           alcoholic: '-1',
           volume: [110, 2000],
-          price: [10, 90],
+          price: [0, 90],
+          sort: {
+            order: 'createdAt',
+            sort: 'asc',
+          },
         }}
         name="search-drinks"
         autoComplete="off"
@@ -110,6 +120,37 @@ export function DrinkDrawer({
 
         <Form.Item label="Adicionais" name="additional">
           <Select mode="tags" placeholder="ex: gelo" />
+        </Form.Item>
+
+        <Divider orientation="left">Organizar</Divider>
+
+        <Form.Item label="Organizar por">
+          <Space>
+            <Form.Item name={['sort', 'order']}>
+              <Select>
+                <Option value="createdAt">Data de criação</Option>
+                <Option value="name">Nome</Option>
+                <Option value="price">Preço</Option>
+                <Option value="volume">Volume</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name={['sort', 'sort']}>
+              <Select>
+                <Option value="asc">
+                  <p>
+                    <UpOutlined /> Ascendente
+                  </p>
+                </Option>
+
+                <Option value="desc">
+                  <p>
+                    <DownOutlined /> Descendente
+                  </p>
+                </Option>
+              </Select>
+            </Form.Item>
+          </Space>
         </Form.Item>
 
         <Form.Item

@@ -8,6 +8,7 @@ import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
 import { pluralize } from 'src/utils/pluralize';
 import { useCreateParams } from 'src/hooks/useCreateParams';
+import { sortObjectToString } from 'src/utils/sortObjectToString';
 
 import { DrinkDrawer } from './DrinkDrawer';
 import { DrinkCard } from '../DrinkCard';
@@ -67,6 +68,7 @@ export function ListDrinks({
       lessThanOrEqualToPrice: Number,
       greaterThanOrEqualToVolume: Number,
       lessThanOrEqualToVolume: Number,
+      sort: String,
     },
   });
 
@@ -136,12 +138,14 @@ export function ListDrinks({
   }
 
   function handleFormFinish(values: DrinkSearchForm): void {
-    const { name, description, additional, alcoholic, price, volume } = values;
+    const { name, description, additional, alcoholic, price, volume, sort } =
+      values;
 
     const paramsCreated: DrinkSearchParams = {
       name,
       description,
       alcoholic,
+      sort: sortObjectToString(sort),
       additional: additional?.join(';'),
       ...getPriceAndVolume(price, volume),
     };
