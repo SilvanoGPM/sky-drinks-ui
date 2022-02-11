@@ -5,6 +5,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 
 import { useTitle } from 'src/hooks/useTitle';
+import { sortObjectToString } from 'src/utils/sortObjectToString';
+
 import { MyRequestsDrawer } from './MyRequestsDrawer';
 import { ListMyRequests } from './ListMyRequests';
 
@@ -12,6 +14,11 @@ import styles from './styles.module.scss';
 
 export function MyRequests(): JSX.Element {
   useTitle('SkyDrinks - Meus pedidos');
+
+  const [pagination, setPagination] = useState<PaginationType>({
+    page: 0,
+    size: 10,
+  });
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -24,7 +31,7 @@ export function MyRequests(): JSX.Element {
   }
 
   function handleFinishForm(values: RequestSearchForm): void {
-    const { drinkDescription, drinkName, status } = values;
+    const { drinkDescription, drinkName, status, sort } = values;
 
     const [greaterThanOrEqualToTotalPrice, lessThanOrEqualToTotalPrice] =
       values.price;
@@ -39,6 +46,7 @@ export function MyRequests(): JSX.Element {
       status,
       lessThanOrEqualToTotalPrice,
       greaterThanOrEqualToTotalPrice,
+      sort: sortObjectToString(sort),
       createdInDateOrAfter: values.createdAt
         ? moment(createdInDateOrAfter).format('yyyy-MM-DD')
         : undefined,
@@ -47,6 +55,7 @@ export function MyRequests(): JSX.Element {
         : undefined,
     });
 
+    setPagination({ ...pagination, page: 0 });
     setLoading(true);
     setDrawerVisible(false);
   }
@@ -72,6 +81,8 @@ export function MyRequests(): JSX.Element {
       <ListMyRequests
         params={params}
         loading={loading}
+        pagination={pagination}
+        setPagination={setPagination}
         setLoading={setLoading}
       />
 

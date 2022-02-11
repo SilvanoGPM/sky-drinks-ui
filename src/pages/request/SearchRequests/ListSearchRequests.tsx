@@ -10,6 +10,8 @@ import { ListItem } from './ListItem';
 interface ListSearchRequestsProps {
   params: RequestSearchParams;
   loading: boolean;
+  pagination: PaginationType;
+  setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
   setLoading: (loading: boolean) => void;
 }
 
@@ -23,13 +25,10 @@ const INITIAL_DATA = {
 export function ListSearchRequests({
   params,
   loading,
+  pagination,
+  setPagination,
   setLoading,
 }: ListSearchRequestsProps): JSX.Element {
-  const [pagination, setPagination] = useState({
-    page: 0,
-    size: 10,
-  });
-
   const [data, setData] = useState<RequestPaginatedType>(INITIAL_DATA);
 
   useEffect(() => {

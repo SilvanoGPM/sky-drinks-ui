@@ -1,4 +1,9 @@
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  SearchOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 
 import {
   DatePicker,
@@ -10,6 +15,7 @@ import {
   Divider,
   Select,
   Slider,
+  Space,
 } from 'antd';
 
 import { getStatusBadge } from 'src/utils/getStatusBadge';
@@ -57,13 +63,17 @@ export function SearchRequestsDrawer({
         form={form}
         layout="vertical"
         style={{ flex: 1 }}
-        initialValues={{
-          price: [0, 200],
-          delivered: '-1',
-        }}
         name="search-requests"
         autoComplete="off"
         onFinish={onFinish}
+        initialValues={{
+          price: [0, 200],
+          delivered: '-1',
+          sort: {
+            order: 'createdAt',
+            sort: 'asc',
+          },
+        }}
       >
         <Divider orientation="left">Pedido</Divider>
 
@@ -126,6 +136,36 @@ export function SearchRequestsDrawer({
 
         <Form.Item label="CPF do usuário" name="userCpf">
           <Input onBlur={onBlur} placeholder="ex: 660.382.138-99" />
+        </Form.Item>
+
+        <Divider orientation="left">Organizar</Divider>
+
+        <Form.Item label="Organizar por">
+          <Space>
+            <Form.Item name={['sort', 'order']}>
+              <Select>
+                <Option value="createdAt">Data de criação</Option>
+                <Option value="updatedAt">Data de atualização</Option>
+                <Option value="totalPrice">Preço total</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name={['sort', 'sort']}>
+              <Select>
+                <Option value="asc">
+                  <p>
+                    <UpOutlined /> Ascendente
+                  </p>
+                </Option>
+
+                <Option value="desc">
+                  <p>
+                    <DownOutlined /> Descendente
+                  </p>
+                </Option>
+              </Select>
+            </Form.Item>
+          </Space>
         </Form.Item>
 
         <Form.Item

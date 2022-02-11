@@ -4,7 +4,9 @@ import moment from 'moment';
 import { Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
+import { sortObjectToString } from 'src/utils/sortObjectToString';
 import { useTitle } from 'src/hooks/useTitle';
+
 import { SearchRequestsDrawer } from './SearchRequestsDrawer';
 import { ListSearchRequests } from './ListSearchRequests';
 
@@ -12,6 +14,11 @@ import styles from './styles.module.scss';
 
 export function SearchRequests(): JSX.Element {
   useTitle('SkyDrinks - Pesquisar pedidos');
+
+  const [pagination, setPagination] = useState<PaginationType>({
+    page: 0,
+    size: 10,
+  });
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,6 +39,7 @@ export function SearchRequests(): JSX.Element {
       drinkName,
       status,
       delivered,
+      sort,
     } = values;
 
     const [greaterThanOrEqualToTotalPrice, lessThanOrEqualToTotalPrice] =
@@ -51,6 +59,7 @@ export function SearchRequests(): JSX.Element {
       delivered,
       lessThanOrEqualToTotalPrice,
       greaterThanOrEqualToTotalPrice,
+      sort: sortObjectToString(sort),
       createdInDateOrAfter: values.createdAt
         ? moment(createdInDateOrAfter).format('yyyy-MM-DD')
         : undefined,
@@ -59,6 +68,7 @@ export function SearchRequests(): JSX.Element {
         : undefined,
     });
 
+    setPagination({ ...pagination, page: 0 });
     setLoading(true);
     setDrawerVisible(false);
   }
@@ -84,6 +94,8 @@ export function SearchRequests(): JSX.Element {
       <ListSearchRequests
         params={params}
         loading={loading}
+        pagination={pagination}
+        setPagination={setPagination}
         setLoading={setLoading}
       />
 

@@ -10,6 +10,8 @@ import { ListItem } from './ListItem';
 interface ListMyRequestsProps {
   params: RequestSearchParams;
   loading: boolean;
+  pagination: PaginationType;
+  setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
   setLoading: (loading: boolean) => void;
 }
 
@@ -23,13 +25,10 @@ const INITIAL_DATA = {
 export function ListMyRequests({
   params,
   loading,
+  pagination,
+  setPagination,
   setLoading,
 }: ListMyRequestsProps): JSX.Element {
-  const [pagination, setPagination] = useState<PaginationType>({
-    page: 0,
-    size: 10,
-  });
-
   const [data, setData] = useState<RequestPaginatedType>(INITIAL_DATA);
 
   useEffect(() => {
@@ -39,7 +38,6 @@ export function ListMyRequests({
 
         const dataFound = await endpoints.getMyRequests({
           ...params,
-          sort: 'updatedAt,desc',
           page,
           size,
         });

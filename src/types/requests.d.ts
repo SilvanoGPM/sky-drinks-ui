@@ -39,6 +39,7 @@ interface RequestSearchParams {
   sort?: string;
   page?: number;
   size?: number;
+  sort: string;
 }
 
 interface RequestGrouped {
@@ -82,6 +83,7 @@ interface RequestSearchForm {
   drinkName: string;
   drinkDescription: string;
   price: number[];
+  sort: SortType;
 }
 
 interface RequestSearchFormForAdmins extends RequestSearchForm {

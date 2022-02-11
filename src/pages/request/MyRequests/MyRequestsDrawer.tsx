@@ -1,4 +1,9 @@
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  SearchOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 
 import {
   Form,
@@ -10,6 +15,7 @@ import {
   Slider,
   FormInstance,
   DatePicker,
+  Space,
 } from 'antd';
 
 import { getStatusBadge } from 'src/utils/getStatusBadge';
@@ -59,6 +65,10 @@ export function MyRequestsDrawer({
         style={{ flex: 1 }}
         initialValues={{
           price: [0, 200],
+          sort: {
+            order: 'updatedAt',
+            sort: 'desc',
+          },
         }}
         name="search-requests"
         autoComplete="off"
@@ -103,6 +113,36 @@ export function MyRequestsDrawer({
 
         <Form.Item label="Descrição da bebida" name="drinkDescription">
           <Input.TextArea onBlur={onBlur} placeholder="ex: Drink Refrescante" />
+        </Form.Item>
+
+        <Divider orientation="left">Organizar</Divider>
+
+        <Form.Item label="Organizar por">
+          <Space>
+            <Form.Item name={['sort', 'order']}>
+              <Select>
+                <Option value="createdAt">Data de criação</Option>
+                <Option value="updatedAt">Data de atualização</Option>
+                <Option value="totalPrice">Preço total</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name={['sort', 'sort']}>
+              <Select>
+                <Option value="asc">
+                  <p>
+                    <UpOutlined /> Ascendente
+                  </p>
+                </Option>
+
+                <Option value="desc">
+                  <p>
+                    <DownOutlined /> Descendente
+                  </p>
+                </Option>
+              </Select>
+            </Form.Item>
+          </Space>
         </Form.Item>
 
         <Form.Item
