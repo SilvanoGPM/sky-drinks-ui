@@ -16,6 +16,7 @@ interface TableSearchParams {
   occupied?: number;
   page?: number;
   size?: number;
+  sort?: string;
 }
 
 interface TableToCreate {

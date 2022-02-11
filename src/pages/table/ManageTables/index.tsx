@@ -5,9 +5,11 @@ import { useTransition, animated, config } from 'react-spring';
 
 import {
   DeleteOutlined,
+  DownOutlined,
   EditOutlined,
   PlusOutlined,
   SearchOutlined,
+  UpOutlined,
 } from '@ant-design/icons';
 
 import {
@@ -19,6 +21,7 @@ import {
   Pagination,
   Select,
   Slider,
+  Space,
   Tooltip,
 } from 'antd';
 
@@ -29,6 +32,7 @@ import { pluralize } from 'src/utils/pluralize';
 import { showNotification } from 'src/utils/showNotification';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 import { useCreateParams } from 'src/hooks/useCreateParams';
+import { sortObjectToString } from 'src/utils/sortObjectToString';
 
 import { PersistTable } from './PersistTable';
 
@@ -37,6 +41,7 @@ import styles from './styles.module.scss';
 interface TableSearchForm {
   seats: number[];
   occupied: number;
+  sort: SortType;
 }
 
 interface TablePersistForm {
@@ -89,6 +94,7 @@ export function ManageTables(): JSX.Element {
       occupied: Number,
       greaterThanOrEqualToSeats: Number,
       lessThanOrEqualToSeats: Number,
+      sort: String,
     },
     setParams,
     setLoading,
@@ -237,7 +243,7 @@ export function ManageTables(): JSX.Element {
   }
 
   function handleFormFinish(values: TableSearchForm): void {
-    const { occupied, seats } = values;
+    const { occupied, seats, sort } = values;
 
     const [greaterThanOrEqualToSeats, lessThanOrEqualToSeats] = seats;
 
@@ -245,6 +251,7 @@ export function ManageTables(): JSX.Element {
       greaterThanOrEqualToSeats,
       lessThanOrEqualToSeats,
       occupied,
+      sort: sortObjectToString(sort),
     });
 
     setPagination({ ...pagination, page: 0 });
@@ -491,6 +498,10 @@ export function ManageTables(): JSX.Element {
           initialValues={{
             occupied: '-1',
             seats: [1, 10],
+            sort: {
+              order: 'createdAt',
+              sort: 'asc',
+            },
           }}
           name="search-tables"
           autoComplete="off"
@@ -514,6 +525,36 @@ export function ManageTables(): JSX.Element {
                 `${value} ${pluralize(value || 1, 'assento', 'assentos')}`
               }
             />
+          </Form.Item>
+
+          <Divider orientation="left">Organizar</Divider>
+
+          <Form.Item label="Organizar por">
+            <Space>
+              <Form.Item name={['sort', 'order']}>
+                <Select>
+                  <Option value="createdAt">Data de criação</Option>
+                  <Option value="number">Número</Option>
+                  <Option value="seats">Assentos</Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item name={['sort', 'sort']}>
+                <Select>
+                  <Option value="asc">
+                    <p>
+                      <UpOutlined /> Ascendente
+                    </p>
+                  </Option>
+
+                  <Option value="desc">
+                    <p>
+                      <DownOutlined /> Descendente
+                    </p>
+                  </Option>
+                </Select>
+              </Form.Item>
+            </Space>
           </Form.Item>
 
           <Form.Item
