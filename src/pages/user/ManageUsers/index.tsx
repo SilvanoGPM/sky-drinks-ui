@@ -8,6 +8,7 @@ import { useForm } from 'antd/lib/form/Form';
 import routes from 'src/routes';
 import { useTitle } from 'src/hooks/useTitle';
 import { formatToDatabaseDate } from 'src/utils/formatDatabaseDate';
+import { sortObjectToString } from 'src/utils/sortObjectToString';
 
 import { UsersDrawer } from './UsersDrawer';
 import { ListUsers } from './ListUsers';
@@ -40,6 +41,7 @@ export function ManageUsers(): JSX.Element {
 
     setParams({
       ...values,
+      sort: sortObjectToString(values.sort),
       role: values?.role?.join(',').toUpperCase(),
       birthDay,
     });

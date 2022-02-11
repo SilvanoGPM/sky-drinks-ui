@@ -1,4 +1,9 @@
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  SearchOutlined,
+  UpOutlined,
+} from '@ant-design/icons';
 
 import {
   Button,
@@ -9,6 +14,7 @@ import {
   FormInstance,
   Input,
   Select,
+  Space,
 } from 'antd';
 
 import { trimInput } from 'src/utils/trimInput';
@@ -54,7 +60,13 @@ export function UsersDrawer({
         style={{ flex: 1 }}
         name="search-users"
         autoComplete="off"
-        initialValues={{ lockRequests: '-1' }}
+        initialValues={{
+          lockRequests: '-1',
+          sort: {
+            order: 'createdAt',
+            sort: 'asc',
+          },
+        }}
       >
         <Divider orientation="left">Geral</Divider>
 
@@ -89,6 +101,38 @@ export function UsersDrawer({
 
         <Form.Item label="Data de nascimento" name="birthDay">
           <DatePicker />
+        </Form.Item>
+
+        <Divider orientation="left">Organizar</Divider>
+
+        <Form.Item label="Organizar por">
+          <Space>
+            <Form.Item name={['sort', 'order']}>
+              <Select>
+                <Option value="createdAt">Data de criação</Option>
+                <Option value="updatedAt">Data de atualização</Option>
+                <Option value="name">Nome</Option>
+                <Option value="email">Email</Option>
+                <Option value="birthDay">Data de nasicmento</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item name={['sort', 'sort']}>
+              <Select>
+                <Option value="asc">
+                  <p>
+                    <UpOutlined /> Ascendente
+                  </p>
+                </Option>
+
+                <Option value="desc">
+                  <p>
+                    <DownOutlined /> Descendente
+                  </p>
+                </Option>
+              </Select>
+            </Form.Item>
+          </Space>
         </Form.Item>
 
         <Form.Item

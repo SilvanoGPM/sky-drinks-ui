@@ -40,6 +40,7 @@ interface UserSearchParams {
   page?: number;
   size?: number;
   lockRequests?: number;
+  sort?: string;
 }
 
 interface UserPaginatedType {
@@ -54,4 +55,5 @@ interface UserSearchForm {
   role: string[];
   birthDay: any;
   lockRequests: number;
+  sort: SortType;
 }
