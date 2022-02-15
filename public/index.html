@@ -1,23 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
 
-    <meta
-      name="description"
-      content="SkyDrinks é um estabelecimento que comercializa bebidas de todos os tipos"
-    />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
 
-    <link rel="icon" id="favicon" href="%PUBLIC_URL%/favicon_black.png" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <meta name="description" content="SkyDrinks é um estabelecimento que comercializa bebidas de todos os tipos" />
 
-    <title>SkyDrinks</title>
-  </head>
-  <body>
-    <noscript>O JavaScript precisa estar ativo para continuar.</noscript>
-    <div id="root"></div>
-  </body>
+  <link rel="icon" id="favicon" href="%PUBLIC_URL%/favicon_black.png" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <title>SkyDrinks</title>
+</head>
+
+<body>
+  <noscript>O JavaScript precisa estar ativo para continuar.</noscript>
+  <div id="root"></div>
+</body>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    function onSuccess(registration) {
+      console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    }
+
+    function onError(err) {
+      console.log('ServiceWorker registration failed: ', err);
+    }
+
+    window.addEventListener('load', () => {
+      navigator
+        .serviceWorker
+        .register('serviceWorker.js')
+        .then(onSuccess, onError);
+    });
+  }
+</script>
+
 </html>
