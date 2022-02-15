@@ -1,5 +1,4 @@
 import { USER_CREDENTIALS_KEY } from 'src/contexts/hooks/useAuth';
-import { showNotification } from 'src/utils/showNotification';
 
 import { api } from './api';
 
@@ -17,11 +16,6 @@ export function tokenExpirationInterceptor(): void {
         // eslint-disable-next-line no-param-reassign
         error.config.headers.Authorization = undefined;
         api.defaults.headers.common.Authorization = '';
-
-        showNotification({
-          type: 'info',
-          message: 'Por favor, faça login novamente!',
-        });
 
         throw new Error('Por favor, faça login novamente!');
       } else {
