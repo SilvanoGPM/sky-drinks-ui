@@ -18,25 +18,22 @@
 <body>
   <noscript>O JavaScript precisa estar ativo para continuar.</noscript>
   <div id="root"></div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('serviceWorker.js').then(function (registration) {
+          console.log('Worker registration successful', registration.scope);
+        }, function (err) {
+          console.log('Worker registration failed', err);
+        }).catch(function (err) {
+          console.log(err);
+        });
+      });
+    } else {
+      console.log('Service Worker is not supported by browser.');
+    }
+  </script>
 </body>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    function onSuccess(registration) {
-      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }
-
-    function onError(err) {
-      console.log('ServiceWorker registration failed: ', err);
-    }
-
-    window.addEventListener('load', () => {
-      navigator
-        .serviceWorker
-        .register('serviceWorker.js')
-        .then(onSuccess, onError);
-    });
-  }
-</script>
 
 </html>
