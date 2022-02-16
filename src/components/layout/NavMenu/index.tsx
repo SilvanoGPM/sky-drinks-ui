@@ -86,13 +86,13 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
           className={styles.subMenu}
           key="subDrinks"
           icon={<DrinkIcon style={{ fontSize: 25 }} />}
-          title="Drinks"
+          title="Bebidas"
         >
           <Menu.Item
             icon={<SearchOutlined style={{ fontSize: 25 }} />}
             key={routes.SEARCH_DRINKS}
           >
-            <Link to={routes.SEARCH_DRINKS}>Pesquisar Drinks</Link>
+            <Link to={routes.SEARCH_DRINKS}>Pesquisar Bebidas</Link>
           </Menu.Item>
 
           {permissions.isBarmen && (

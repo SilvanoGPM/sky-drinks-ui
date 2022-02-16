@@ -89,7 +89,7 @@ export function LatestDrinks(): JSX.Element {
           ))}
         </ul>
       ) : (
-        <Empty description="Sem drinks no momento!" />
+        <Empty description="Sem bebidas no momento!" />
       )}
     </section>
   );
