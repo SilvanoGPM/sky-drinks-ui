@@ -8,6 +8,23 @@
     <img width="200" src="./SkyDrinksUI.png" />
 </p>
 
+
+<p align="right">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/SkyG0D/sky-drinks-ui.svg" />
+  
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/SkyG0D/sky-drinks-ui.svg" />
+  
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/SkyG0D/sky-drinks-ui.svg" />
+
+  <a href="https://github.com/leovargasdev/twitch-live-06/commits/master">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SkyG0D/sky-drinks-ui.svg" />
+  </a>
+  
+  <a href="https://github.com/leovargasdev/twitch-live-06/issues">
+    <img alt="Repository issues" src="https://img.shields.io/github/issues/SkyG0D/sky-drinks-ui.svg" />
+  </a>
+</p>
+
 Você pode visualizar o site já em produção na seguinte URL: https://sky-drinks-ui.vercel.app/
 
 O site pode demorar um pouco para carregar de inicio, porque o servidor deve estar iniciando. Caso as imagens das bebidas não estejam aparecendo, infelizmente o host do servidor deletou elas.
