@@ -1,11 +1,28 @@
 <h1 align="center">SkyDrinksUI</h1>
 
 <p align="center">
-    SkyDrinksUI é um site construido para uma empresa fictícia(Sky Drinks), desenvolvido com React e And Design.   
+    SkyDrinksUI é um site construido para uma empresa fictícia(Sky Drinks), desenvolvido com React e Ant Design.   
 </p>
 
 <p align="center">
     <img width="200" src="./SkyDrinksUI.png" />
+</p>
+
+
+<p align="right">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/SkyG0D/sky-drinks-ui.svg" />
+  
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/SkyG0D/sky-drinks-ui.svg" />
+  
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/SkyG0D/sky-drinks-ui.svg" />
+
+  <a href="https://github.com/leovargasdev/twitch-live-06/commits/master">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SkyG0D/sky-drinks-ui.svg" />
+  </a>
+  
+  <a href="https://github.com/leovargasdev/twitch-live-06/issues">
+    <img alt="Repository issues" src="https://img.shields.io/github/issues/SkyG0D/sky-drinks-ui.svg" />
+  </a>
 </p>
 
 Você pode visualizar o site já em produção na seguinte URL: https://sky-drinks-ui.vercel.app/
