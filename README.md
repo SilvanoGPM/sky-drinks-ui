@@ -1,7 +1,7 @@
 <h1 align="center">SkyDrinksUI</h1>
 
 <p align="center">
-    SkyDrinksUI é um site construido para uma empresa fictícia(Sky Drinks), desenvolvido com React e And Design.   
+    SkyDrinksUI é um site construido para uma empresa fictícia(Sky Drinks), desenvolvido com React e Ant Design.   
 </p>
 
 <p align="center">
