@@ -16,13 +16,13 @@
   
   <img alt="Repository size" src="https://img.shields.io/github/repo-size/SkyG0D/sky-drinks-ui.svg" />
 
-  <a href="https://github.com/leovargasdev/twitch-live-06/commits/master">
+  <a href="https://github.com/SkyG0D/sky-drinks-ui/commits/main">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SkyG0D/sky-drinks-ui.svg" />
   </a>
   
-  <a href="https://github.com/leovargasdev/twitch-live-06/issues">
+  <a href="https://github.com/SkyG0D/sky-drinks-ui/issues">
     <img alt="Repository issues" src="https://img.shields.io/github/issues/SkyG0D/sky-drinks-ui.svg" />
-  </a>
+  </a>  
 </p>
 
 Você pode visualizar o site já em produção na seguinte URL: https://sky-drinks-ui.vercel.app/
