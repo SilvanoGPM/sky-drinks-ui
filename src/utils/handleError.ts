@@ -33,12 +33,10 @@ export function handleError({
   maxDetailsChars = 200,
   description = '',
 }: HandleErrorProps): void {
-  const details = error?.response?.data?.details || error.message || fallback;
+  console.log(error, fallback, title);
+  const details = error?.response?.data?.details || fallback || error?.message;
 
-  const message =
-    details.length >= maxDetailsChars || details.includes('is undefined')
-      ? fallback
-      : details;
+  const message = details.length >= maxDetailsChars ? fallback : details;
 
   showNotification({
     type: 'warn',
