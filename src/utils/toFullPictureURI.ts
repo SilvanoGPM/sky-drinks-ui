@@ -1,12 +1,12 @@
-import { imageToFullURI } from './imageUtils';
+import { drinkImageToFullURI } from './imageUtils';
 
 /**
  * Adiciona a URI da imagem completa a uma bebida.
  * @param  {DrinkType} drink Bebida para adicionar a URI completa.
  */
-export function toFullPictureURI(drink: DrinkType): DrinkType {
+export function toFullDrinkImageURI(drink: DrinkType): DrinkType {
   return {
     ...drink,
-    picture: imageToFullURI(drink.picture),
+    picture: drinkImageToFullURI(drink.picture),
   };
 }

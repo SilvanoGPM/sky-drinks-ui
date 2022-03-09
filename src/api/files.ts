@@ -1,28 +1,42 @@
 import { AxiosResponse } from 'axios';
-import { toFullPictureURI } from 'src/utils/toFullPictureURI';
+import { toFullDrinkImageURI } from 'src/utils/toFullPictureURI';
 
-import { api } from './api';
+import { api, baseURL } from './api';
 
 const filesEndpoints = {
-  async uploadImage(picture: File): Promise<AxiosResponse<any, any>> {
+  getUserImage(uuid: string): string {
+    return `${baseURL}/files/users/${uuid}.png`;
+  },
+  async uploadDrinkImage(picture: File): Promise<AxiosResponse<any, any>> {
     const formData = new FormData();
     formData.append('file', picture);
 
-    return api.post('/files/barmen/images', formData, {
+    return api.post('/files/barmen/drinks', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
 
-  async uploadMultipleImages(
+  async uploadMultipleDrinksImages(
     pictures: File[]
   ): Promise<AxiosResponse<any, any>> {
     const formData = new FormData();
 
     pictures.forEach((picture) => formData.append('files', picture));
 
-    return api.post('/files/barmen/multiple-images', formData, {
+    return api.post('/files/barmen/multiple-drinks', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  async uploadUserImage(picture: File): Promise<AxiosResponse<any, any>> {
+    const formData = new FormData();
+    formData.append('file', picture);
+
+    return api.post('/files/all/users', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -41,7 +55,7 @@ const filesEndpoints = {
 
         return {
           image,
-          drinks: response.data.map(toFullPictureURI),
+          drinks: response.data.map(toFullDrinkImageURI),
         };
       });
 
@@ -58,8 +72,12 @@ const filesEndpoints = {
     return data;
   },
 
-  async deleteImage(image: string): Promise<void> {
-    await api.delete<void>(`/files/barmen/images/${image}`);
+  async deleteDrinkImage(image: string): Promise<void> {
+    await api.delete<void>(`/files/barmen/drinks/${image}`);
+  },
+
+  async deleteUserImage(image: string): Promise<void> {
+    await api.delete<void>(`/files/all/users/${image}`);
   },
 };
 

@@ -4,7 +4,7 @@ import { animated, useSpring } from 'react-spring';
 
 import routes from 'src/routes';
 import { DrinkIcon } from 'src/components/custom/CustomIcons';
-import { imageToFullURI } from 'src/utils/imageUtils';
+import { drinkImageToFullURI } from 'src/utils/imageUtils';
 import { Link } from 'react-router-dom';
 
 import styles from './styles.module.scss';
@@ -38,7 +38,7 @@ export function ImageItem({
     ));
   }
 
-  const picture = imageToFullURI(image);
+  const picture = drinkImageToFullURI(image);
 
   const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 

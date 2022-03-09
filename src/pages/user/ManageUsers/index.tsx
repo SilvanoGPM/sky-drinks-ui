@@ -12,9 +12,9 @@ import { sortObjectToString } from 'src/utils/sortObjectToString';
 
 import { UsersDrawer } from './UsersDrawer';
 import { ListUsers } from './ListUsers';
+import { BlockAll } from './BlockAll';
 
 import styles from './styles.module.scss';
-import { BlockAll } from './BlockAll';
 
 export function ManageUsers(): JSX.Element {
   useTitle('SkyDrinks - Gerenciar usuários');

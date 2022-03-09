@@ -19,8 +19,8 @@ import { showNotification } from 'src/utils/showNotification';
 import { handleError } from 'src/utils/handleError';
 import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
+import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 
-import avatar from 'src/assets/avatar.png';
 import styles from './styles.module.scss';
 
 interface ListUsersProps {
@@ -277,14 +277,15 @@ export function ListUsers({
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={avatar} />}
+                avatar={
+                  <Avatar src={endpoints.getUserImage(uuid)} size={50}>
+                    {getFirstCharOfString(name)}
+                  </Avatar>
+                }
                 title={<p className={styles.name}>{name}</p>}
                 description={<p className={styles.email}>Email: {email}</p>}
               />
               <div>
-                <p>
-                  UUID: <span className={styles.bold}>{uuid}</span>
-                </p>
                 <p>
                   CPF: <span className={styles.bold}>{cpf}</span>
                 </p>

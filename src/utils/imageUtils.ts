@@ -8,9 +8,9 @@ export function normalizeImage(image: string): string {
 }
 
 /**
- * Adiciona a URI completa de uma determinada imagem.
+ * Adiciona a URI completa de uma determinada imagem de bebida.
  * @param {string} image Caminho da imagem para adicionar a URI completa.
  */
-export function imageToFullURI(image: string): string {
-  return `${baseURL}/files/images/${normalizeImage(image)}`;
+export function drinkImageToFullURI(image: string): string {
+  return `${baseURL}/files/drinks/${normalizeImage(image)}`;
 }

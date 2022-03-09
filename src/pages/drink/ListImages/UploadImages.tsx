@@ -35,7 +35,7 @@ export function UploadImages({
     try {
       setImagesUploading(true);
 
-      await endpoints.uploadMultipleImages(images);
+      await endpoints.uploadMultipleDrinksImages(images);
 
       setListLoading(true);
 

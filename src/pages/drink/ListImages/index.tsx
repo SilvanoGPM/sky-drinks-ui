@@ -87,7 +87,7 @@ export function ListImages(): JSX.Element {
       try {
         setLoadingDelete(true);
 
-        await endpoints.deleteImage(image);
+        await endpoints.deleteDrinkImage(image);
 
         const isLastElementOfPage =
           data.content.length === 1 && pagination.page > 0;

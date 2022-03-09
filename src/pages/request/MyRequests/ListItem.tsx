@@ -5,7 +5,7 @@ import { animated, useSpring } from 'react-spring';
 
 import routes from 'src/routes';
 import { DrinkIcon } from 'src/components/custom/CustomIcons';
-import { imageToFullURI } from 'src/utils/imageUtils';
+import { drinkImageToFullURI } from 'src/utils/imageUtils';
 import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
 import { getStatusBadge } from 'src/utils/getStatusBadge';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
@@ -62,7 +62,7 @@ export function ListItem({
     totalPrice,
   } = request;
 
-  const picture = imageToFullURI(drink.picture);
+  const picture = drinkImageToFullURI(drink.picture);
 
   const imageWidth = window.innerWidth > 700 ? 200 : 100;
   const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';

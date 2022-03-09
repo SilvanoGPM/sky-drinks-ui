@@ -19,7 +19,7 @@ import { showNotification } from 'src/utils/showNotification';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { trimInput } from 'src/utils/trimInput';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
-import { imageToFullURI, normalizeImage } from 'src/utils/imageUtils';
+import { drinkImageToFullURI, normalizeImage } from 'src/utils/imageUtils';
 
 import styles from './styles.module.scss';
 import { useImages } from '../hooks/useImages';
@@ -155,7 +155,10 @@ export function CreateDrinkForm({
               {images.map((innerImage) => (
                 <Option key={innerImage} value={innerImage}>
                   <div className={styles.imageItem}>
-                    <img alt={innerImage} src={imageToFullURI(innerImage)} />
+                    <img
+                      alt={innerImage}
+                      src={drinkImageToFullURI(innerImage)}
+                    />
                     <p title={innerImage}>{innerImage}</p>
                   </div>
                 </Option>
