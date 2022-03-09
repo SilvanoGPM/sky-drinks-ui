@@ -78,6 +78,7 @@ export function useAuth(): AuthContenxtType {
   function handleLogout(): void {
     setAuthenticated(false);
     setToken('');
+    setUserInfo({} as UserType);
     localStorage.removeItem(USER_CREDENTIALS_KEY);
     sessionStorage.removeItem(USER_CREDENTIALS_KEY);
     api.defaults.headers.common.Authorization = '';
