@@ -22,13 +22,13 @@
   }
 
   .avatar {
+    @include centeredElement();
+
     background: #74ebd5;
     background: -webkit-linear-gradient(to right, #acb6e5, #74ebd5);
     background: linear-gradient(to right, #acb6e5, #74ebd5);
     width: 100%;
     height: 100%;
-    padding: 0.8rem;
-    color: #ffffff;
 
     &Wrapper {
       @include centeredElement();
@@ -43,6 +43,25 @@
       top: -40px;
       transform: translateX(-50%);
       z-index: 1;
+
+      .camera {
+        @include centeredElement();
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+        transition: 0.3s ease-in-out;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      &:hover .camera {
+        opacity: 1;
+      }
     }
 
     img {

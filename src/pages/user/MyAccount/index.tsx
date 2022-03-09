@@ -1,7 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, Divider, Switch, Tooltip } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Avatar, Button, Divider, Switch, Tooltip } from 'antd';
+import { CameraOutlined, EditOutlined } from '@ant-design/icons';
 
 import routes from 'src/routes';
 import { useTitle } from 'src/hooks/useTitle';
@@ -11,8 +11,10 @@ import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
 import { getUserAge } from 'src/utils/getUserAge';
 import { BrowserPermissionsContext } from 'src/contexts/BrowserPermissionsContext';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
-
-import avatar from 'src/assets/avatar_white.png';
+import endpoints from 'src/api/api';
+import { handleError } from 'src/utils/handleError';
+import { showNotification } from 'src/utils/showNotification';
+import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 
 import { Statistics } from './Statistics';
 
@@ -30,6 +32,59 @@ export function MyAccount(): JSX.Element {
     toggleSoundPermission,
   } = useContext(BrowserPermissionsContext);
 
+  const uploadRef = useRef<HTMLInputElement | null>(null);
+  const userImageRef = useRef<HTMLSpanElement | null>(null);
+
+  function handleUploadClick(): void {
+    uploadRef.current?.click();
+  }
+
+  function updateUserImage(file: File): void {
+    const fileReader = new FileReader();
+
+    fileReader.addEventListener('load', () => {
+      const userImage = userImageRef.current?.querySelector('img');
+
+      if (userImage) {
+        userImage.src = fileReader.result as string;
+      }
+    });
+
+    fileReader.readAsDataURL(file);
+  }
+
+  async function handleFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const file = event.target.files?.[0];
+
+    if (file) {
+      try {
+        await endpoints.uploadUserImage(file);
+
+        showNotification({
+          type: 'success',
+          message: 'Imagem atualizada com sucesso',
+        });
+
+        updateUserImage(file);
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: 'Não foi possível realizar o upload da imagem',
+        });
+      }
+    } else {
+      showNotification({
+        type: 'warn',
+        message: 'Erro no arquivo',
+      });
+    }
+  }
+
   const permissions = getUserPermissions(userInfo.role);
 
   return (
@@ -37,7 +92,25 @@ export function MyAccount(): JSX.Element {
       <div>
         <div className={styles.myAccount}>
           <div className={styles.avatarWrapper}>
-            <Avatar className={styles.avatar} src={avatar} />
+            <Avatar
+              className={styles.avatar}
+              src={endpoints.getUserImage(userInfo.uuid)}
+              ref={userImageRef}
+            >
+              {getFirstCharOfString(userInfo.name)}
+            </Avatar>
+            <Button onClick={handleUploadClick} className={styles.camera}>
+              <CameraOutlined
+                style={{ fontSize: '1.5rem', color: '#ffffff' }}
+              />
+              <input
+                ref={uploadRef}
+                accept="image/png, image/jpeg"
+                onChange={handleFileChange}
+                type="file"
+                style={{ display: 'none' }}
+              />
+            </Button>
           </div>
 
           <h2 className={styles.title}>Minha Conta</h2>
