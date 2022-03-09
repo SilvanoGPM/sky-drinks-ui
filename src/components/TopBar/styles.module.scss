@@ -79,12 +79,40 @@
 }
 
 .noRequest {
-  @include centeredElement();
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   width: 100%;
   height: 100%;
 }
 
-.niceJob {
-  font-size: 1.2rem;
+.message {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.centeredMessage {
+  width: 100%;
+  text-align: center;
+}
+
+.animatedLink {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: 0.3s ease-in-out width;
+  }
+
+  &:hover::before {
+    width: 100%;
+  }
 }

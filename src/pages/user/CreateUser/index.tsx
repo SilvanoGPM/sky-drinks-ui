@@ -60,8 +60,8 @@ export function CreateUser(): JSX.Element {
 
       showNotification({
         type: 'success',
-        message: 'Usuário(s) criado(s) com sucesso',
-        description: `Nome: ${user.name} / Email: ${user.email}`,
+        message: 'Usuário criado com sucesso',
+        description: `Usuário "${user.name}", com o E-mail ${user.email}, foi criado`,
         duration: 2,
       });
 

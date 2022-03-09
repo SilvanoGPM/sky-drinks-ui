@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Badge, Button, Modal, Popover, Tooltip } from 'antd';
+import { Avatar, Badge, Button, Modal, Popover, Tooltip } from 'antd';
 import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
@@ -9,12 +9,14 @@ import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
 import { calculateDrinksPrice } from 'src/utils/calculateDrinkPrice';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
+import endpoints from 'src/api/api';
+import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 
 import styles from './styles.module.scss';
 
 const { confirm } = Modal;
 
-export function RequestInfo(): JSX.Element {
+export function TopBar(): JSX.Element {
   const { userInfo } = useContext(AuthContext);
   const { request, clearRequest } = useContext(RequestContext);
 
@@ -61,6 +63,10 @@ export function RequestInfo(): JSX.Element {
   const containsRequest = request.drinks.length > 0;
   const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
+  if (!permissions.isUser && !permissions.isGuest) {
+    return <></>;
+  }
+
   return (
     <div className={`${styles.requestInfo}`}>
       {containsRequest && permissions.isUser ? (
@@ -92,14 +98,32 @@ export function RequestInfo(): JSX.Element {
         </>
       ) : (
         <div className={styles.noRequest}>
-          {permissions.isUser || permissions.isGuest ? (
-            <p>
-              {permissions.isUser
-                ? 'Nenhum pedido no momento'
-                : 'Faça login para realizar pedidos'}
-            </p>
+          {permissions.isUser ? (
+            <>
+              <p className={styles.message}>
+                Adicione{' '}
+                <Link className={styles.animatedLink} to={routes.SEARCH_DRINKS}>
+                  bebidas
+                </Link>{' '}
+                ao seu pedido
+              </p>
+
+              <Tooltip title={userInfo.name} placement="left">
+                <Link to={routes.MY_ACCOUNT}>
+                  <Avatar src={endpoints.getUserImage(userInfo.uuid)}>
+                    {getFirstCharOfString(userInfo.name)}
+                  </Avatar>
+                </Link>
+              </Tooltip>
+            </>
           ) : (
-            <p className={styles.niceJob}>Bom trabalho!</p>
+            <p className={`${styles.message} ${styles.centeredMessage}`}>
+              Faça{' '}
+              <Link className={styles.animatedLink} to={routes.LOGIN}>
+                login
+              </Link>{' '}
+              para realizar pedidos
+            </p>
           )}
         </div>
       )}

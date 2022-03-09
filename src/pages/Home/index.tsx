@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 
 import { NavMenu } from 'src/components/layout/NavMenu';
 import { NavMenuButton } from 'src/components/layout/NavMenuButton';
-import { RequestInfo } from 'src/pages/request/components/RequestInfo';
+import { TopBar } from 'src/components/TopBar';
 
 import styles from './styles.module.scss';
 
@@ -19,7 +19,7 @@ export function Home(): JSX.Element {
       <NavMenuButton menuShow={menuShow} setMenuShow={setMenuShow} />
 
       <div className={styles.contentContainer}>
-        <RequestInfo />
+        <TopBar />
 
         <main style={{ flex: 1 }}>
           <Outlet />
