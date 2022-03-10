@@ -1,4 +1,4 @@
-import { Button, Modal } from 'antd';
+import { Button, Modal, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,7 @@ import { handleError } from 'src/utils/handleError';
 import { showNotification } from 'src/utils/showNotification';
 import { isUUID } from 'src/utils/isUUID';
 import { useTitle } from 'src/hooks/useTitle';
+import { calculateDrinksPrice } from 'src/utils/calculateDrinkPrice';
 
 import { FetchTables } from './FetchTables';
 
@@ -216,6 +217,30 @@ export function FinalizeRequest(): JSX.Element {
             </div>
           );
         })}
+      </div>
+
+      <div className={styles.othersInfo}>
+        <div className={styles.totalPrice}>
+          <Typography.Text style={{ fontSize: '1.2rem' }}>
+            Preço total do pedido:{' '}
+            <Typography.Text strong>
+              {calculateDrinksPrice(request.drinks)}.
+            </Typography.Text>
+          </Typography.Text>
+        </div>
+
+        <div>
+          <Typography.Text className={styles.addOthersDrinks}>
+            Adicionar outras{' '}
+            <Link
+              to={`/${routes.SEARCH_DRINKS}`}
+              className={styles.animatedLink}
+            >
+              bebidas
+            </Link>{' '}
+            ao pedido.
+          </Typography.Text>
+        </div>
       </div>
 
       <div className={styles.table}>
