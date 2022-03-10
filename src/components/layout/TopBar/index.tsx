@@ -110,7 +110,7 @@ export function TopBar(): JSX.Element {
 
               <Tooltip title={userInfo.name} placement="left">
                 <Link to={routes.MY_ACCOUNT}>
-                  <Avatar src={endpoints.getUserImage(userInfo.uuid)}>
+                  <Avatar size={50} src={endpoints.getUserImage(userInfo.uuid)}>
                     {getFirstCharOfString(userInfo.name)}
                   </Avatar>
                 </Link>

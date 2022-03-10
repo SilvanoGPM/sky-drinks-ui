@@ -7,7 +7,7 @@ export function tokenExpirationInterceptor(): void {
     (response) => response,
     async (error: any) => {
       const tokenExpired = error?.response?.data?.expired || false;
-      const status = error?.response.data?.status || 0;
+      const status = error?.response?.data?.status || 0;
 
       if (tokenExpired && status === 401 && error.config) {
         localStorage.removeItem(USER_CREDENTIALS_KEY);
