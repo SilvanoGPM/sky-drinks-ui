@@ -7,6 +7,7 @@ import {
   DashboardOutlined,
   DesktopOutlined,
   HomeOutlined,
+  IdcardOutlined,
   LoginOutlined,
   LogoutOutlined,
   PictureOutlined,
@@ -78,12 +79,16 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
         mode="inline"
         onClick={closeMenu}
       >
-        <Menu.Item icon={<HomeOutlined style={{ fontSize: 25 }} />} key="/">
+        <Menu.Item
+          className={styles.menuTitle}
+          icon={<HomeOutlined style={{ fontSize: 25 }} />}
+          key="/"
+        >
           <Link to="/">Início</Link>
         </Menu.Item>
 
         <SubMenu
-          className={styles.subMenu}
+          className={styles.menuTitle}
           key="subDrinks"
           icon={<DrinkIcon style={{ fontSize: 25 }} />}
           title="Bebidas"
@@ -100,23 +105,14 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
               icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
               key={routes.MANAGE_DRINKS}
             >
-              <Link to={routes.MANAGE_DRINKS}>Gerenciar Drinks</Link>
-            </Menu.Item>
-          )}
-
-          {permissions.isBarmen && (
-            <Menu.Item
-              icon={<PictureOutlined style={{ fontSize: 25 }} />}
-              key={routes.LIST_IMAGES}
-            >
-              <Link to={routes.LIST_IMAGES}>Listar Imagens</Link>
+              <Link to={routes.MANAGE_DRINKS}>Gerenciar Bebidas</Link>
             </Menu.Item>
           )}
         </SubMenu>
 
         {!permissions.isGuest && (
           <SubMenu
-            className={styles.subMenu}
+            className={styles.menuTitle}
             key="subRequests"
             icon={<ShoppingCartOutlined style={{ fontSize: 25 }} />}
             title="Pedidos"
@@ -157,31 +153,36 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
           </SubMenu>
         )}
 
+        {permissions.isBarmen && (
+          <Menu.Item
+            className={styles.menuTitle}
+            icon={<PictureOutlined style={{ fontSize: 25 }} />}
+            key={routes.MANAGE_IMAGES}
+          >
+            <Link to={routes.MANAGE_IMAGES}>Gerenciar Imagens</Link>
+          </Menu.Item>
+        )}
+
         {permissions.isWaiter && (
-          <SubMenu
-            className={styles.subMenu}
-            key="subTables"
+          <Menu.Item
+            className={styles.menuTitle}
             icon={<TableIcon style={{ fontSize: 25 }} />}
+            key={routes.MANANGE_TABLES}
             title="Mesas"
           >
-            <Menu.Item
-              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
-              key={routes.MANANGE_TABLES}
-            >
-              <Link to={routes.MANANGE_TABLES}>Gerenciar Mesas</Link>
-            </Menu.Item>
-          </SubMenu>
+            <Link to={routes.MANANGE_TABLES}>Gerenciar Mesas</Link>
+          </Menu.Item>
         )}
 
         {permissions.isAdmin && (
           <SubMenu
-            className={styles.subMenu}
+            className={styles.menuTitle}
             key="subDashboard"
             icon={<DesktopOutlined style={{ fontSize: 25 }} />}
             title="Painel dos admins"
           >
             <Menu.Item
-              icon={<AppstoreOutlined style={{ fontSize: 25 }} />}
+              icon={<UserOutlined style={{ fontSize: 25 }} />}
               key={routes.MANAGE_USERS}
             >
               <Link to={routes.MANAGE_USERS}>Gerenciar Usuários</Link>
@@ -196,9 +197,9 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
         )}
 
         <SubMenu
-          className={styles.subMenu}
+          className={styles.menuTitle}
           key="subAccount"
-          icon={<UserOutlined style={{ fontSize: 25 }} />}
+          icon={<IdcardOutlined style={{ fontSize: 25 }} />}
           title="Conta"
         >
           {permissions.isGuest && (

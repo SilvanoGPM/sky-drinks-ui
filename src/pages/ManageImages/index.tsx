@@ -29,8 +29,8 @@ const INITIAL_DATA = {
   content: [],
 };
 
-export function ListImages(): JSX.Element {
-  useTitle('SkyDrinks - Visualizar imagens');
+export function ManageImages(): JSX.Element {
+  useTitle('SkyDrinks - Gerenciar imagens');
 
   const [loading, setLoading] = useState(true);
   const [loadingDelete, setLoadingDelete] = useState(false);

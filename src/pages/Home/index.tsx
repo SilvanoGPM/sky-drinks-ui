@@ -4,7 +4,7 @@ import { Footer } from 'antd/lib/layout/layout';
 import { Outlet } from 'react-router-dom';
 
 import { NavMenu } from 'src/components/layout/NavMenu';
-import { NavMenuButton } from 'src/components/layout/NavMenuButton';
+import { NavMenuButton } from 'src/components/layout/NavMenu/components/NavMenuButton';
 import { TopBar } from 'src/components/layout/TopBar';
 
 import styles from './styles.module.scss';

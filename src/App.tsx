@@ -26,7 +26,7 @@ import { RequestCreated } from './pages/request/RequestCreated';
 import { FindRequest } from './pages/request/FindRequest';
 import { ViewRequest } from './pages/request/ViewRequest';
 import { MyRequests } from './pages/request/MyRequests';
-import { ListImages } from './pages/drink/ListImages';
+import { ManageImages } from './pages/ManageImages';
 import { baseURL } from './api/api';
 import { NotificateRequestUpdates } from './components/other/NotificateRequestUpdates';
 import { ManageRequest } from './pages/request/ManageRequests';
@@ -76,12 +76,12 @@ function App(): JSX.Element {
           />
 
           <Route
-            path={routes.LIST_IMAGES}
+            path={routes.MANAGE_IMAGES}
             element={
               <PrivateRoute
                 requiredPerms={{ type: 'and', perms: ['isBarmen'] }}
               >
-                <ListImages />
+                <ManageImages />
               </PrivateRoute>
             }
           />

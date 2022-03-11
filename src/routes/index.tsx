@@ -5,7 +5,8 @@ const routes = {
   LOGIN: '/login',
   LOGOUT: 'logout',
 
-  LIST_IMAGES: 'drinks/images',
+  MANAGE_IMAGES: 'images/manage',
+
   SEARCH_DRINKS: 'drinks/search',
   MANAGE_DRINKS: 'drinks/manage',
   VIEW_DRINK: '/drinks/:uuid',
