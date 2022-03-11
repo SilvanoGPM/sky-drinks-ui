@@ -15,4 +15,5 @@ interface RequestContextType {
   clearRequest: () => void;
   setRequest: (request: RequestType) => void;
   changeTable: (table?: TableType) => void;
+  loading: boolean;
 }

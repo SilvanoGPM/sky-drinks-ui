@@ -33,8 +33,13 @@ export function FinalizeRequest(): JSX.Element {
 
   const { userInfo } = useContext(AuthContext);
 
-  const { request, setRequest, clearRequest, changeTable } =
-    useContext(RequestContext);
+  const {
+    request,
+    setRequest,
+    clearRequest,
+    changeTable,
+    loading: requestLoading,
+  } = useContext(RequestContext);
 
   const [loading, setLoading] = useState(false);
   const [allBlocked, setAllBlocked] = useState(false);
@@ -42,14 +47,14 @@ export function FinalizeRequest(): JSX.Element {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (request.drinks.length === 0) {
+    if (request.drinks.length === 0 && !requestLoading) {
       navigate(routes.HOME, {
         state: {
           info: { message: 'O pedido precisa conter pelo menos uma bebida' },
         },
       });
     }
-  }, [request, navigate]);
+  }, [request, navigate, requestLoading]);
 
   useEffect(() => {
     async function loadAllBlocked(): Promise<void> {

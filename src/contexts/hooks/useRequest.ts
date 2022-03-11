@@ -22,6 +22,7 @@ export function useRequest(): RequestContextType {
   const { userInfo } = useContext(AuthContext);
 
   const [request, setRequest] = useState<RequestType>(initialRequestState);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const requestFound = localStorage.getItem(REQUEST_KEY);
@@ -29,6 +30,8 @@ export function useRequest(): RequestContextType {
     if (requestFound) {
       setRequest(JSON.parse(requestFound));
     }
+
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -104,5 +107,5 @@ export function useRequest(): RequestContextType {
     setRequest({ ...request, table });
   }
 
-  return { request, setRequest, addDrink, clearRequest, changeTable };
+  return { request, setRequest, addDrink, clearRequest, changeTable, loading };
 }
