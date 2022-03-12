@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Input, Form, Button, Checkbox, Spin, Typography, Tooltip } from 'antd';
+import { Input, Form, Button, Checkbox, Spin, Tooltip } from 'antd';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useSpring, animated, useChain, useSpringRef } from 'react-spring';
 
@@ -167,8 +167,11 @@ export function Login(): JSX.Element {
 
               <animated.div style={inputProps}>
                 <div className={styles.forgotPassword}>
-                  <Link to={routes.FORGOT_PASSWORD}>
-                    <Typography.Link>Esqueceu a senha?</Typography.Link>
+                  <Link
+                    className={styles.animatedLink}
+                    to={routes.FORGOT_PASSWORD}
+                  >
+                    Esqueceu a senha?
                   </Link>
                 </div>
               </animated.div>

@@ -7,7 +7,7 @@ import routes from './routes';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { NotFound } from './pages/NotFound';
-import { LatestDrinks } from './pages/drink/LatestDrinks';
+import { DrinksInfo } from './pages/drink/DrinksInfo';
 import { DrinkView } from './pages/drink/DrinkView';
 import { SearchDrinks } from './pages/drink/SearchDrinks';
 import { AuthContext } from './contexts/AuthContext';
@@ -58,7 +58,7 @@ function App(): JSX.Element {
 
       <Routes>
         <Route path={routes.HOME} element={<Home />}>
-          <Route path={routes.HOME} element={<LatestDrinks />} />
+          <Route path={routes.HOME} element={<DrinksInfo />} />
           <Route path={routes.VIEW_DRINK} element={<DrinkView />} />
           <Route
             path={routes.SEARCH_DRINKS}

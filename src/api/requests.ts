@@ -112,7 +112,7 @@ const requestsEndpoints = {
 
   async getTopDrinks(size = 5): Promise<TopDrinkType[]> {
     const { data } = await api.get<TopDrinkType[]>(
-      `/requests/admin/top-drinks?size=${size}`
+      `/requests/top-drinks?size=${size}`
     );
 
     return data;

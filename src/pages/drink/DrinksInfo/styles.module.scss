@@ -1,0 +1,100 @@
+@import 'src/scss/variables';
+@import 'src/scss/shared';
+@import 'src/scss/mixins';
+
+.listTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.loading {
+  @extend .loading;
+
+  flex-direction: column;
+}
+
+.listContainer {
+  position: relative;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 2rem;
+
+  .controlButton {
+    position: absolute;
+    width: 40px;
+    height: 50%;
+    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    opacity: 0;
+    transition: 0.2s ease-in-out;
+
+    @media #{$mq-medium} {
+      opacity: 1;
+    }
+  }
+
+  .prevButton {
+    left: 0;
+  }
+
+  .nextButton {
+    right: 0;
+  }
+
+  &:hover .controlButton {
+    opacity: 1;
+  }
+}
+
+.list {
+  @include centeredElement();
+
+  flex: 1;
+  flex-direction: column;
+
+  &Drinks {
+    --scroll-color: #cccccc;
+    --scroll-background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    max-width: 700px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    transition: 0.15s ease-in-out;
+    height: 100%;
+    padding: 0 1rem;
+
+    &::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--scroll-background);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--scroll-color);
+      border: 3px solid var(--scroll-background);
+    }
+
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: var(--scroll-color) var(--scroll-background);
+  }
+}
+
+.cardContainer {
+  transform: scale(0.90);
+  transition: 0.25s ease-in-out;
+
+  &:hover {
+    transform: scale(0.95);
+  }
+}
