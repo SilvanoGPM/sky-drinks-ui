@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
 import endpoints from 'src/api/api';
 import { handleError } from 'src/utils/handleError';
@@ -9,38 +9,28 @@ interface UseImagesReturn {
 }
 
 export function useImages(): UseImagesReturn {
-  const [images, setImages] = useState<string[]>([]);
-  const [imagesLoading, setImagesLoading] = useState(true);
+  const { data, isLoading, isError, error } = useQuery(
+    'uploadedImages',
+    endpoints.getAllImagesWithoutPagination
+  );
 
-  useEffect(() => {
-    async function loadImages(): Promise<void> {
-      try {
-        const files = await endpoints.getAllImagesWithoutPagination();
+  if (isError) {
+    handleError({
+      error,
+      fallback: 'Não foi possível carregar as imagens das bebidas',
+    });
 
-        setImages(files);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: 'Não foi possível carregar as imagens das bebidas',
-        });
-      } finally {
-        setImagesLoading(false);
-      }
-    }
+    return { images: [], imagesLoading: false };
+  }
 
-    if (imagesLoading) {
-      loadImages();
-    }
-  }, [imagesLoading]);
+  if (isLoading) {
+    return { images: [], imagesLoading: true };
+  }
 
-  useEffect(() => {
-    return () => {
-      setImagesLoading(false);
-    };
-  }, []);
+  const filteredData = data?.filter((str) => str.startsWith('/drinks'));
 
   return {
-    images,
-    imagesLoading,
+    images: filteredData || [],
+    imagesLoading: isLoading,
   };
 }

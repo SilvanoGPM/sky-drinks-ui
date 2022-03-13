@@ -3,5 +3,5 @@
  * @param {string} image Caminho da imagem a ser normalizado.
  */
 export function normalizeImage(image: string): string {
-  return image?.replace('images', '').replaceAll('/', '');
+  return image.replace(/images|drinks|users|/gi, '').replaceAll('/', '');
 }
