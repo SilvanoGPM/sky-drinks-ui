@@ -1,12 +1,21 @@
 import { AxiosResponse } from 'axios';
+import { normalizeImage } from 'src/utils/imageUtils';
+
 import { toFullDrinkImageURI } from 'src/utils/toFullPictureURI';
 
 import { api, baseURL } from './api';
 
 const filesEndpoints = {
   getUserImage(uuid: string): string {
-    return `${baseURL}/files/users/${uuid}.png`;
+    return `${baseURL}/files/users/${uuid}${
+      uuid.endsWith('.png') ? '' : '.png'
+    }`;
   },
+
+  getDrinkImage(drink: string): string {
+    return `${baseURL}/files/drinks/${normalizeImage(drink)}`;
+  },
+
   async uploadDrinkImage(picture: File): Promise<AxiosResponse<any, any>> {
     const formData = new FormData();
     formData.append('file', picture);
@@ -46,18 +55,26 @@ const filesEndpoints = {
   async getAllImages(page = 0, size = 10): Promise<PaginationReturn> {
     const { data } = await api.get(`/files?page=${page}&size=${size}`);
 
-    const mappedContent = data.content
-      .filter((file: string) => file.startsWith('/images'))
-      .map(async (picture: string) => {
-        const image = picture.replace('/images/', '');
+    const mappedContent = data.content.map(async (picture: string) => {
+      const image = picture
+        .replace('/images/', '')
+        .replace('/users/', '')
+        .replace('/drinks/', '');
 
-        const response = await api.get(`/drinks/find-by-picture/${image}`);
-
+      if (picture.startsWith('/users')) {
         return {
-          image,
-          drinks: response.data.map(toFullDrinkImageURI),
+          image: this.getUserImage(image),
+          userUUID: image.replace('.png', ''),
         };
-      });
+      }
+
+      const response = await api.get(`/drinks/find-by-picture/${image}`);
+
+      return {
+        image: this.getDrinkImage(image),
+        drinks: response.data.map(toFullDrinkImageURI),
+      };
+    });
 
     const content = await Promise.all(mappedContent);
 
