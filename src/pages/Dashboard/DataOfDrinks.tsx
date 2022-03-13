@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Divider, Empty } from 'antd';
 
@@ -15,6 +14,8 @@ import {
 
 import endpoints from 'src/api/api';
 import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
+import { useQuery } from 'react-query';
+
 import { handleError } from 'src/utils/handleError';
 import { randomHotRGBColor, randomRGB } from 'src/utils/rgbUtils';
 
@@ -31,42 +32,24 @@ ChartJS.register(
 );
 
 export function DataOfDrinks(): JSX.Element {
-  const [loading, setLoading] = useState(true);
-  const [dataOfDrinks, setDataOfDrinks] = useState<DataOfDrinksType>(
-    {} as DataOfDrinksType
+  const { isLoading, isError, error, data } = useQuery('dataOfDrinks', () =>
+    endpoints.getDataOfDrinksInRequests(10)
   );
 
-  useEffect(() => {
-    async function loadTopDrinks(): Promise<void> {
-      try {
-        const dataOfDrinksFound = await endpoints.getDataOfDrinksInRequests(10);
-        setDataOfDrinks(dataOfDrinksFound);
-      } catch (error) {
-        handleError({
-          error,
-          fallback: 'Não foi possível carregar os dados das bebidas',
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
+  if (isError) {
+    handleError({
+      error,
+      fallback: 'Não foi possível carregar os dados das bebidas',
+    });
 
-    if (loading) {
-      loadTopDrinks();
-    }
-  }, [loading]);
+    return <></>;
+  }
 
-  useEffect(() => {
-    return () => {
-      setLoading(false);
-    };
-  }, []);
-
-  const hasDataOfDrinks = Boolean(Object.values(dataOfDrinks).flat().length);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingIndicator />;
   }
+
+  const hasDataOfDrinks = Boolean(Object.values(data || []).flat().length);
 
   return hasDataOfDrinks ? (
     <div className={styles.dataOfDrinksContainer}>
@@ -104,11 +87,11 @@ export function DataOfDrinks(): JSX.Element {
             responsive: true,
           }}
           data={{
-            labels: dataOfDrinks.topDrinks.map(({ name }) => name),
+            labels: data?.topDrinks.map(({ name }) => name),
             datasets: [
               {
-                data: dataOfDrinks.topDrinks.map(({ total }) => total),
-                backgroundColor: dataOfDrinks.topDrinks.map(randomRGB),
+                data: data?.topDrinks.map(({ total }) => total),
+                backgroundColor: data?.topDrinks.map(randomRGB),
               },
             ],
           }}
@@ -145,11 +128,11 @@ export function DataOfDrinks(): JSX.Element {
             responsive: true,
           }}
           data={{
-            labels: dataOfDrinks.mostCanceled.map(({ name }) => name),
+            labels: data?.mostCanceled.map(({ name }) => name),
             datasets: [
               {
-                data: dataOfDrinks.mostCanceled.map(({ total }) => total),
-                backgroundColor: dataOfDrinks.topDrinks.map(randomHotRGBColor),
+                data: data?.mostCanceled.map(({ total }) => total),
+                backgroundColor: data?.topDrinks.map(randomHotRGBColor),
               },
             ],
           }}
@@ -157,6 +140,9 @@ export function DataOfDrinks(): JSX.Element {
       </div>
     </div>
   ) : (
-    <Empty description="Nenhuma pedido encontrado" />
+    <Empty
+      style={{ marginTop: '2rem' }}
+      description="Nenhuma bebida encontrada"
+    />
   );
 }

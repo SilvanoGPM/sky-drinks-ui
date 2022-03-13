@@ -92,10 +92,16 @@ export function DataOfRequests(): JSX.Element {
   useEffect(() => {
     async function loadRequestsDelivered(): Promise<void> {
       try {
+        if (!months.length) {
+          return;
+        }
+
         const allTime = selectedMonth === ALL_TIME;
 
-        const startMonth = allTime ? months[months.length - 1] : undefined;
-        const endMonth = allTime ? months[0] : undefined;
+        const startMonth =
+          allTime && months.length ? months[months.length - 1] : undefined;
+
+        const endMonth = allTime && months.length ? months[0] : undefined;
 
         const requestsDataFound = await endpoints.getRequestsData(
           selectedMonth,
@@ -192,31 +198,31 @@ export function DataOfRequests(): JSX.Element {
 
   return (
     <div>
-      <Divider orientation="left" style={{ fontSize: '1.6rem' }}>
-        Pedidos
-      </Divider>
-
-      <div className={styles.selectMonth}>
-        <p>Mês:</p>
-        <Select
-          className={styles.select}
-          loading={monthsLoading}
-          disabled={monthsLoading}
-          defaultValue={ALL_TIME}
-          value={selectedMonth}
-          onChange={handleSelectedMonth}
-        >
-          {months.map((month) => (
-            <Option key={month} value={month}>
-              {moment(month).format('MMMM [de] YYYY')}
-            </Option>
-          ))}
-          <Option value={ALL_TIME}>Todos os meses</Option>
-        </Select>
-      </div>
-
       {hasRequests ? (
         <>
+          <Divider orientation="left" style={{ fontSize: '1.6rem' }}>
+            Pedidos
+          </Divider>
+
+          <div className={styles.selectMonth}>
+            <p>Mês:</p>
+            <Select
+              className={styles.select}
+              loading={monthsLoading}
+              disabled={monthsLoading}
+              defaultValue={ALL_TIME}
+              value={selectedMonth}
+              onChange={handleSelectedMonth}
+            >
+              {months.map((month) => (
+                <Option key={month} value={month}>
+                  {moment(month).format('MMMM [de] YYYY')}
+                </Option>
+              ))}
+              <Option value={ALL_TIME}>Todos os meses</Option>
+            </Select>
+          </div>
+
           <div className={styles.revenues}>
             <Doughnut
               options={{
@@ -234,9 +240,7 @@ export function DataOfRequests(): JSX.Element {
                   tooltip: {
                     callbacks: {
                       label({ label, formattedValue }) {
-                        return `${label} de ${formatDisplayPrice(
-                          Number(formattedValue)
-                        )}`;
+                        return `${label} de R$ ${formattedValue}`;
                       },
                     },
                   },
@@ -416,7 +420,7 @@ export function DataOfRequests(): JSX.Element {
           </div>
         </>
       ) : (
-        <Empty description="Não há pedidos" />
+        <Empty style={{ marginTop: '2rem' }} description="Não há pedidos" />
       )}
     </div>
   );

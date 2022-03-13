@@ -70,7 +70,7 @@ export function HorizontalList({
   }
 
   return drinks.length === 0 ? (
-    <Empty description={emptyDescription} />
+    <Empty style={{ marginTop: '2rem' }} description={emptyDescription} />
   ) : (
     <>
       {title}
