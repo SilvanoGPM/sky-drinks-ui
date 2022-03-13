@@ -15,7 +15,6 @@ import { WebSocketContext } from 'src/contexts/WebSocketContext';
 import { useTitle } from 'src/hooks/useTitle';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { handleError } from 'src/utils/handleError';
-import { drinkImageToFullURI } from 'src/utils/imageUtils';
 import { pluralize } from 'src/utils/pluralize';
 import { showNotification } from 'src/utils/showNotification';
 
@@ -177,7 +176,7 @@ export function ManageRequest(): JSX.Element {
           <ul className={styles.cardContainer}>
             {transitions(({ opacity }, { uuid, user, totalPrice, drinks }) => {
               const drinksSize = drinks.length;
-              const picture = drinkImageToFullURI(drinks[0].picture);
+              const picture = endpoints.getDrinkImage(drinks[0].picture);
 
               return (
                 <animated.li style={{ opacity }}>

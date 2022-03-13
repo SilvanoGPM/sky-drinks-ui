@@ -30,7 +30,7 @@ import { isUUID } from 'src/utils/isUUID';
 import { trimInput } from 'src/utils/trimInput';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
-import { drinkImageToFullURI, normalizeImage } from 'src/utils/imageUtils';
+import { normalizeImage } from 'src/utils/imageUtils';
 
 import styles from './styles.module.scss';
 import { useImages } from '../hooks/useImages';
@@ -232,7 +232,7 @@ export function EditDrink(): JSX.Element {
                       <div className={styles.imageItem}>
                         <img
                           alt={innerImage}
-                          src={drinkImageToFullURI(innerImage)}
+                          src={endpoints.getDrinkImage(innerImage)}
                         />
                         <p title={innerImage}>{innerImage}</p>
                       </div>

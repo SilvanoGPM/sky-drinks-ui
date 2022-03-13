@@ -1,4 +1,4 @@
-import { drinkImageToFullURI } from './imageUtils';
+import endpoints from 'src/api/api';
 
 /**
  * Adiciona a URI da imagem completa a uma bebida.
@@ -7,6 +7,6 @@ import { drinkImageToFullURI } from './imageUtils';
 export function toFullDrinkImageURI(drink: DrinkType): DrinkType {
   return {
     ...drink,
-    picture: drinkImageToFullURI(drink.picture),
+    picture: endpoints.getDrinkImage(drink.picture),
   };
 }
