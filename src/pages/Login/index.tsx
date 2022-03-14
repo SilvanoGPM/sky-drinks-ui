@@ -103,7 +103,11 @@ export function Login(): JSX.Element {
     }
 
     // Clear state when reload page.
-    return () => navigate(location.pathname, { replace: true });
+    return () => {
+      if (location.state) {
+        navigate(location.pathname, { replace: true });
+      }
+    };
   }, [location, form, navigate]);
 
   function endImageLoad(): void {
