@@ -1,6 +1,6 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Input, Form, Button, Checkbox, Spin, Tooltip } from 'antd';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useSpring, animated, useChain, useSpringRef } from 'react-spring';
 
 import {
@@ -38,6 +38,8 @@ export function Login(): JSX.Element {
 
   const location = useLocation();
 
+  const navigate = useNavigate();
+
   const slideInRef = useSpringRef();
   const showRef = useSpringRef();
   const inputRef = useSpringRef();
@@ -67,6 +69,8 @@ export function Login(): JSX.Element {
 
   useChain([slideInRef, showRef, inputRef], [0, 0.2, 0.4]);
 
+  const [form] = Form.useForm();
+
   const { authLoading, handleLogin, authenticated } = useContext(AuthContext);
 
   const [loadingImage, setLoadingImage] = useState(true);
@@ -81,13 +85,26 @@ export function Login(): JSX.Element {
         type: 'success',
         message: 'Login efetuado com sucesso!',
       });
+
+      return;
     } catch (error: any) {
       handleError({
         error,
         fallback: 'Não foi possível efetuar o login',
       });
+
+      navigate(routes.LOGIN, { state: values });
     }
   }
+
+  useEffect(() => {
+    if (location.state) {
+      form.setFieldsValue(location.state);
+    }
+
+    // Clear state when reload page.
+    return () => navigate(location.pathname, { replace: true });
+  }, [location, form, navigate]);
 
   function endImageLoad(): void {
     setLoadingImage(false);
@@ -132,6 +149,7 @@ export function Login(): JSX.Element {
               layout="vertical"
               onFinish={handleFormLogin}
               initialValues={{ remember: true }}
+              form={form}
             >
               <animated.div style={inputProps}>
                 <Form.Item

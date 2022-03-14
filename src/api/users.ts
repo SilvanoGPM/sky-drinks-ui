@@ -23,7 +23,13 @@ const usersEndpoints = {
       const status = exception?.response?.data?.status || 0;
 
       if (status === 401) {
-        throw new LoginError('Login ou senha incorretos!');
+        const userExists = await this.verifyUserByEmail(email);
+
+        const message = userExists
+          ? 'Senha incorreta'
+          : 'Nenhum usuário encontrado com esse E-mail';
+
+        throw new LoginError(message);
       }
 
       throw new Error('Aconteceu um erro ao tentar conectar no servidor');
@@ -51,6 +57,15 @@ const usersEndpoints = {
   async findUserByUUID(uuid: string): Promise<UserType> {
     const { data } = await api.get<UserType>(`/users/all/${uuid}`);
     return data;
+  },
+
+  async verifyUserByEmail(email: string): Promise<boolean> {
+    try {
+      await api.get<UserType>(`/users/verify-by-email/${email}`);
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   async findUserByEmail(email: string): Promise<UserType> {

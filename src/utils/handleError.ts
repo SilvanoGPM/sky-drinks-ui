@@ -33,8 +33,7 @@ export function handleError({
   maxDetailsChars = 200,
   description = '',
 }: HandleErrorProps): void {
-  console.log(error, fallback, title);
-  const details = error?.response?.data?.details || fallback || error?.message;
+  const details = error?.response?.data?.details || error?.message || fallback;
 
   const message = details.length >= maxDetailsChars ? fallback : details;
 
