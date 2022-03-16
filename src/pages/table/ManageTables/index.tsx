@@ -16,6 +16,7 @@ import {
   Button,
   Divider,
   Drawer,
+  Empty,
   Form,
   Modal,
   Pagination,
@@ -372,82 +373,91 @@ export function ManageTables(): JSX.Element {
         </Button>
       </div>
 
-      <ul className={styles.list}>
-        {transitions((style, { uuid, number, occupied, seats }) => (
-          <animated.li style={style}>
-            <div className={styles.table}>
-              <Tooltip
-                placement="left"
-                title={
-                  occupied
-                    ? 'Clique para desocupar a mesa'
-                    : 'Clique para ocupar mesa'
-                }
-              >
-                <div
-                  onClick={handleTableOccupied(uuid, occupied)}
-                  role="button"
-                  tabIndex={0}
-                  className={styles.tableInfo}
+      {data.content.length ? (
+        <ul className={styles.list}>
+          {transitions((style, { uuid, number, occupied, seats }) => (
+            <animated.li style={style}>
+              <div className={styles.table}>
+                <Tooltip
+                  placement="left"
+                  title={
+                    occupied
+                      ? 'Clique para desocupar a mesa'
+                      : 'Clique para ocupar mesa'
+                  }
                 >
-                  <p>
-                    A mesa contém{' '}
-                    <span className={styles.bold}>
-                      {`${seats} ${pluralize(seats, 'assento', 'assentos')}`}
-                    </span>
+                  <div
+                    onClick={handleTableOccupied(uuid, occupied)}
+                    role="button"
+                    tabIndex={0}
+                    className={styles.tableInfo}
+                  >
+                    <p>
+                      A mesa contém{' '}
+                      <span className={styles.bold}>
+                        {`${seats} ${pluralize(seats, 'assento', 'assentos')}`}
+                      </span>
+                    </p>
+                    <p>
+                      A mesa{' '}
+                      <span className={styles.bold}>
+                        {occupied ? 'está' : 'não está'}
+                      </span>{' '}
+                      ocupada
+                    </p>
+                  </div>
+                </Tooltip>
+
+                <div className={styles.tableItems}>
+                  <p
+                    className={styles.tableNumber}
+                    style={{
+                      fontSize: '1.5rem',
+                      color: occupied ? '#e74c3c' : '#2ecc71',
+                    }}
+                  >
+                    {number}
                   </p>
-                  <p>
-                    A mesa{' '}
-                    <span className={styles.bold}>
-                      {occupied ? 'está' : 'não está'}
-                    </span>{' '}
-                    ocupada
-                  </p>
-                </div>
-              </Tooltip>
 
-              <div className={styles.tableItems}>
-                <p
-                  className={styles.tableNumber}
-                  style={{
-                    fontSize: '1.5rem',
-                    color: occupied ? '#e74c3c' : '#2ecc71',
-                  }}
-                >
-                  {number}
-                </p>
+                  <TableIcon
+                    style={{
+                      fontSize: 80,
+                      color: occupied ? '#e74c3c' : '#2ecc71',
+                    }}
+                  />
 
-                <TableIcon
-                  style={{
-                    fontSize: 80,
-                    color: occupied ? '#e74c3c' : '#2ecc71',
-                  }}
-                />
+                  <div className={styles.tableActions}>
+                    <Tooltip title="Editar mesa">
+                      <Button
+                        onClick={selectTable(uuid)}
+                        shape="round"
+                        icon={<EditOutlined />}
+                      />
+                    </Tooltip>
 
-                <div className={styles.tableActions}>
-                  <Tooltip title="Editar mesa">
-                    <Button
-                      onClick={selectTable(uuid)}
-                      shape="round"
-                      icon={<EditOutlined />}
-                    />
-                  </Tooltip>
-
-                  <Tooltip title="Remover mesa">
-                    <Button
-                      shape="round"
-                      onClick={handleRemoveTable(uuid)}
-                      loading={removeTableLoading}
-                      icon={<DeleteOutlined />}
-                      style={{ color: '#e74c3c' }}
-                    />
-                  </Tooltip>
+                    <Tooltip title="Remover mesa">
+                      <Button
+                        shape="round"
+                        onClick={handleRemoveTable(uuid)}
+                        loading={removeTableLoading}
+                        icon={<DeleteOutlined />}
+                        style={{ color: '#e74c3c' }}
+                      />
+                    </Tooltip>
+                  </div>
                 </div>
               </div>
-            </div>
-          </animated.li>
-        ))}
-      </ul>
+            </animated.li>
+          ))}
+        </ul>
+      ) : (
+        <div>
+          <Empty
+            style={{ marginTop: '2rem' }}
+            description="Não há mesas registradas"
+          />
+        </div>
+      )}
 
       <div className={styles.paginationContainer}>
         <Pagination
