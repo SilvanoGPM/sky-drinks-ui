@@ -14,7 +14,7 @@ interface ItemProps {
   loadingDelete: boolean;
   drinks?: DrinkType[];
   userUUID?: string;
-  deleteImage: (image: string) => () => void;
+  deleteImage: (image: string, type: ImageType) => () => void;
 }
 
 export function ImageItem({
@@ -43,6 +43,8 @@ export function ImageItem({
 
   const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
+  const imageName = image.split('/').pop() || 'image';
+
   const actions = [
     ...(drinks && drinks.length > 0
       ? [
@@ -62,25 +64,23 @@ export function ImageItem({
       shape="round"
       loading={loadingDelete}
       icon={<DeleteOutlined style={{ color: '#e74c3c' }} />}
-      onClick={deleteImage(image)}
+      onClick={deleteImage(imageName, userUUID ? 'USER' : 'DRINK')}
     />,
   ];
-
-  const imageAlt = image.split('/').pop() || 'image';
 
   return (
     <animated.div style={props}>
       <List.Item actions={actions} className={styles.item}>
         <Image
           src={image}
-          alt={imageAlt}
+          alt={imageName}
           style={{ minWidth: 100 }}
           width={100}
           height={100}
         />
         <div className={styles.info}>
           <List.Item.Meta
-            title={<p className={styles.imageName}>{imageAlt}</p>}
+            title={<p className={styles.imageName}>{imageName}</p>}
           />
           <div className={styles.badge}>
             {drinks &&

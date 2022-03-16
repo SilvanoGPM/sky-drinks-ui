@@ -82,12 +82,17 @@ export function ManageImages(): JSX.Element {
     setLoading(true);
   }
 
-  function deleteImage(image: string): () => void {
+  function deleteImage(image: string, type: ImageType): () => void {
     async function remove(): Promise<void> {
       try {
         setLoadingDelete(true);
 
-        await endpoints.deleteDrinkImage(image);
+        const action =
+          type === 'DRINK'
+            ? endpoints.deleteDrinkImage(image)
+            : endpoints.deleteUserImage(image);
+
+        await action;
 
         const isLastElementOfPage =
           data.content.length === 1 && pagination.page > 0;

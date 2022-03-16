@@ -39,3 +39,5 @@ interface ResetPasswordType {
   email: string;
   token: string;
 }
+
+type ImageType = 'USER' | 'DRINK';
