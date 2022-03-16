@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import qs from 'query-string';
 import { useSearchParams } from 'react-router-dom';
 import { useTransition, animated, config } from 'react-spring';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import {
   DeleteOutlined,
@@ -34,6 +35,7 @@ import { showNotification } from 'src/utils/showNotification';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 import { useCreateParams } from 'src/hooks/useCreateParams';
 import { sortObjectToString } from 'src/utils/sortObjectToString';
+import { SpinLoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import { PersistTable } from './PersistTable';
 
@@ -62,33 +64,119 @@ export function ManageTables(): JSX.Element {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [persistTableLoading, setPersistTableLoading] = useState(false);
-  const [removeTableLoading, setRemoveTableLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const [persistTableShow, setPersistTableShow] = useState(false);
+  const [startFetch, setStartFetch] = useState(false);
 
   const [params, setParams] = useState<TableSearchParams>({});
 
-  const [selectedTable, setSelectedTable] = useState<TableType>();
-
   const [pagination, setPagination] = useState({
     page: 0,
-    size: 10,
+    size: 2,
   });
 
-  const [data, setData] = useState<TablePaginetedType>({
-    totalElements: 0,
-    content: [],
-  });
+  const { data, isLoading } = useQuery<TablePaginetedType>(
+    ['tables', pagination.page],
+    () =>
+      endpoints.searchTables({
+        ...params,
+        page: pagination.page,
+        size: pagination.size,
+      }),
+    {
+      enabled: startFetch,
+      keepPreviousData: true,
+    }
+  );
 
-  const transitions = useTransition(data.content, {
+  function onSuccess(): void {
+    queryClient.refetchQueries('tables');
+  }
+
+  function handleTableOccupiedError(): void {
+    showNotification({
+      type: 'warn',
+      message: 'Não foi possível alternar ocupação da mesa',
+    });
+  }
+
+  function handleRemoveTableError(): void {
+    showNotification({
+      type: 'warn',
+      message: 'Não foi possível remover mesa',
+    });
+  }
+
+  function handleCreateTableError(error: any): void {
+    const description = getFieldErrorsDescription(error);
+
+    handleError({
+      error,
+      description,
+      fallback: 'Não foi criar mesa',
+    });
+  }
+
+  function handleUpdateTableError(error: any): void {
+    const description = getFieldErrorsDescription(error);
+
+    handleError({
+      error,
+      description,
+      fallback: 'Não foi atualizar mesa',
+    });
+  }
+
+  const removeTableMutation = useMutation(
+    (uuid: string) => {
+      return endpoints.deleteTable(uuid);
+    },
+    { onSuccess }
+  );
+
+  const tableOccupiedMutation = useMutation(
+    (uuid: string) => {
+      return endpoints.toggleTableOccupied(uuid);
+    },
+    { onSuccess }
+  );
+
+  const createTableMutation = useMutation(
+    (tableToCreate: TableToCreate) => {
+      return endpoints.createTable(tableToCreate);
+    },
+    { onSuccess }
+  );
+
+  const updateTabledMutation = useMutation(
+    (tableToUpdate: TableToUpdate) => {
+      return endpoints.updateTable(tableToUpdate);
+    },
+    { onSuccess }
+  );
+
+  const [persistTableShow, setPersistTableShow] = useState(false);
+
+  const [selectedTable, setSelectedTable] = useState<TableType>();
+
+  const transitions = useTransition(data?.content || [], {
     keys: (item) => item.uuid,
     trail: 100,
     from: { opacity: 0, scale: 0 },
     enter: { opacity: 1, scale: 1 },
     config: config.stiff,
   });
+
+  useEffect(() => {
+    if (startFetch) {
+      setSearchParams(
+        qs.stringify({
+          ...params,
+          page: pagination.page,
+        })
+      );
+    }
+  }, [startFetch, pagination, setSearchParams, params]);
 
   useCreateParams({
     params: {
@@ -98,63 +186,23 @@ export function ManageTables(): JSX.Element {
       sort: String,
     },
     setParams,
-    setLoading,
+    setLoading: setStartFetch,
     setPagination,
   });
-
-  useEffect(() => {
-    async function loadTables(): Promise<void> {
-      const { page, size } = pagination;
-
-      try {
-        const dataFound = await endpoints.searchTables({
-          ...params,
-          page,
-          size,
-        });
-
-        setSearchParams(
-          qs.stringify({
-            ...params,
-            page,
-          })
-        );
-
-        setData(dataFound);
-      } catch (error: any) {
-        handleError({ error, fallback: 'Não foi possível carregar as mesas' });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (loading) {
-      loadTables();
-    }
-  }, [loading, pagination, params, setSearchParams]);
 
   function handleRemoveTable(uuid: string): () => void {
     async function remove(): Promise<void> {
       try {
-        setRemoveTableLoading(true);
-
-        await endpoints.deleteTable(uuid);
-
-        setData({
-          ...data,
-          content: data.content.filter((item) => item.uuid !== uuid),
-        });
+        await removeTableMutation.mutateAsync(uuid);
 
         const isLastElementOfPage =
-          data.content.length === 1 && pagination.page > 0;
+          data?.content.length === 1 && pagination.page > 0;
 
         if (isLastElementOfPage) {
           setPagination({
             ...pagination,
             page: pagination.page - 1,
           });
-
-          setLoading(true);
         }
 
         showNotification({
@@ -162,12 +210,7 @@ export function ManageTables(): JSX.Element {
           message: 'Mesa removida com sucesso',
         });
       } catch {
-        showNotification({
-          type: 'warn',
-          message: 'Não foi possível remover mesa',
-        });
-      } finally {
-        setRemoveTableLoading(false);
+        handleRemoveTableError();
       }
     }
 
@@ -192,17 +235,7 @@ export function ManageTables(): JSX.Element {
   function handleTableOccupied(uuid: string, occuppied: boolean): () => void {
     async function toggleTableOccupied(): Promise<void> {
       try {
-        await endpoints.toggleTableOccupied(uuid);
-
-        const content = data.content.map((item) => {
-          if (item.uuid === uuid) {
-            return { ...item, occupied: !item.occupied };
-          }
-
-          return item;
-        });
-
-        setData({ ...data, content });
+        await tableOccupiedMutation.mutateAsync(uuid);
 
         const message = occuppied
           ? 'Mesa desocupada com sucesso!'
@@ -214,10 +247,7 @@ export function ManageTables(): JSX.Element {
           duration: 2,
         });
       } catch {
-        showNotification({
-          type: 'warn',
-          message: 'Não foi possível alternar ocupação da mesa',
-        });
+        handleTableOccupiedError();
       }
     }
 
@@ -239,8 +269,6 @@ export function ManageTables(): JSX.Element {
     setPagination((oldPagination) => {
       return { ...oldPagination, page: page - 1 };
     });
-
-    setLoading(true);
   }
 
   function handleFormFinish(values: TableSearchForm): void {
@@ -258,7 +286,6 @@ export function ManageTables(): JSX.Element {
     setPagination({ ...pagination, page: 0 });
 
     closeDrawer();
-    setLoading(true);
   }
 
   function clearForm(): void {
@@ -276,7 +303,7 @@ export function ManageTables(): JSX.Element {
 
   function selectTable(uuid: string) {
     return () => {
-      const selectedTableFound = data.content.find(
+      const selectedTableFound = data?.content.find(
         (item) => item.uuid === uuid
       );
 
@@ -289,14 +316,7 @@ export function ManageTables(): JSX.Element {
 
   async function handleCreateTable(values: TablePersistForm): Promise<void> {
     try {
-      setPersistTableLoading(true);
-
-      const table = await endpoints.createTable(values);
-
-      setData({
-        ...data,
-        content: [...data.content, table],
-      });
+      await createTableMutation.mutateAsync(values);
 
       showNotification({
         type: 'success',
@@ -305,39 +325,15 @@ export function ManageTables(): JSX.Element {
 
       closePersistTable();
     } catch (error: any) {
-      const description = getFieldErrorsDescription(error);
-
-      handleError({
-        error,
-        description,
-        fallback: 'Não foi criar mesa',
-      });
-    } finally {
-      setPersistTableLoading(false);
+      handleCreateTableError(error);
     }
   }
 
   async function updateSelectedTable(values: TablePersistForm): Promise<void> {
     try {
-      setPersistTableLoading(true);
-
-      await endpoints.updateTable({
+      await updateTabledMutation.mutateAsync({
         ...values,
         uuid: selectedTable?.uuid || '',
-      });
-
-      const content = data.content.map((item) => {
-        if (item.uuid === selectedTable?.uuid) {
-          const { seats, number } = values;
-          return { ...item, seats, number };
-        }
-
-        return item;
-      });
-
-      setData({
-        ...data,
-        content,
       });
 
       showNotification({
@@ -347,15 +343,7 @@ export function ManageTables(): JSX.Element {
 
       closePersistTable();
     } catch (error: any) {
-      const description = getFieldErrorsDescription(error);
-
-      handleError({
-        error,
-        description,
-        fallback: 'Não foi atualizar mesa',
-      });
-    } finally {
-      setPersistTableLoading(false);
+      handleUpdateTableError(error);
     }
   }
 
@@ -373,7 +361,11 @@ export function ManageTables(): JSX.Element {
         </Button>
       </div>
 
-      {data.content.length ? (
+      {isLoading ? (
+        <div className={styles.loading}>
+          <SpinLoadingIndicator />
+        </div>
+      ) : data?.content.length ? (
         <ul className={styles.list}>
           {transitions((style, { uuid, number, occupied, seats }) => (
             <animated.li style={style}>
@@ -439,7 +431,7 @@ export function ManageTables(): JSX.Element {
                       <Button
                         shape="round"
                         onClick={handleRemoveTable(uuid)}
-                        loading={removeTableLoading}
+                        loading={removeTableMutation.isLoading}
                         icon={<DeleteOutlined />}
                         style={{ color: '#e74c3c' }}
                       />
@@ -463,7 +455,7 @@ export function ManageTables(): JSX.Element {
         <Pagination
           pageSize={pagination.size}
           current={pagination.page + 1}
-          total={data.totalElements}
+          total={data?.totalElements}
           hideOnSinglePage
           onChange={handlePaginationChange}
           responsive
@@ -487,7 +479,9 @@ export function ManageTables(): JSX.Element {
         title={selectedTable ? 'Atualizar mesa' : 'Criar mesa'}
         seats={selectedTable?.seats}
         number={selectedTable?.number}
-        loading={persistTableLoading}
+        loading={
+          createTableMutation.isLoading || updateTabledMutation.isLoading
+        }
         visible={persistTableShow}
         onFinish={selectedTable ? updateSelectedTable : handleCreateTable}
         onCancel={closePersistTable}
