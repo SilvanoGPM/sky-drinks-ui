@@ -93,40 +93,6 @@ export function ManageTables(): JSX.Element {
     queryClient.refetchQueries('tables');
   }
 
-  function handleTableOccupiedError(): void {
-    showNotification({
-      type: 'warn',
-      message: 'Não foi possível alternar ocupação da mesa',
-    });
-  }
-
-  function handleRemoveTableError(): void {
-    showNotification({
-      type: 'warn',
-      message: 'Não foi possível remover mesa',
-    });
-  }
-
-  function handleCreateTableError(error: any): void {
-    const description = getFieldErrorsDescription(error);
-
-    handleError({
-      error,
-      description,
-      fallback: 'Não foi criar mesa',
-    });
-  }
-
-  function handleUpdateTableError(error: any): void {
-    const description = getFieldErrorsDescription(error);
-
-    handleError({
-      error,
-      description,
-      fallback: 'Não foi atualizar mesa',
-    });
-  }
-
   const removeTableMutation = useMutation(
     (uuid: string) => {
       return endpoints.deleteTable(uuid);
@@ -210,7 +176,10 @@ export function ManageTables(): JSX.Element {
           message: 'Mesa removida com sucesso',
         });
       } catch {
-        handleRemoveTableError();
+        showNotification({
+          type: 'warn',
+          message: 'Não foi possível remover mesa',
+        });
       }
     }
 
@@ -247,7 +216,10 @@ export function ManageTables(): JSX.Element {
           duration: 2,
         });
       } catch {
-        handleTableOccupiedError();
+        showNotification({
+          type: 'warn',
+          message: 'Não foi possível alternar ocupação da mesa',
+        });
       }
     }
 
@@ -325,7 +297,13 @@ export function ManageTables(): JSX.Element {
 
       closePersistTable();
     } catch (error: any) {
-      handleCreateTableError(error);
+      const description = getFieldErrorsDescription(error);
+
+      handleError({
+        error,
+        description,
+        fallback: 'Não foi criar mesa',
+      });
     }
   }
 
@@ -343,7 +321,13 @@ export function ManageTables(): JSX.Element {
 
       closePersistTable();
     } catch (error: any) {
-      handleUpdateTableError(error);
+      const description = getFieldErrorsDescription(error);
+
+      handleError({
+        error,
+        description,
+        fallback: 'Não foi atualizar mesa',
+      });
     }
   }
 
