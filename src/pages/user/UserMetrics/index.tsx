@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Descriptions, Empty, Modal } from 'antd';
+import { Avatar, Descriptions, Empty, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
 
@@ -23,6 +23,7 @@ import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { formatDisplayRole } from 'src/utils/formatDisplayRole';
 import { getUserAge } from 'src/utils/getUserAge';
 import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
+import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 
 import styles from './styles.module.scss';
 
@@ -135,26 +136,36 @@ export function UserMetrics(): JSX.Element {
       {userLoading ? (
         <LoadingIndicator />
       ) : (
-        <Descriptions
-          title={<h3 className={styles.infoTitle}>Informações</h3>}
-          bordered
-          column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
-        >
-          <Descriptions.Item label="Nome">{user.name}</Descriptions.Item>
-          <Descriptions.Item label="Idade">
-            {getUserAge(user.birthDay)} Anos
-          </Descriptions.Item>
-          <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-          <Descriptions.Item label="CPF">{user.cpf}</Descriptions.Item>
-          <Descriptions.Item label="Cargo">
-            {formatDisplayRole(user.role)}
-          </Descriptions.Item>
-          <Descriptions.Item label="Pedidos">{`${
-            user.lockRequests
-              ? `Bloqueados em ${formatDisplayDate(user.lockRequestsTimestamp)}`
-              : 'Não bloqueados'
-          }`}</Descriptions.Item>
-        </Descriptions>
+        <>
+          <div className={styles.userImage}>
+            <Avatar size={50} src={endpoints.getUserImage(user.uuid)}>
+              {getFirstCharOfString(user.name)}
+            </Avatar>
+          </div>
+
+          <Descriptions
+            title={<h3 className={styles.infoTitle}>Informações</h3>}
+            bordered
+            column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
+          >
+            <Descriptions.Item label="Nome">{user.name}</Descriptions.Item>
+            <Descriptions.Item label="Idade">
+              {getUserAge(user.birthDay)} Anos
+            </Descriptions.Item>
+            <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
+            <Descriptions.Item label="CPF">{user.cpf}</Descriptions.Item>
+            <Descriptions.Item label="Cargo">
+              {formatDisplayRole(user.role)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Pedidos">{`${
+              user.lockRequests
+                ? `Bloqueados em ${formatDisplayDate(
+                    user.lockRequestsTimestamp
+                  )}`
+                : 'Não bloqueados'
+            }`}</Descriptions.Item>
+          </Descriptions>
+        </>
       )}
 
       {hasRequests ? (
@@ -208,7 +219,10 @@ export function UserMetrics(): JSX.Element {
           )}
         </div>
       ) : (
-        <Empty description="Nenhum pedido foi realizado" />
+        <Empty
+          style={{ marginTop: '2rem' }}
+          description="Nenhum pedido foi realizado"
+        />
       )}
     </section>
   );
