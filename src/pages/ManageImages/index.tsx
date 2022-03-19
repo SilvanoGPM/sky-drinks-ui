@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { List, Modal } from 'antd';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import endpoints from 'src/api/api';
 import { useTitle } from 'src/hooks/useTitle';
@@ -12,116 +13,67 @@ import { ImageItem } from './ImageItem';
 
 import styles from './styles.module.scss';
 
-interface ImageFoundedType {
-  image: string;
-  drinks: DrinkType[];
-}
-
-interface PaginetedDataType {
-  totalElements: number;
-  content: ImageFoundedType[];
-}
-
 const { confirm } = Modal;
-
-const INITIAL_DATA = {
-  totalElements: 0,
-  content: [],
-};
 
 export function ManageImages(): JSX.Element {
   useTitle('SkyDrinks - Gerenciar imagens');
 
-  const [loading, setLoading] = useState(true);
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  const queryClient = useQueryClient();
 
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,
   });
 
-  const [data, setData] = useState<PaginetedDataType>(INITIAL_DATA);
+  const { data, isLoading, isError, error } = useQuery(
+    ['images', pagination.page],
+    () => endpoints.getAllImages(pagination.page, pagination.size),
+    { keepPreviousData: true }
+  );
 
-  useEffect(() => {
-    async function loadImages(): Promise<void> {
-      try {
-        const dataFound = await endpoints.getAllImages(
-          pagination.page,
-          pagination.size
-        );
+  function onSuccess(): void {
+    queryClient.refetchQueries('images');
+  }
 
-        setData(dataFound);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: 'Não foi possível carregar as imagens das bebidas',
-        });
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (loading) {
-      loadImages();
-    }
-  }, [loading, pagination]);
-
-  useEffect(() => {
-    return () => {
-      setLoading(false);
-    };
-  }, []);
+  const deleteImageMutation = useMutation(
+    ({ image, type }: { image: string; type: ImageType }) => {
+      return type === 'DRINK'
+        ? endpoints.deleteDrinkImage(image)
+        : endpoints.deleteUserImage(image);
+    },
+    { onSuccess }
+  );
 
   function handlePaginationChange(page: number): void {
     setPagination((olgPagination) => {
       return { ...olgPagination, page: page - 1 };
     });
-
-    setData(INITIAL_DATA);
-
-    setLoading(true);
   }
 
   function deleteImage(image: string, type: ImageType): () => void {
     async function remove(): Promise<void> {
       try {
-        setLoadingDelete(true);
-
-        const action =
-          type === 'DRINK'
-            ? endpoints.deleteDrinkImage(image)
-            : endpoints.deleteUserImage(image);
-
-        await action;
+        await deleteImageMutation.mutateAsync({ image, type });
 
         const isLastElementOfPage =
-          data.content.length === 1 && pagination.page > 0;
-
-        setData({
-          ...data,
-          content: data.content.filter((item) => item.image !== image),
-        });
+          data?.content.length === 1 && pagination.page > 0;
 
         if (isLastElementOfPage) {
           setPagination({
             ...pagination,
             page: pagination.page - 1,
           });
-
-          setLoading(true);
         }
 
         showNotification({
           type: 'success',
           message: 'Imagem foi removida com sucesso!',
         });
-      } catch (error: any) {
+      } catch (deleteImageError: any) {
         handleError({
-          error,
+          error: deleteImageError,
           fallback: 'Não foi possível encontrar as imagens',
         });
-      } finally {
-        setLoadingDelete(false);
       }
     }
 
@@ -136,15 +88,22 @@ export function ManageImages(): JSX.Element {
     };
   }
 
+  if (isError) {
+    handleError({
+      error,
+      fallback: 'Não foi possível carregar as imagens das bebidas',
+    });
+  }
+
   return (
     <section className={styles.container}>
       <div>
         <h2 className={styles.title}>Imagens</h2>
       </div>
 
-      <UploadImages setListLoading={setLoading} />
+      <UploadImages />
 
-      {loading ? (
+      {isLoading ? (
         <LoadingIndicator />
       ) : (
         <div>
@@ -153,18 +112,18 @@ export function ManageImages(): JSX.Element {
               current: pagination.page + 1,
               pageSize: pagination.size,
               onChange: handlePaginationChange,
-              total: data.totalElements,
+              total: data?.totalElements,
               hideOnSinglePage: true,
               responsive: true,
               showSizeChanger: false,
             }}
-            dataSource={data.content}
+            dataSource={data?.content}
             renderItem={(props, index) => {
               return (
                 <ImageItem
                   {...props}
                   index={index}
-                  loadingDelete={loadingDelete}
+                  loadingDelete={deleteImageMutation.isLoading}
                   deleteImage={deleteImage}
                 />
               );

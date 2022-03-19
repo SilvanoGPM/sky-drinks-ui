@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PlayCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
+import { useMutation, useQueryClient } from 'react-query';
 
 import endpoints from 'src/api/api';
 import { showNotification } from 'src/utils/showNotification';
@@ -8,22 +9,23 @@ import { UploadFile } from 'antd/lib/upload/interface';
 
 import styles from './styles.module.scss';
 
-interface UploadImagesProps {
-  setListLoading: (listLoading: boolean) => void;
-}
+export function UploadImages(): JSX.Element {
+  const queryClient = useQueryClient();
 
-export function UploadImages({
-  setListLoading,
-}: UploadImagesProps): JSX.Element {
   const [images, setImages] = useState<File[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [imagesUploading, setImagesUploading] = useState(false);
 
-  function dummyRequest({ file, onSuccess }: any): void {
+  const uploadMutation = useMutation(
+    (imagesToUpload: File[]) =>
+      endpoints.uploadMultipleDrinksImages(imagesToUpload),
+    { onSuccess: () => queryClient.refetchQueries('images') }
+  );
+
+  function dummyRequest({ file, onSuccess }: any): Promise<void> {
     setImages([...images, file]);
     setFileList([...fileList, file]);
 
-    return onSuccess(file);
+    return new Promise(() => onSuccess(file));
   }
 
   function resetImages(): void {
@@ -33,11 +35,7 @@ export function UploadImages({
 
   async function uploadImages(): Promise<void> {
     try {
-      setImagesUploading(true);
-
-      await endpoints.uploadMultipleDrinksImages(images);
-
-      setListLoading(true);
+      await uploadMutation.mutateAsync(images);
 
       showNotification({
         type: 'success',
@@ -49,17 +47,26 @@ export function UploadImages({
         message: 'Não foi possível realizar o upload',
       });
     } finally {
-      setImagesUploading(false);
       resetImages();
+    }
+  }
+
+  function handleRemoveImage(image: any): void {
+    const filteredList = fileList.filter(({ uid }) => image.uid !== uid);
+
+    setFileList(filteredList);
+
+    if (filteredList.length === 0) {
+      setImages([]);
     }
   }
 
   return (
     <div className={styles.uploadImages}>
-      {Boolean(images.length) && (
+      {Boolean(fileList.length) && (
         <>
           <Button
-            loading={imagesUploading}
+            loading={uploadMutation.isLoading}
             size="large"
             type="primary"
             icon={<PlayCircleOutlined />}
@@ -69,7 +76,7 @@ export function UploadImages({
           </Button>
 
           <Button
-            loading={imagesUploading}
+            loading={uploadMutation.isLoading}
             size="large"
             type="primary"
             style={{
@@ -91,9 +98,10 @@ export function UploadImages({
         multiple
         customRequest={dummyRequest}
         fileList={fileList}
+        onRemove={handleRemoveImage}
       >
         <Button
-          loading={imagesUploading}
+          loading={uploadMutation.isLoading}
           size="large"
           icon={<UploadOutlined />}
         >
