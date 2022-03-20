@@ -12,7 +12,6 @@ import styles from './styles.module.scss';
 export function UploadImages(): JSX.Element {
   const queryClient = useQueryClient();
 
-  const [images, setImages] = useState<File[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const uploadMutation = useMutation(
@@ -22,19 +21,18 @@ export function UploadImages(): JSX.Element {
   );
 
   function dummyRequest({ file, onSuccess }: any): Promise<void> {
-    setImages([...images, file]);
     setFileList([...fileList, file]);
 
     return new Promise(() => onSuccess(file));
   }
 
   function resetImages(): void {
-    setImages([]);
     setFileList([]);
   }
 
   async function uploadImages(): Promise<void> {
     try {
+      const images = fileList.map((file: any) => file as File);
       await uploadMutation.mutateAsync(images);
 
       showNotification({
@@ -53,10 +51,7 @@ export function UploadImages(): JSX.Element {
 
   function handleRemoveImage(image: any): void {
     const filteredList = fileList.filter(({ uid }) => image.uid !== uid);
-    const imagesMapped = filteredList.map((file: any) => file as File);
-
     setFileList(filteredList);
-    setImages(imagesMapped);
   }
 
   return (

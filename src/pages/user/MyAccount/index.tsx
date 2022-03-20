@@ -1,7 +1,12 @@
 import { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Avatar, Button, Divider, Switch, Tooltip } from 'antd';
-import { CameraOutlined, EditOutlined } from '@ant-design/icons';
+import { Avatar, Divider, Modal, Switch, Tooltip } from 'antd';
+
+import {
+  CameraOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 import routes from 'src/routes';
 import { useTitle } from 'src/hooks/useTitle';
@@ -19,6 +24,8 @@ import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 import { Statistics } from './Statistics';
 
 import styles from './styles.module.scss';
+
+const { confirm } = Modal;
 
 export function MyAccount(): JSX.Element {
   useTitle('SkyDrinks - Minha Conta');
@@ -85,6 +92,32 @@ export function MyAccount(): JSX.Element {
     }
   }
 
+  function removeUserImage(): void {
+    async function removeImage(): Promise<void> {
+      try {
+        await endpoints.deleteUserImage(`${userInfo.uuid}.png`);
+
+        showNotification({
+          type: 'success',
+          message: 'Sua imagem foi removida com sucesso',
+        });
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: 'Não foi possível remover sua imagem',
+        });
+      }
+    }
+
+    confirm({
+      type: 'confirm',
+      title: 'Deseja remover sua imagem?',
+      okText: 'Sim',
+      cancelText: 'Não',
+      onOk: removeImage,
+    });
+  }
+
   const permissions = getUserPermissions(userInfo.role);
 
   return (
@@ -99,18 +132,34 @@ export function MyAccount(): JSX.Element {
             >
               {getFirstCharOfString(userInfo.name)}
             </Avatar>
-            <Button onClick={handleUploadClick} className={styles.camera}>
-              <CameraOutlined
-                style={{ fontSize: '1.5rem', color: '#ffffff' }}
-              />
-              <input
-                ref={uploadRef}
-                accept="image/png, image/jpeg"
-                onChange={handleFileChange}
-                type="file"
-                style={{ display: 'none' }}
-              />
-            </Button>
+            <div className={styles.actions}>
+              <button
+                type="button"
+                onClick={handleUploadClick}
+                className={styles.action}
+              >
+                <CameraOutlined
+                  style={{ fontSize: '1.2rem', color: '#ffffff' }}
+                />
+                <input
+                  ref={uploadRef}
+                  accept="image/png, image/jpeg"
+                  onChange={handleFileChange}
+                  type="file"
+                  style={{ display: 'none' }}
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={removeUserImage}
+                className={styles.action}
+              >
+                <DeleteOutlined
+                  style={{ fontSize: '1.2rem', color: '#ffffff' }}
+                />
+              </button>
+            </div>
           </div>
 
           <h2 className={styles.title}>Minha Conta</h2>
