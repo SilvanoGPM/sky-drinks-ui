@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { PlayCircleOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Upload } from 'antd';
 import { useMutation, useQueryClient } from 'react-query';
+import { UploadFile } from 'antd/lib/upload/interface';
 
 import endpoints from 'src/api/api';
 import { showNotification } from 'src/utils/showNotification';
-import { UploadFile } from 'antd/lib/upload/interface';
 
 import styles from './styles.module.scss';
 
@@ -53,12 +53,10 @@ export function UploadImages(): JSX.Element {
 
   function handleRemoveImage(image: any): void {
     const filteredList = fileList.filter(({ uid }) => image.uid !== uid);
+    const imagesMapped = filteredList.map((file: any) => file as File);
 
     setFileList(filteredList);
-
-    if (filteredList.length === 0) {
-      setImages([]);
-    }
+    setImages(imagesMapped);
   }
 
   return (
