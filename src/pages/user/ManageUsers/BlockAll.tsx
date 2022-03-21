@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 
 import endpoints from 'src/api/api';
 import { showNotification } from 'src/utils/showNotification';
+import { ModalWithPassword } from 'src/components/custom/ConfirmWithPassword';
 
 import styles from './styles.module.scss';
-
-const { confirm } = Modal;
 
 export function BlockAll(): JSX.Element {
   const [allBlocked, setAllBlocked] = useState(false);
@@ -43,22 +42,6 @@ export function BlockAll(): JSX.Element {
     }
   }
 
-  function handleBlockAllRequests(): void {
-    const title = allBlocked
-      ? 'Desbloquear todos os pedidos'
-      : 'Bloquear todos os pedidos';
-    const okText = allBlocked ? 'Desbloquear' : 'Bloquear';
-    const icon = allBlocked ? <UnlockOutlined /> : <LockOutlined />;
-
-    confirm({
-      title,
-      okText,
-      icon,
-      cancelText: 'Cancelar',
-      onOk: toggleBlockAllRequests,
-    });
-  }
-
   return (
     <div className={styles.blockRequests}>
       <p>
@@ -67,15 +50,33 @@ export function BlockAll(): JSX.Element {
           : 'Todos os pedidos estão desbloqueados!'}
       </p>
 
-      <div className={styles.fullButton}>
-        <Button
-          onClick={handleBlockAllRequests}
-          type="dashed"
-          icon={allBlocked ? <UnlockOutlined /> : <LockOutlined />}
-        >
-          {allBlocked ? 'Desbloquear pedidos' : 'Bloquear pedidos'}
-        </Button>
-      </div>
+      <ModalWithPassword
+        title={
+          allBlocked ? (
+            <div>
+              <UnlockOutlined style={{ marginRight: '0.5rem' }} />
+              Desbloquear todos os pedidos
+            </div>
+          ) : (
+            <div>
+              <LockOutlined style={{ marginRight: '0.5rem' }} />
+              Bloquear todos os pedidos
+            </div>
+          )
+        }
+        callback={toggleBlockAllRequests}
+      >
+        <div className={styles.fullButton}>
+          <Button
+            type="dashed"
+            icon={allBlocked ? <UnlockOutlined /> : <LockOutlined />}
+          >
+            {allBlocked
+              ? 'Desbloquear todos os pedidos'
+              : 'Bloquear todos os pedidos'}
+          </Button>
+        </div>
+      </ModalWithPassword>
     </div>
   );
 }

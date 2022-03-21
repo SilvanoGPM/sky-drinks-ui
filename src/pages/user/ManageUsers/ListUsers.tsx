@@ -10,7 +10,7 @@ import {
   UnlockOutlined,
 } from '@ant-design/icons';
 
-import { Avatar, Button, List, Pagination, Popconfirm, Tooltip } from 'antd';
+import { Avatar, Button, List, Pagination, Tooltip } from 'antd';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
@@ -20,6 +20,7 @@ import { handleError } from 'src/utils/handleError';
 import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
 import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
+import { ModalWithPassword } from 'src/components/custom/ConfirmWithPassword';
 
 import styles from './styles.module.scss';
 
@@ -203,24 +204,25 @@ export function ListUsers({
             <List.Item
               className={styles.item}
               actions={[
-                <Tooltip
+                <ModalWithPassword
                   key="remove"
-                  title="Deletar usuário"
-                  placement="bottom"
+                  title={
+                    <div>
+                      <DeleteOutlined style={{ marginRight: '0.5rem' }} />
+                      Deletar usuário <strong>{name}</strong>?
+                    </div>
+                  }
+                  callback={removeUser(uuid)}
+                  okText="Remover"
+                  cancelText="Cancelar"
                 >
-                  <Popconfirm
-                    title="Deletar usuário?"
-                    placement="top"
-                    okText="Remover"
-                    onConfirm={removeUser(uuid)}
-                    cancelText="Cancelar"
-                  >
+                  <Tooltip title="Deletar usuário" placement="bottom">
                     <Button
                       shape="round"
                       icon={<DeleteOutlined style={{ fontSize: 18 }} />}
                     />
-                  </Popconfirm>
-                </Tooltip>,
+                  </Tooltip>
+                </ModalWithPassword>,
                 <Tooltip key="edit" title="Editar usuário" placement="bottom">
                   <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
                     <Button
@@ -231,25 +233,34 @@ export function ListUsers({
                 </Tooltip>,
                 ...(getUserPermissions(role).isUser
                   ? [
-                      <Tooltip
+                      <ModalWithPassword
                         key="block"
                         title={
-                          lockRequests
-                            ? 'Desbloquear pedidos do usuário'
-                            : 'Bloquear pedidos do usuário'
+                          lockRequests ? (
+                            <div>
+                              <UnlockOutlined
+                                style={{ marginRight: '0.5rem' }}
+                              />
+                              Desbloquear pedidos de <strong>{name}</strong>?
+                            </div>
+                          ) : (
+                            <div>
+                              <LockOutlined style={{ marginRight: '0.5rem' }} />
+                              Bloquear pedidos de <strong>{name}</strong>?
+                            </div>
+                          )
                         }
-                        placement="bottom"
+                        callback={toggleLockRequests(uuid)}
+                        okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
+                        cancelText="Cancelar"
                       >
-                        <Popconfirm
+                        <Tooltip
                           title={
                             lockRequests
-                              ? 'Desbloquear pedidos do usuário?'
-                              : 'Bloquear pedidos do usuário?'
+                              ? 'Desbloquear pedidos do usuário'
+                              : 'Bloquear pedidos do usuário'
                           }
-                          onConfirm={toggleLockRequests(uuid)}
-                          placement="top"
-                          okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
-                          cancelText="Cancelar"
+                          placement="bottom"
                         >
                           {lockRequests ? (
                             <Button
@@ -262,8 +273,8 @@ export function ListUsers({
                               icon={<LockOutlined style={{ fontSize: 18 }} />}
                             />
                           )}
-                        </Popconfirm>
-                      </Tooltip>,
+                        </Tooltip>
+                      </ModalWithPassword>,
                     ]
                   : []),
                 <Tooltip title="Ver métricas do usuário" placement="bottom">

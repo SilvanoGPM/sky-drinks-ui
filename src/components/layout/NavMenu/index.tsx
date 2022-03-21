@@ -179,7 +179,7 @@ export function NavMenu({ menuShow, setMenuShow }: NavMenuProps): JSX.Element {
             className={styles.menuTitle}
             key="subDashboard"
             icon={<DesktopOutlined style={{ fontSize: 25 }} />}
-            title="Painel dos admins"
+            title="Painel dos Admins"
           >
             <Menu.Item
               icon={<UserOutlined style={{ fontSize: 25 }} />}
