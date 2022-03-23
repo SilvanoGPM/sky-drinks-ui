@@ -171,171 +171,179 @@ export function ListUsers({
   }
 
   return (
-    <div className={styles.list}>
-      <List
-        itemLayout="vertical"
-        dataSource={data.content}
-        footer={
-          <div className={styles.pagination}>
-            <Pagination
-              pageSize={pagination.size}
-              current={pagination.page + 1}
-              total={data.totalElements}
-              hideOnSinglePage
-              onChange={handlePaginationChange}
-              responsive
-              showSizeChanger={false}
-            />
-          </div>
-        }
-        renderItem={({
-          name,
-          email,
-          cpf,
-          birthDay,
-          role,
-          createdAt,
-          updatedAt,
-          uuid,
-          lockRequests,
-          lockRequestsTimestamp,
-        }) => (
-          <animated.div style={props}>
-            <List.Item
-              className={styles.item}
-              actions={[
-                <ModalWithPassword
-                  key="remove"
-                  title={
-                    <div>
-                      <DeleteOutlined style={{ marginRight: '0.5rem' }} />
-                      Deletar usuário <strong>{name}</strong>?
-                    </div>
-                  }
-                  callback={removeUser(uuid)}
-                  okText="Remover"
-                  cancelText="Cancelar"
-                >
-                  <Tooltip title="Deletar usuário" placement="bottom">
-                    <Button
-                      shape="round"
-                      icon={<DeleteOutlined style={{ fontSize: 18 }} />}
-                    />
-                  </Tooltip>
-                </ModalWithPassword>,
-                <Tooltip key="edit" title="Editar usuário" placement="bottom">
-                  <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
-                    <Button
-                      shape="round"
-                      icon={<EditOutlined style={{ fontSize: 18 }} />}
-                    />
-                  </Link>
-                </Tooltip>,
-                ...(getUserPermissions(role).isUser
-                  ? [
-                      <ModalWithPassword
-                        key="block"
-                        title={
-                          lockRequests ? (
-                            <div>
-                              <UnlockOutlined
-                                style={{ marginRight: '0.5rem' }}
-                              />
-                              Desbloquear pedidos de <strong>{name}</strong>?
-                            </div>
-                          ) : (
-                            <div>
-                              <LockOutlined style={{ marginRight: '0.5rem' }} />
-                              Bloquear pedidos de <strong>{name}</strong>?
-                            </div>
-                          )
-                        }
-                        callback={toggleLockRequests(uuid)}
-                        okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
-                        cancelText="Cancelar"
-                      >
-                        <Tooltip
-                          title={
-                            lockRequests
-                              ? 'Desbloquear pedidos do usuário'
-                              : 'Bloquear pedidos do usuário'
-                          }
-                          placement="bottom"
-                        >
-                          {lockRequests ? (
-                            <Button
-                              shape="round"
-                              icon={<UnlockOutlined style={{ fontSize: 18 }} />}
-                            />
-                          ) : (
-                            <Button
-                              shape="round"
-                              icon={<LockOutlined style={{ fontSize: 18 }} />}
-                            />
-                          )}
-                        </Tooltip>
-                      </ModalWithPassword>,
-                    ]
-                  : []),
-                <Tooltip title="Ver métricas do usuário" placement="bottom">
-                  <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
-                    <Button
-                      shape="round"
-                      icon={<EyeOutlined style={{ fontSize: 18 }} />}
-                    />
-                  </Link>
-                </Tooltip>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
-                  <Avatar src={endpoints.getUserImage(uuid)} size={50}>
-                    {getFirstCharOfString(name)}
-                  </Avatar>
-                }
-                title={<p className={styles.name}>{name}</p>}
-                description={<p className={styles.email}>Email: {email}</p>}
+    <>
+      <div className={styles.list}>
+        <List
+          itemLayout="vertical"
+          dataSource={data.content}
+          footer={
+            <div className={styles.pagination}>
+              <Pagination
+                pageSize={pagination.size}
+                current={pagination.page + 1}
+                total={data.totalElements}
+                hideOnSinglePage
+                onChange={handlePaginationChange}
+                responsive
+                showSizeChanger={false}
               />
-              <div>
-                <p>
-                  CPF: <span className={styles.bold}>{cpf}</span>
-                </p>
-                <p>
-                  Tipo:{' '}
-                  <span className={styles.bold}>{formatDisplayRole(role)}</span>
-                </p>
-                <p>
-                  Data de nascimento:{' '}
-                  <span className={styles.bold}>
-                    {formatDatabaseDate(birthDay)}
-                  </span>
-                </p>
-                <p>
-                  Conta criada em:{' '}
-                  <span className={styles.bold}>
-                    {formatDatabaseDate(createdAt)}
-                  </span>
-                </p>
-                <p>
-                  Conta atualizada em:{' '}
-                  <span className={styles.bold}>
-                    {formatDatabaseDate(updatedAt)}
-                  </span>
-                </p>
-
-                {lockRequests && (
+            </div>
+          }
+          renderItem={({
+            name,
+            email,
+            cpf,
+            birthDay,
+            role,
+            createdAt,
+            updatedAt,
+            uuid,
+            lockRequests,
+            lockRequestsTimestamp,
+          }) => (
+            <animated.div style={props}>
+              <List.Item
+                className={styles.item}
+                actions={[
+                  <ModalWithPassword
+                    key="remove"
+                    title={
+                      <div>
+                        <DeleteOutlined style={{ marginRight: '0.5rem' }} />
+                        Deletar usuário <strong>{name}</strong>?
+                      </div>
+                    }
+                    callback={removeUser(uuid)}
+                    okText="Remover"
+                    cancelText="Cancelar"
+                  >
+                    <Tooltip title="Deletar usuário" placement="bottom">
+                      <Button
+                        shape="round"
+                        icon={<DeleteOutlined style={{ fontSize: 18 }} />}
+                      />
+                    </Tooltip>
+                  </ModalWithPassword>,
+                  <Tooltip key="edit" title="Editar usuário" placement="bottom">
+                    <Link to={routes.EDIT_USER.replace(':uuid', uuid)}>
+                      <Button
+                        shape="round"
+                        icon={<EditOutlined style={{ fontSize: 18 }} />}
+                      />
+                    </Link>
+                  </Tooltip>,
+                  ...(getUserPermissions(role).isUser
+                    ? [
+                        <ModalWithPassword
+                          key="block"
+                          title={
+                            lockRequests ? (
+                              <div>
+                                <UnlockOutlined
+                                  style={{ marginRight: '0.5rem' }}
+                                />
+                                Desbloquear pedidos de <strong>{name}</strong>?
+                              </div>
+                            ) : (
+                              <div>
+                                <LockOutlined
+                                  style={{ marginRight: '0.5rem' }}
+                                />
+                                Bloquear pedidos de <strong>{name}</strong>?
+                              </div>
+                            )
+                          }
+                          callback={toggleLockRequests(uuid)}
+                          okText={lockRequests ? 'Desbloquear' : 'Bloquear'}
+                          cancelText="Cancelar"
+                        >
+                          <Tooltip
+                            title={
+                              lockRequests
+                                ? 'Desbloquear pedidos do usuário'
+                                : 'Bloquear pedidos do usuário'
+                            }
+                            placement="bottom"
+                          >
+                            {lockRequests ? (
+                              <Button
+                                shape="round"
+                                icon={
+                                  <UnlockOutlined style={{ fontSize: 18 }} />
+                                }
+                              />
+                            ) : (
+                              <Button
+                                shape="round"
+                                icon={<LockOutlined style={{ fontSize: 18 }} />}
+                              />
+                            )}
+                          </Tooltip>
+                        </ModalWithPassword>,
+                      ]
+                    : []),
+                  <Tooltip title="Ver métricas do usuário" placement="bottom">
+                    <Link to={routes.USER_METRICS.replace(':uuid', uuid)}>
+                      <Button
+                        shape="round"
+                        icon={<EyeOutlined style={{ fontSize: 18 }} />}
+                      />
+                    </Link>
+                  </Tooltip>,
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Avatar src={endpoints.getUserImage(uuid)} size={50}>
+                      {getFirstCharOfString(name)}
+                    </Avatar>
+                  }
+                  title={<p className={styles.name}>{name}</p>}
+                  description={<p className={styles.email}>Email: {email}</p>}
+                />
+                <div>
                   <p>
-                    Usuário bloqueado em:{' '}
+                    CPF: <span className={styles.bold}>{cpf}</span>
+                  </p>
+                  <p>
+                    Tipo:{' '}
                     <span className={styles.bold}>
-                      {formatDatabaseDate(lockRequestsTimestamp)}
+                      {formatDisplayRole(role)}
                     </span>
                   </p>
-                )}
-              </div>
-            </List.Item>
-          </animated.div>
-        )}
-      />
-    </div>
+                  <p>
+                    Data de nascimento:{' '}
+                    <span className={styles.bold}>
+                      {formatDatabaseDate(birthDay)}
+                    </span>
+                  </p>
+                  <p>
+                    Conta criada em:{' '}
+                    <span className={styles.bold}>
+                      {formatDatabaseDate(createdAt)}
+                    </span>
+                  </p>
+                  <p>
+                    Conta atualizada em:{' '}
+                    <span className={styles.bold}>
+                      {formatDatabaseDate(updatedAt)}
+                    </span>
+                  </p>
+
+                  {lockRequests && (
+                    <p>
+                      Usuário bloqueado em:{' '}
+                      <span className={styles.bold}>
+                        {formatDatabaseDate(lockRequestsTimestamp)}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              </List.Item>
+            </animated.div>
+          )}
+        />
+      </div>
+    </>
   );
 }

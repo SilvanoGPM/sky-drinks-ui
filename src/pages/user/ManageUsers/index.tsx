@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
 import { SearchOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
@@ -13,6 +12,7 @@ import { sortObjectToString } from 'src/utils/sortObjectToString';
 import { UsersDrawer } from './UsersDrawer';
 import { ListUsers } from './ListUsers';
 import { BlockAll } from './BlockAll';
+import { TotalUsers } from './TotalUsers';
 
 import styles from './styles.module.scss';
 
@@ -53,6 +53,8 @@ export function ManageUsers(): JSX.Element {
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>Gerenciar Usuários</h2>
+
+      <TotalUsers />
 
       <div className={styles.fullButton}>
         <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>

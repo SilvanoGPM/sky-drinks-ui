@@ -41,6 +41,11 @@ const usersEndpoints = {
     return data;
   },
 
+  async countTotalUsers(): Promise<TotalUsers> {
+    const { data } = await api.get<TotalUsers>('/users/admin/total-users');
+    return data;
+  },
+
   async searchUser(params: UserSearchParams): Promise<UserPaginatedType> {
     const searchParams = qs.stringify(params);
 

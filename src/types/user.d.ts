@@ -57,3 +57,9 @@ interface UserSearchForm {
   lockRequests: number;
   sort: SortType;
 }
+
+interface TotalUsers {
+  total: number;
+  locked: number;
+  unlocked: number;
+}
