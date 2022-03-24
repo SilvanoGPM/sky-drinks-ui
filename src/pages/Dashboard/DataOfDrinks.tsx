@@ -1,5 +1,6 @@
 import { Bar } from 'react-chartjs-2';
 import { Divider, Empty } from 'antd';
+import { useQuery } from 'react-query';
 
 import {
   Chart as ChartJS,
@@ -14,7 +15,6 @@ import {
 
 import endpoints from 'src/api/api';
 import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
-import { useQuery } from 'react-query';
 
 import { handleError } from 'src/utils/handleError';
 import { randomHotRGBColor, randomRGB } from 'src/utils/rgbUtils';

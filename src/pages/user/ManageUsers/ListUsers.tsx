@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { animated, config, useSpring } from 'react-spring';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import {
   DeleteOutlined,
@@ -21,29 +22,16 @@ import { formatDatabaseDate } from 'src/utils/formatDatabaseDate';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
 import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 import { ModalWithPassword } from 'src/components/custom/ConfirmWithPassword';
+import { SpinLoadingIndicator } from 'src/components/other/LoadingIndicator';
 
 import styles from './styles.module.scss';
 
 interface ListUsersProps {
-  loading: boolean;
   params: UserSearchParams;
-  setLoading: (loading: boolean) => void;
 }
 
-export function ListUsers({
-  params,
-  loading,
-  setLoading,
-}: ListUsersProps): JSX.Element {
-  const [pagination, setPagination] = useState({
-    page: 0,
-    size: 10,
-  });
-
-  const [data, setData] = useState<UserPaginatedType>({
-    totalElements: 0,
-    content: [],
-  });
+export function ListUsers({ params }: ListUsersProps): JSX.Element {
+  const queryClient = useQueryClient();
 
   const props = useSpring({
     from: { opacity: 0, scale: 0 },
@@ -51,78 +39,74 @@ export function ListUsers({
     config: config.stiff,
   });
 
-  useEffect(() => {
-    async function loadUsers(): Promise<void> {
-      try {
-        const { page, size } = pagination;
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+  });
 
-        if (params.email) {
-          const content = await endpoints.findUserByEmail(params.email);
-
-          setData({
-            totalElements: content ? 1 : 0,
-            content: [content],
-          });
-        } else if (params.cpf) {
-          const content = await endpoints.findUserByCPF(params.cpf);
-
-          setData({
-            totalElements: content ? 1 : 0,
-            content: [content],
-          });
-        } else {
-          const dataFound = await endpoints.searchUser({
-            ...params,
-            page,
-            size,
-          });
-
-          setData(dataFound);
-        }
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: 'Não foi possível pesquisar os usuários',
-        });
-      } finally {
-        setLoading(false);
+  const { isLoading, isError, error, data } = useQuery(
+    ['manageUsers', pagination.page],
+    () => {
+      if (params.email) {
+        return endpoints.findUserByEmail(params.email);
       }
-    }
 
-    if (loading) {
-      loadUsers();
-    }
-  }, [loading, pagination, params, setLoading]);
+      if (params.cpf) {
+        return endpoints.findUserByCPF(params.cpf);
+      }
+
+      const { page, size } = pagination;
+
+      return endpoints.searchUser({
+        ...params,
+        page,
+        size,
+      });
+    },
+    { keepPreviousData: true }
+  );
+
+  function onSuccess(): void {
+    queryClient.refetchQueries('totalUsers');
+    queryClient.refetchQueries('manageUsers');
+  }
+
+  const removeUserMutation = useMutation(
+    (uuid: string) => {
+      return endpoints.deleteUser(uuid);
+    },
+    { onSuccess }
+  );
+
+  const lockRequestsMutation = useMutation(
+    (uuid: string) => {
+      return endpoints.toggleUserLockRequests(uuid);
+    },
+    { onSuccess }
+  );
 
   function removeUser(uuid: string) {
     return async () => {
       try {
-        await endpoints.deleteUser(uuid);
-
-        setData({
-          ...data,
-          content: data.content.filter((item) => item.uuid !== uuid),
-        });
+        await removeUserMutation.mutateAsync(uuid);
 
         const isLastElementOfPage =
-          data.content.length === 1 && pagination.page > 0;
+          data?.content.length === 1 && pagination.page > 0;
 
         if (isLastElementOfPage) {
           setPagination({
             ...pagination,
             page: pagination.page - 1,
           });
-
-          setLoading(true);
         }
 
         showNotification({
           type: 'success',
           message: 'Usuário foi removido com sucesso!',
         });
-      } catch (error: any) {
+      } catch (removeUserError: any) {
         handleError({
-          error,
+          error: removeUserError,
           fallback: 'Aconteceu um erro ao tentar remover usuário',
         });
       }
@@ -132,16 +116,7 @@ export function ListUsers({
   function toggleLockRequests(uuid: string) {
     return async () => {
       try {
-        const { lockRequests, lockRequestsTimestamp } =
-          await endpoints.toggleUserLockReqeusts(uuid);
-
-        const content = data.content.map((item) => {
-          if (item.uuid === uuid) {
-            return { ...item, lockRequests, lockRequestsTimestamp };
-          }
-
-          return item;
-        });
+        const { lockRequests } = await lockRequestsMutation.mutateAsync(uuid);
 
         const message = lockRequests
           ? 'Pedidos do usuário foram bloqueados!'
@@ -151,8 +126,6 @@ export function ListUsers({
           type: 'success',
           message,
         });
-
-        setData({ ...data, content });
       } catch {
         showNotification({
           type: 'warn',
@@ -163,11 +136,26 @@ export function ListUsers({
   }
 
   function handlePaginationChange(page: number): void {
-    setLoading(true);
-
     setPagination((oldPagination) => {
       return { ...oldPagination, page: page - 1 };
     });
+  }
+
+  if (isLoading) {
+    return (
+      <div className={styles.loading}>
+        <SpinLoadingIndicator />
+      </div>
+    );
+  }
+
+  if (isError) {
+    handleError({
+      error,
+      fallback: 'Não foi possível pesquisar os usuários',
+    });
+
+    return <></>;
   }
 
   return (
@@ -175,13 +163,13 @@ export function ListUsers({
       <div className={styles.list}>
         <List
           itemLayout="vertical"
-          dataSource={data.content}
+          dataSource={data?.content}
           footer={
             <div className={styles.pagination}>
               <Pagination
                 pageSize={pagination.size}
                 current={pagination.page + 1}
-                total={data.totalElements}
+                total={data?.totalElements}
                 hideOnSinglePage
                 onChange={handlePaginationChange}
                 responsive

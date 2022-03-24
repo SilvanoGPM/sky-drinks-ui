@@ -22,7 +22,6 @@ export function ManageUsers(): JSX.Element {
   const [form] = useForm();
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   const [params, setParams] = useState<UserSearchParams>({});
 
@@ -47,7 +46,6 @@ export function ManageUsers(): JSX.Element {
     });
 
     closeDrawer();
-    setLoading(true);
   }
 
   return (
@@ -62,7 +60,7 @@ export function ManageUsers(): JSX.Element {
         </Button>
       </div>
 
-      <ListUsers params={params} loading={loading} setLoading={setLoading} />
+      <ListUsers params={params} />
 
       <div className={styles.bottomButton}>
         <Tooltip title="Criar novo usuário" placement="left">

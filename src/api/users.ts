@@ -73,16 +73,24 @@ const usersEndpoints = {
     }
   },
 
-  async findUserByEmail(email: string): Promise<UserType> {
+  async findUserByEmail(email: string): Promise<UserPaginatedType> {
     const { data } = await api.get<UserType>(
       `/users/admin/find-by-email/${email}`
     );
-    return data;
+
+    return {
+      content: [data],
+      totalElements: 1,
+    };
   },
 
-  async findUserByCPF(cpf: string): Promise<UserType> {
+  async findUserByCPF(cpf: string): Promise<UserPaginatedType> {
     const { data } = await api.get<UserType>(`/users/admin/find-by-cpf/${cpf}`);
-    return data;
+
+    return {
+      content: [data],
+      totalElements: 1,
+    };
   },
 
   async getUserInfo(): Promise<UserType> {
@@ -106,7 +114,7 @@ const usersEndpoints = {
     await api.put('/users/user', drinkToUpdate);
   },
 
-  async toggleUserLockReqeusts(uuid: string): Promise<UserType> {
+  async toggleUserLockRequests(uuid: string): Promise<UserType> {
     const { data } = await api.patch<UserType>(
       `/users/admin/toggle-lock-requests/${uuid}`
     );
