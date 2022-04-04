@@ -1,7 +1,13 @@
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import useDraggableScroll from 'use-draggable-scroll';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Empty } from 'antd';
+import { Empty, Switch } from 'antd';
+
+import {
+  LeftOutlined,
+  PauseOutlined,
+  PlayCircleOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 
 import { SpinLoadingIndicator } from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
@@ -18,7 +24,10 @@ interface HorizontalListProps {
   isError?: boolean;
   loading?: boolean;
   scrollOffset?: number;
+  autoScrollTimeout?: number;
   fallbackErrorMessage?: string;
+  playing: boolean;
+  setPlaying: (playing: boolean) => void;
 }
 
 export function HorizontalList({
@@ -30,16 +39,66 @@ export function HorizontalList({
   isError = false,
   loading = false,
   scrollOffset = 500,
+  autoScrollTimeout = 1000,
+  playing,
+  setPlaying,
 }: HorizontalListProps): JSX.Element {
-  const drinksRef = useRef<HTMLUListElement>(null);
+  const drinksRef = useRef<HTMLUListElement | null>(null);
 
   const { onMouseDown } = useDraggableScroll(drinksRef);
+
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  const animateScroll = useCallback(
+    (list: HTMLUListElement) => {
+      if (!playing) {
+        return;
+      }
+
+      const newIntervalId = setInterval(() => {
+        const scrollWidth = list.scrollWidth - list.clientWidth;
+
+        const left =
+          list.scrollLeft >= scrollWidth ? 0 : list.scrollLeft + scrollOffset;
+
+        list.scroll({ behavior: 'smooth', left });
+      }, autoScrollTimeout);
+
+      setIntervalId(newIntervalId);
+    },
+    [playing, autoScrollTimeout, scrollOffset]
+  );
+
+  useEffect(() => {
+    if (!playing && intervalId) {
+      setLoaded(false);
+      clearInterval(intervalId);
+      return;
+    }
+
+    if (!loaded) {
+      setTimeout(() => {
+        const list = drinksRef.current;
+
+        if (list) {
+          setLoaded(true);
+          animateScroll(list);
+        }
+      }, autoScrollTimeout);
+    }
+  }, [playing, intervalId, animateScroll, autoScrollTimeout, loaded]);
 
   function scroll(offset: number): void {
     const list = drinksRef.current;
 
     if (list) {
       list.scroll({ behavior: 'smooth', left: list.scrollLeft + offset });
+
+      if (intervalId) {
+        clearInterval(intervalId);
+        animateScroll(list);
+      }
     }
   }
 
@@ -73,7 +132,17 @@ export function HorizontalList({
     <Empty style={{ marginTop: '2rem' }} description={emptyDescription} />
   ) : (
     <>
-      {title}
+      <div className={styles.header}>
+        {title}
+        <Switch
+          checkedChildren={<PlayCircleOutlined />}
+          unCheckedChildren={<PauseOutlined />}
+          defaultChecked
+          checked={playing}
+          onChange={setPlaying}
+          className={styles.switch}
+        />
+      </div>
 
       <div className={styles.listContainer}>
         <button

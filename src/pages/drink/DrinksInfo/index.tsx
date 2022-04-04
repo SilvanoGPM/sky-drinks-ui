@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Space } from 'antd';
 
 import {
@@ -31,6 +31,8 @@ export function DrinksInfo(): JSX.Element {
   const latestDrinksQuery = useQuery('latestDrinks', () =>
     endpoints.getLatestDrinks(10)
   );
+
+  const [playing, setPlaying] = useState<boolean>(true);
 
   function mapTopDrinksToDrink(
     topDrinksFound: TopDrinkType[]
@@ -73,6 +75,8 @@ export function DrinksInfo(): JSX.Element {
         error={latestDrinksQuery.error}
         drinks={latestDrinksQuery.data}
         loading={latestDrinksQuery.isLoading}
+        playing={playing}
+        setPlaying={setPlaying}
       />
 
       <HorizontalList
@@ -88,6 +92,8 @@ export function DrinksInfo(): JSX.Element {
         error={topDrinksQuery.error}
         drinks={topDrinksQuery.data}
         loading={topDrinksQuery.isLoading}
+        playing={playing}
+        setPlaying={setPlaying}
       />
 
       {isUser && (
@@ -104,6 +110,8 @@ export function DrinksInfo(): JSX.Element {
           error={myTopDrinksQuery.error}
           drinks={myTopDrinksQuery.data}
           loading={myTopDrinksQuery.isLoading}
+          playing={playing}
+          setPlaying={setPlaying}
         />
       )}
     </section>

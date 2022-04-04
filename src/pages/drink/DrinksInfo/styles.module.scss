@@ -2,6 +2,20 @@
 @import 'src/scss/shared';
 @import 'src/scss/mixins';
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media #{$mq-medium} {
+    flex-direction: column;
+
+    .switch {
+      align-self: flex-end;
+    }
+  }
+}
+
 .listTitle {
   font-size: 1.25rem;
   font-weight: bold;
