@@ -140,7 +140,6 @@ export function HorizontalList({
           defaultChecked
           checked={playing}
           onChange={setPlaying}
-          className={styles.switch}
         />
       </div>
 

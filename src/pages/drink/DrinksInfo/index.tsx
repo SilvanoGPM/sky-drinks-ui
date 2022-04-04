@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Space } from 'antd';
 
 import {
@@ -16,6 +16,7 @@ import routes from 'src/routes';
 import { useFlashNotification } from 'src/hooks/useFlashNotification';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
+import { useStorage } from 'src/hooks/useStorage';
 
 import { HorizontalList } from './HorizontalList';
 
@@ -32,7 +33,10 @@ export function DrinksInfo(): JSX.Element {
     endpoints.getLatestDrinks(10)
   );
 
-  const [playing, setPlaying] = useState<boolean>(true);
+  const [playing, setPlaying] = useStorage<boolean>(
+    '@SkyDrinks/HORIZONTAL_LIST_PLAYING',
+    true
+  );
 
   function mapTopDrinksToDrink(
     topDrinksFound: TopDrinkType[]
