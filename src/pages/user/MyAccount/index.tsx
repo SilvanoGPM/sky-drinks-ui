@@ -32,12 +32,8 @@ export function MyAccount(): JSX.Element {
 
   const { userInfo } = useContext(AuthContext);
 
-  const {
-    notificationPermission,
-    requestNotificationPermission,
-    soundPermission,
-    toggleSoundPermission,
-  } = useContext(BrowserPermissionsContext);
+  const { permissions, requestNotificationPermission, toggleSoundPermission } =
+    useContext(BrowserPermissionsContext);
 
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const userImageRef = useRef<HTMLSpanElement | null>(null);
@@ -118,7 +114,7 @@ export function MyAccount(): JSX.Element {
     });
   }
 
-  const permissions = getUserPermissions(userInfo.role);
+  const userPermissions = getUserPermissions(userInfo.role);
 
   return (
     <section className={styles.container}>
@@ -221,7 +217,7 @@ export function MyAccount(): JSX.Element {
         </div>
       </div>
 
-      {permissions.isUser && <Statistics />}
+      {userPermissions.isUser && <Statistics />}
 
       <div>
         <Divider orientation="left" style={{ fontSize: '1.5rem' }}>
@@ -230,13 +226,13 @@ export function MyAccount(): JSX.Element {
 
         <div className={styles.perm}>
           <p>Permitir sons:</p>
-          <Switch checked={soundPermission} onClick={toggleSoundPermission} />
+          <Switch checked={permissions.sound} onClick={toggleSoundPermission} />
         </div>
 
         <div className={styles.perm}>
           <p>Permitir notificações:</p>
           <Switch
-            checked={notificationPermission === 'granted'}
+            checked={permissions.notifications === 'granted'}
             onClick={requestNotificationPermission}
           />
         </div>
