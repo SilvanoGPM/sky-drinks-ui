@@ -10,21 +10,21 @@ interface UseBrowserNotificationReturn {
 }
 
 export function useBrowserNotification(): UseBrowserNotificationReturn {
-  const { permissions, requestNotificationPermission } = useContext(
+  const { notificationPermission, requestNotificationPermission } = useContext(
     BrowserPermissionsContext
   );
 
   useEffect(() => {
-    if (permissions.notifications === 'default') {
+    if (notificationPermission === 'default') {
       requestNotificationPermission();
     }
-  }, [permissions, requestNotificationPermission]);
+  }, [notificationPermission, requestNotificationPermission]);
 
   function createBrowsetNotification(
     title: string,
     options?: NotificationOptions
   ): void {
-    if (permissions.notifications === 'granted') {
+    if (notificationPermission === 'granted') {
       new Notification(title, options);
     }
   }

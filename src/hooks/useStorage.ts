@@ -8,53 +8,36 @@ type UseStorageReturn<T> = [
   boolean
 ];
 
-type UseStorageOptionsCallback<T> = (value: T) => boolean;
-
-interface UseStorageOptions<T> {
-  depends: UseStorageOptionsCallback<T> | boolean;
-}
-
 export function useStorage<T>(
   key: string,
-  initialValue: T,
-  options: UseStorageOptions<T> = { depends: true }
+  initialValue: T
 ): UseStorageReturn<T> {
   const [loading, setLoading] = useState<boolean>(true);
   const [storedValue, setStoredValue] = useState<T>(initialValue);
 
   useEffect(() => {
-    function loadStoredValue(): void {
-      const valueFound = Repository.get<T>(key);
+    async function loadStoredValue(): Promise<void> {
+      const valueFound = await Repository.get<T>(key);
 
-      const notEmptyValue = valueFound !== undefined && valueFound !== null;
-
-      const hasValid =
-        notEmptyValue &&
-        ((typeof options.depends === 'function' &&
-          options.depends(valueFound)) ||
-          options.depends);
-
-      if (hasValid) {
+      if (valueFound !== undefined && valueFound !== null) {
         setStoredValue(valueFound);
       }
 
       setLoading(false);
     }
 
-    if (loading) {
-      loadStoredValue();
-    }
-  }, [key, options, loading]);
+    loadStoredValue();
+  }, [key]);
 
   useEffect(() => {
-    function storeValue(): void {
-      Repository.save<T>(key, storedValue);
+    async function storeValue(): Promise<void> {
+      await Repository.save<T>(key, storedValue);
     }
 
-    if (!loading && options.depends) {
+    if (!loading) {
       storeValue();
     }
-  }, [storedValue, loading, options, key]);
+  }, [storedValue, loading, key]);
 
   return [storedValue, setStoredValue, loading];
 }

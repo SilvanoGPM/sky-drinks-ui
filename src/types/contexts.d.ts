@@ -10,10 +10,10 @@ interface AuthContenxtType {
 }
 
 interface RequestContextType {
-  request: RequestToCreate;
+  request: RequestType;
   addDrink: (drink: DrinkType) => void;
   clearRequest: () => void;
-  setRequest: (request: RequestToCreate) => void;
+  setRequest: (request: RequestType) => void;
   changeTable: (table?: TableType) => void;
   loading: boolean;
 }

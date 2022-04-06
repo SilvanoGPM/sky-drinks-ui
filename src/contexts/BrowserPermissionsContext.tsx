@@ -1,20 +1,19 @@
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { Modal } from 'antd';
 
-import { useStorage } from 'src/hooks/useStorage';
-
 import { AuthContext } from './AuthContext';
 
-interface Permissions {
-  sound: boolean;
-  notifications: NotificationPermission;
-}
-
-type PermissionsRecord = Record<string, Permissions>;
-
 interface BrowserPermissionsContextType {
-  permissions: Permissions;
+  notificationPermission: NotificationPermission;
+  soundPermission: boolean;
   requestNotificationPermission: () => void;
   toggleSoundPermission: () => void;
 }
@@ -28,6 +27,8 @@ export const BrowserPermissionsContext =
     {} as BrowserPermissionsContextType
   );
 
+const PERMISSIONS_KEY = '@permissions';
+
 const { info } = Modal;
 
 export function BrowserPermissionsProvider({
@@ -35,32 +36,42 @@ export function BrowserPermissionsProvider({
 }: BrowserPermissionsProviderProps): JSX.Element {
   const { userInfo, authenticated } = useContext(AuthContext);
 
-  const initialValue = {
-    [userInfo.email]: {
-      notifications: Notification.permission,
-      sound: true,
-    },
-  };
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission>(Notification.permission);
 
-  const [permissions, setPermissions] = useStorage<PermissionsRecord>(
-    '@SkyDrinks/PERMISSIONS',
-    initialValue,
-    { depends: (perms) => perms[userInfo.email] && authenticated }
-  );
+  const [soundPermission, setSoundPermission] = useState(true);
+
+  useEffect(() => {
+    const permString = localStorage.getItem(PERMISSIONS_KEY);
+
+    if (permString && authenticated) {
+      const perms = JSON.parse(permString);
+
+      if (perms[userInfo.email]) {
+        setSoundPermission(perms[userInfo.email].sound);
+      }
+    }
+  }, [userInfo, authenticated]);
+
+  useEffect(() => {
+    if (authenticated) {
+      const otherUsersString = localStorage.getItem(PERMISSIONS_KEY);
+      const otherUsers = otherUsersString ? JSON.parse(otherUsersString) : {};
+
+      const perms = JSON.stringify({
+        ...otherUsers,
+        [userInfo.email]: { sound: soundPermission },
+      });
+
+      localStorage.setItem(PERMISSIONS_KEY, perms);
+    }
+  }, [soundPermission, userInfo, authenticated]);
 
   const requestNotificationPermission = useCallback(() => {
     async function request(): Promise<void> {
       const response = await Notification.requestPermission();
-
-      const userPerms = permissions[userInfo.email];
-
-      setPermissions({
-        ...permissions,
-        [userInfo.email]: { ...userPerms, notifications: response },
-      });
+      setNotificationPermission(response);
     }
-
-    const notificationPermission = permissions[userInfo.email].notifications;
 
     if (notificationPermission !== 'granted') {
       const content =
@@ -85,27 +96,23 @@ export function BrowserPermissionsProvider({
         onCancel: request,
       });
     }
-  }, [permissions, userInfo, setPermissions]);
+  }, [notificationPermission]);
 
   const toggleSoundPermission = useCallback(() => {
-    const userPerms = permissions[userInfo.email];
-
-    setPermissions({
-      ...permissions,
-      [userInfo.email]: { ...userPerms, sound: !userPerms.sound },
-    });
-  }, [permissions, userInfo, setPermissions]);
+    setSoundPermission(!soundPermission);
+  }, [soundPermission]);
 
   const value = useMemo(
     () => ({
-      permissions: permissions[userInfo.email],
+      notificationPermission,
       requestNotificationPermission,
+      soundPermission,
       toggleSoundPermission,
     }),
     [
-      permissions,
-      userInfo,
+      notificationPermission,
       requestNotificationPermission,
+      soundPermission,
       toggleSoundPermission,
     ]
   );

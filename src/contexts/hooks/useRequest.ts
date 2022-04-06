@@ -1,10 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Modal } from 'antd';
 
 import { getUserAge } from 'src/utils/getUserAge';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
 import { showNotification } from 'src/utils/showNotification';
-import { useStorage } from 'src/hooks/useStorage';
 
 import { AuthContext } from '../AuthContext';
 
@@ -14,13 +13,30 @@ export const MINORITY = 18;
 
 const { confirm } = Modal;
 
+const initialRequestState = {
+  drinks: [] as DrinkType[],
+  status: 'PROCESSING',
+} as RequestType;
+
 export function useRequest(): RequestContextType {
   const { userInfo } = useContext(AuthContext);
 
-  const [request, setRequest, loading] = useStorage<RequestToCreate>(
-    '@SkyDrinks/REQUEST_TO_CREATE',
-    { drinks: [] }
-  );
+  const [request, setRequest] = useState<RequestType>(initialRequestState);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const requestFound = localStorage.getItem(REQUEST_KEY);
+
+    if (requestFound) {
+      setRequest(JSON.parse(requestFound));
+    }
+
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(REQUEST_KEY, JSON.stringify(request));
+  }, [request]);
 
   const permissions = getUserPermissions(userInfo.role);
 
@@ -84,7 +100,7 @@ export function useRequest(): RequestContextType {
   }
 
   function clearRequest(): void {
-    setRequest({ drinks: [] });
+    setRequest(initialRequestState);
   }
 
   function changeTable(table?: TableType): void {

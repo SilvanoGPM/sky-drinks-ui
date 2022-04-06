@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import endpoints, { api } from 'src/api/api';
 import { handleError } from 'src/utils/handleError';
 
-export const USER_CREDENTIALS_KEY = '@SkyDrinks/USER_CREDENTIALS';
+export const USER_CREDENTIALS_KEY = 'userCredentials';
 
 export function useAuth(): AuthContenxtType {
   const [userInfo, setUserInfo] = useState<UserType>({} as UserType);
