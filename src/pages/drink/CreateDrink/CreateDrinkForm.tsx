@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { useMutation, useQueryClient } from 'react-query';
 
 import {
   Button,
@@ -45,29 +46,26 @@ export function CreateDrinkForm({
   form,
   setCreated,
 }: DrinkCreateFormProps): JSX.Element {
-  const [image, setImage] = useState<File | string>();
+  const queryClient = useQueryClient();
 
-  const [createLoading, setCreateLoading] = useState(false);
+  const [image, setImage] = useState<File | string>();
 
   const [useExistsImage, setUseExistsImage] = useState(false);
 
   const { images, imagesLoading } = useImages();
 
-  useEffect(() => {
-    return () => {
-      setCreateLoading(false);
-    };
-  }, []);
+  const createDrinkMutation = useMutation(
+    (drinkToCreate: DrinkToCreate) => endpoints.createDrink(drinkToCreate),
+    { onSuccess: () => queryClient.refetchQueries('drinks') }
+  );
 
   async function handleFormFinish(values: DrinkCreateForm): Promise<void> {
     try {
-      setCreateLoading(true);
-
       const additional = values.additional
         ? values.additional.join(';').toLowerCase()
         : '';
 
-      const drink = await endpoints.createDrink({
+      const drink = await createDrinkMutation.mutateAsync({
         ...values,
         volume: Math.round(values.volume),
         picture: image,
@@ -93,8 +91,6 @@ export function CreateDrinkForm({
       });
 
       form.resetFields();
-    } finally {
-      setCreateLoading(false);
     }
   }
 
@@ -267,7 +263,7 @@ export function CreateDrinkForm({
           }}
         >
           <Button
-            loading={createLoading}
+            loading={createDrinkMutation.isLoading}
             icon={<PlusOutlined />}
             size="large"
             type="primary"
