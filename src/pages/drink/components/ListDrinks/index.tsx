@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Empty, Form, Pagination } from 'antd';
 import { useSearchParams } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import qs from 'query-string';
 
 import endpoints from 'src/api/api';
@@ -16,10 +17,8 @@ import { DrinkCard } from '../DrinkCard';
 import styles from './styles.module.scss';
 
 interface ListDrinksProps {
-  loading: boolean;
   showBuyAction?: boolean;
   drawerVisible: boolean;
-  setLoading: (loading: boolean) => void;
   renderMoreActions?: (props: ActionRenderType) => React.ReactNode[];
   setDrawerVisible: (drawerVisible: boolean) => void;
 }
@@ -32,10 +31,8 @@ interface PriceAndVolumeType {
 }
 
 export function ListDrinks({
-  loading,
   drawerVisible,
   renderMoreActions,
-  setLoading,
   setDrawerVisible,
   showBuyAction = true,
 }: ListDrinksProps): JSX.Element {
@@ -50,13 +47,24 @@ export function ListDrinks({
     size: 6,
   });
 
-  const [data, setData] = useState<DrinkPaginatedType>({
-    totalElements: 0,
-    content: [],
-  });
+  const [startFetch, setStartFetch] = useState(false);
+
+  const { data, error, isLoading, isError } = useQuery<DrinkPaginatedType>(
+    ['drinks', pagination.page],
+    () =>
+      endpoints.searchDrink({
+        ...params,
+        page: pagination.page,
+        size: pagination.size,
+      }),
+    {
+      enabled: startFetch,
+      keepPreviousData: true,
+    }
+  );
 
   useCreateParams({
-    setLoading,
+    setLoading: setStartFetch,
     setParams,
     setPagination,
     params: {
@@ -73,47 +81,18 @@ export function ListDrinks({
   });
 
   useEffect(() => {
-    async function loadDrinks(): Promise<void> {
-      try {
-        const { page, size } = pagination;
-
-        const dataFound = await endpoints.searchDrink({
+    if (startFetch) {
+      setSearchParams(
+        qs.stringify({
           ...params,
-          page,
-          size,
-        });
-
-        setSearchParams(
-          qs.stringify({
-            ...params,
-            page,
-          })
-        );
-
-        setData(dataFound);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: 'Não foi possível pesquisar as bebidas',
-        });
-      } finally {
-        setLoading(false);
-      }
+          page: pagination.page,
+        })
+      );
     }
-
-    if (loading) {
-      loadDrinks();
-    }
-  }, [loading, pagination, params, setSearchParams, setLoading]);
-
-  useEffect(() => {
-    return () => setLoading(false);
-  }, [setLoading]);
+  }, [startFetch, pagination, setSearchParams, params]);
 
   function handlePaginationChange(page: number): void {
     setPagination((oldPagination) => ({ ...oldPagination, page: page - 1 }));
-
-    setLoading(true);
   }
 
   function getPriceAndVolume(
@@ -154,42 +133,49 @@ export function ListDrinks({
 
     setPagination({ ...pagination, page: 0 });
     setParams(paramsCreated);
-    setLoading(true);
   }
 
   const cardWidth = window.innerWidth <= 400 ? 280 : 200;
 
+  if (isError) {
+    handleError({
+      error,
+      fallback: 'Não foi possível pesquisar as bebidas',
+    });
+
+    return <></>;
+  }
+
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <LoadingIndicator />
       ) : (
         <div className={styles.drinksWrapper}>
-          {data.content.length !== 0 ? (
+          {data?.content.length !== 0 ? (
             <>
               <h2 className={styles.drinksFounded}>
-                {data.totalElements}{' '}
+                {data?.totalElements || 0}{' '}
                 {pluralize(
-                  data.totalElements,
+                  data?.totalElements || 0,
                   'Bebida encontrada',
                   'Bebidas encontradas'
                 )}
                 :
               </h2>
               <ul className={styles.drinksList}>
-                {data.content.map((drink) => (
+                {data?.content.map((drink) => (
                   <DrinkCard
-                    key={drink.uuid}
                     {...drink}
+                    key={drink.uuid}
                     width={cardWidth}
                     imageHeight={cardWidth}
-                    loading={loading}
+                    loading={isLoading}
                     showBuyAction={showBuyAction}
                     moreActions={renderMoreActions?.({
                       uuid: drink.uuid,
                       data,
                       pagination,
-                      setData,
                       setPagination,
                     })}
                   />
@@ -200,7 +186,7 @@ export function ListDrinks({
                 <Pagination
                   pageSize={pagination.size}
                   current={pagination.page + 1}
-                  total={data.totalElements}
+                  total={data?.totalElements}
                   hideOnSinglePage
                   onChange={handlePaginationChange}
                   responsive

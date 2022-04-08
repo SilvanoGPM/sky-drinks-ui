@@ -7,6 +7,8 @@ import endpoints from 'src/api/api';
 export function toFullDrinkImageURI(drink: DrinkType): DrinkType {
   return {
     ...drink,
-    picture: endpoints.getDrinkImage(drink.picture),
+    picture: drink.picture
+      ? endpoints.getDrinkImage(drink.picture)
+      : drink.picture,
   };
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 
@@ -11,11 +11,6 @@ export function SearchDrinks(): JSX.Element {
   useTitle('SkyDrinks - Pesquisar bebidas');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    return () => setLoading(false);
-  }, []);
 
   function openDrawer(): void {
     setDrawerVisible(true);
@@ -28,7 +23,7 @@ export function SearchDrinks(): JSX.Element {
       <div className={styles.fullButton}>
         <Button
           type="primary"
-          loading={loading}
+          // loading={loading}
           icon={<SearchOutlined />}
           onClick={openDrawer}
         >
@@ -37,9 +32,7 @@ export function SearchDrinks(): JSX.Element {
       </div>
 
       <ListDrinks
-        loading={loading}
         drawerVisible={drawerVisible}
-        setLoading={setLoading}
         setDrawerVisible={setDrawerVisible}
       />
     </section>

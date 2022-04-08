@@ -31,7 +31,6 @@ interface ActionRenderType {
   uuid: string;
   data: DrinkPaginatedType;
   pagination: PaginationType;
-  setData: React.Dispatch<React.SetStateAction<DrinkPaginatedType>>;
   setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
 }
 

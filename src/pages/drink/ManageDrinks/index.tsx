@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Popconfirm, Tooltip } from 'antd';
+import { useMutation, useQueryClient } from 'react-query';
 
 import {
   DeleteOutlined,
@@ -21,7 +22,6 @@ interface RemoveDrinkType {
   uuid: string;
   data: DrinkPaginatedType;
   pagination: PaginationType;
-  setData: React.Dispatch<React.SetStateAction<DrinkPaginatedType>>;
   setPagination: React.Dispatch<React.SetStateAction<PaginationType>>;
 }
 
@@ -29,27 +29,31 @@ export function ManageDrinks(): JSX.Element {
   useTitle('SkyDrinks - Gerenciar bebidas');
 
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const queryClient = useQueryClient();
 
   function openDrawer(): void {
     setDrawerVisible(true);
   }
 
+  function onSuccess(): void {
+    queryClient.refetchQueries('drinks');
+  }
+
+  const removeDrinkMutation = useMutation(
+    (uuid: string) => endpoints.deleteDrink(uuid),
+    { onSuccess }
+  );
+
   function removeDrink({
     uuid,
     data,
     pagination,
-    setData,
     setPagination,
   }: RemoveDrinkType) {
     return async () => {
       try {
-        await endpoints.deleteDrink(uuid);
-
-        setData({
-          ...data,
-          content: data.content.filter((item) => item.uuid !== uuid),
-        });
+        await removeDrinkMutation.mutateAsync(uuid);
 
         const isLastElementOfPage =
           data.content.length === 1 && pagination.page > 0;
@@ -59,8 +63,6 @@ export function ManageDrinks(): JSX.Element {
             ...pagination,
             page: pagination.page - 1,
           });
-
-          setLoading(true);
         }
 
         showNotification({
@@ -89,9 +91,7 @@ export function ManageDrinks(): JSX.Element {
       </div>
 
       <ListDrinks
-        loading={loading}
         drawerVisible={drawerVisible}
-        setLoading={setLoading}
         setDrawerVisible={setDrawerVisible}
         showBuyAction={false}
         renderMoreActions={(props: ActionRenderType) => [
