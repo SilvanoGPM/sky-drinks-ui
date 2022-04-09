@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'antd/lib/form/Form';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import {
   DeleteOutlined,
@@ -54,73 +55,40 @@ export function EditDrink(): JSX.Element {
 
   const [form] = useForm();
 
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
 
   const params = useParams();
 
   const [image, setImage] = useState<File | string>();
 
-  const [drink, setDrink] = useState<DrinkType>({} as DrinkType);
-
-  const [drinkLoading, setDrinkLoading] = useState(true);
-  const [editLoading, setEditLoading] = useState(false);
-
   const [useExistsImage, setUseExistsImage] = useState(false);
 
-  const { images, imagesLoading } = useImages();
-
-  useEffect(() => {
+  const drinkQuery = useQuery(['drink', params.uuid], () => {
     const uuid = params.uuid || '';
 
-    async function loadDrink(): Promise<void> {
-      if (isUUID(uuid)) {
-        try {
-          const drinkFound = await endpoints.findDrinkByUUID(uuid);
-          setDrink(drinkFound);
-        } catch (error: any) {
-          const description = getFieldErrorsDescription(error);
-
-          handleError({
-            error,
-            description,
-            fallback: 'Não foi possível encontrar bebida',
-          });
-
-          navigate(`/${routes.MANAGE_DRINKS}`);
-        } finally {
-          setDrinkLoading(false);
-        }
-      } else {
-        showNotification({
-          type: 'warn',
-          message: 'Insira um código de bebida válido para ser atualizada.',
-        });
-
-        navigate(`/${routes.MANAGE_DRINKS}`);
-      }
+    if (isUUID(uuid)) {
+      return endpoints.findDrinkByUUID(uuid);
     }
 
-    if (drinkLoading) {
-      loadDrink();
-    }
-  }, [drinkLoading, params, navigate]);
+    throw new Error('Insira um código de bebida válido para ser atualizada.');
+  });
 
-  useEffect(() => {
-    return () => {
-      setEditLoading(false);
-      setDrinkLoading(false);
-    };
-  }, []);
+  const editDrinkMutation = useMutation(
+    (drinkToUpdate: DrinkToUpdate) => endpoints.replaceDrink(drinkToUpdate),
+    { onSuccess: () => queryClient.refetchQueries('drinks') }
+  );
+
+  const { images, imagesLoading } = useImages();
 
   function handleFormFinish(values: DrinkEditForm): void {
     async function update(): Promise<void> {
       try {
-        setEditLoading(true);
-
-        await endpoints.replaceDrink({
+        await editDrinkMutation.mutateAsync({
           ...values,
           uuid: params.uuid || '',
-          picture: image || drink.picture.split('/').pop(),
+          picture: image || drinkQuery.data?.picture?.split('/').pop(),
           additional: values.additional
             ? values.additional.join(';').toLowerCase()
             : '',
@@ -133,12 +101,12 @@ export function EditDrink(): JSX.Element {
 
         navigate(`/${routes.MANAGE_DRINKS}`);
       } catch (e: any) {
+        console.log(e);
+
         showNotification({
           type: 'error',
           message: 'Aconteceu um erro ao tentar atualizar!',
         });
-      } finally {
-        setEditLoading(false);
       }
     }
 
@@ -160,11 +128,6 @@ export function EditDrink(): JSX.Element {
   }
 
   function removePicture(): void {
-    setDrink({
-      ...drink,
-      picture: '',
-    });
-
     clearImage();
   }
 
@@ -178,11 +141,27 @@ export function EditDrink(): JSX.Element {
 
   const onBlur = trimInput(form);
 
+  if (drinkQuery.isError) {
+    const { error } = drinkQuery;
+
+    const description = getFieldErrorsDescription(error);
+
+    handleError({
+      error,
+      description,
+      fallback: 'Não foi possível encontrar bebida',
+    });
+
+    navigate(`/${routes.MANAGE_DRINKS}`);
+
+    return <></>;
+  }
+
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>Editar Bebida</h2>
 
-      {drinkLoading ? (
+      {drinkQuery.isLoading ? (
         <LoadingIndicator />
       ) : (
         <div>
@@ -204,12 +183,12 @@ export function EditDrink(): JSX.Element {
             onFinish={handleFormFinish}
             labelCol={{ span: 4 }}
             initialValues={{
-              name: drink.name,
-              description: drink.description,
-              price: drink.price,
-              volume: drink.volume,
-              additional: drink.additionalList,
-              alcoholic: drink.alcoholic,
+              name: drinkQuery.data?.name,
+              description: drinkQuery.data?.description,
+              price: drinkQuery.data?.price,
+              volume: drinkQuery.data?.volume,
+              additional: drinkQuery.data?.additionalList,
+              alcoholic: drinkQuery.data?.alcoholic,
             }}
             layout="horizontal"
             name="create-drink"
@@ -253,8 +232,8 @@ export function EditDrink(): JSX.Element {
               )}
             </Form.Item>
 
-            {drink.picture &&
-              !drink.picture.endsWith('null') &&
+            {drinkQuery.data?.picture &&
+              !drinkQuery.data?.picture?.endsWith('null') &&
               !image &&
               !useExistsImage && (
                 <Form.Item
@@ -264,12 +243,12 @@ export function EditDrink(): JSX.Element {
                     <div className={styles.info}>
                       <figure>
                         <img
-                          src={drink.picture}
-                          alt={`Imagem de ${drink.name}`}
+                          src={drinkQuery.data?.picture}
+                          alt={`Imagem de ${drinkQuery.data?.name}`}
                         />
                       </figure>
 
-                      <p>{drink.picture.split('/').slice(-1)[0]}</p>
+                      <p>{drinkQuery.data?.picture?.split('/').slice(-1)[0]}</p>
                     </div>
 
                     <Button type="text" onClick={removePicture}>
@@ -367,7 +346,7 @@ export function EditDrink(): JSX.Element {
               }}
             >
               <Button
-                loading={editLoading}
+                loading={editDrinkMutation.isLoading}
                 icon={<PlusOutlined />}
                 size="large"
                 type="primary"
