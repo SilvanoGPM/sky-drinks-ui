@@ -135,6 +135,7 @@ export function HorizontalList({
       <div className={styles.header}>
         {title}
         <Switch
+          className={styles.switch}
           checkedChildren={<PlayCircleOutlined />}
           unCheckedChildren={<PauseOutlined />}
           defaultChecked
