@@ -108,7 +108,7 @@ export function DrinkCard({
         >
           <Meta
             title={name}
-            description={`Preço: ${formatDisplayPrice(price)}`}
+            description={`Preço: ${formatDisplayPrice(price || 0)}`}
           />
         </Card>
       </Tooltip>

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Avatar, Descriptions, Empty, Modal } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Doughnut } from 'react-chartjs-2';
+import { useQuery } from 'react-query';
 
 import {
   Chart as ChartJS,
@@ -40,12 +41,6 @@ ChartJS.register(
 const { confirm } = Modal;
 
 export function UserMetrics(): JSX.Element {
-  const [topFiveDrinks, setTopFiveDrinks] = useState<TopDrinkType[]>([]);
-  const [user, setUser] = useState<UserType>({} as UserType);
-
-  const [topFiveLoading, setTopFiveLoading] = useState(true);
-  const [userLoading, setUserLoading] = useState(true);
-
   const navigate = useNavigate();
   const params = useParams();
 
@@ -62,57 +57,13 @@ export function UserMetrics(): JSX.Element {
     }
   }, [params, navigate]);
 
-  useEffect(() => {
-    const uuid = params.uuid || '';
+  const topDrinksQuery = useQuery(['topDrinks', params.uuid], () =>
+    endpoints.getUserTopDrinks(params.uuid || '')
+  );
 
-    async function getData(): Promise<void> {
-      try {
-        const data = await endpoints.getUserTopDrinks(uuid);
-        setTopFiveDrinks(data);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback:
-            'Não foi possível carregar as bebidas mais pedidas do usuário',
-        });
-      } finally {
-        setTopFiveLoading(false);
-      }
-    }
-
-    if (topFiveLoading) {
-      getData();
-    }
-  }, [topFiveLoading, params]);
-
-  useEffect(() => {
-    const uuid = params.uuid || '';
-
-    async function loadUser(): Promise<void> {
-      try {
-        const userFound = await endpoints.findUserByUUID(uuid);
-        setUser(userFound);
-      } catch (error: any) {
-        handleError({
-          error,
-          fallback: 'Não foi possível carregar as informações do usuário',
-        });
-      } finally {
-        setUserLoading(false);
-      }
-    }
-
-    if (userLoading) {
-      loadUser();
-    }
-  }, [userLoading, params]);
-
-  useEffect(() => {
-    return () => {
-      setTopFiveLoading(false);
-      setUserLoading(false);
-    };
-  }, []);
+  const userQuery = useQuery(['user', params.uuid], () =>
+    endpoints.findUserByUUID(params.uuid || '')
+  );
 
   function confirmNavigation(uuid: string): void {
     function onOk(): void {
@@ -127,19 +78,40 @@ export function UserMetrics(): JSX.Element {
     });
   }
 
-  const hasRequests = Boolean(topFiveDrinks.length);
+  if (topDrinksQuery.isError) {
+    handleError({
+      error: topDrinksQuery.error,
+      fallback: 'Não foi possível carregar as bebidas mais pedidas do usuário',
+    });
+
+    navigate(-1);
+  }
+
+  if (topDrinksQuery.isError) {
+    handleError({
+      error: userQuery.error,
+      fallback: 'Não foi possível carregar as informações do usuário',
+    });
+
+    navigate(-1);
+  }
+
+  const hasRequests = Boolean(topDrinksQuery.data?.length);
 
   return (
     <section className={styles.container}>
       <h2 className={styles.title}>Métricas</h2>
 
-      {userLoading ? (
+      {userQuery.isLoading ? (
         <LoadingIndicator />
       ) : (
         <>
           <div className={styles.userImage}>
-            <Avatar size={50} src={endpoints.getUserImage(user.uuid)}>
-              {getFirstCharOfString(user.name)}
+            <Avatar
+              size={50}
+              src={endpoints.getUserImage(userQuery.data?.uuid || '')}
+            >
+              {getFirstCharOfString(userQuery.data?.name || '')}
             </Avatar>
           </div>
 
@@ -148,19 +120,25 @@ export function UserMetrics(): JSX.Element {
             bordered
             column={{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }}
           >
-            <Descriptions.Item label="Nome">{user.name}</Descriptions.Item>
-            <Descriptions.Item label="Idade">
-              {getUserAge(user.birthDay)} Anos
+            <Descriptions.Item label="Nome">
+              {userQuery.data?.name}
             </Descriptions.Item>
-            <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-            <Descriptions.Item label="CPF">{user.cpf}</Descriptions.Item>
+            <Descriptions.Item label="Idade">
+              {getUserAge(userQuery.data?.birthDay || '')} Anos
+            </Descriptions.Item>
+            <Descriptions.Item label="Email">
+              {userQuery.data?.email}
+            </Descriptions.Item>
+            <Descriptions.Item label="CPF">
+              {userQuery.data?.cpf}
+            </Descriptions.Item>
             <Descriptions.Item label="Cargo">
-              {formatDisplayRole(user.role)}
+              {formatDisplayRole(userQuery.data?.role)}
             </Descriptions.Item>
             <Descriptions.Item label="Pedidos">{`${
-              user.lockRequests
+              userQuery.data?.lockRequests
                 ? `Bloqueados em ${formatDisplayDate(
-                    user.lockRequestsTimestamp
+                    userQuery.data?.lockRequestsTimestamp
                   )}`
                 : 'Não bloqueados'
             }`}</Descriptions.Item>
@@ -170,7 +148,7 @@ export function UserMetrics(): JSX.Element {
 
       {hasRequests ? (
         <div className={styles.chart}>
-          {topFiveLoading ? (
+          {topDrinksQuery.isLoading ? (
             <LoadingIndicator />
           ) : (
             <Doughnut
@@ -187,17 +165,17 @@ export function UserMetrics(): JSX.Element {
                 onClick: (_, element) => {
                   if (element.length > 0) {
                     const { index } = element[0];
-                    const item: any = topFiveDrinks[index];
+                    const item: any = topDrinksQuery.data?.[index];
 
                     confirmNavigation(item.drinkUUID);
                   }
                 },
               }}
               data={{
-                labels: topFiveDrinks.map(({ name }) => name),
+                labels: topDrinksQuery.data?.map(({ name }) => name),
                 datasets: [
                   {
-                    data: topFiveDrinks.map(({ total }) => total),
+                    data: topDrinksQuery.data?.map(({ total }) => total),
                     backgroundColor: [
                       'rgba(0, 148, 50, 0.3)',
                       'rgba(196, 229, 56, 0.3)',

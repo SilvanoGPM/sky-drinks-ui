@@ -28,7 +28,7 @@ import styles from './styles.module.scss';
 const { confirm } = Modal;
 
 export function MyAccount(): JSX.Element {
-  useTitle('SkyDrinks - Minha Conta');
+  useTitle('SkyDrinks - Minha conta');
 
   const { userInfo } = useContext(AuthContext);
 
