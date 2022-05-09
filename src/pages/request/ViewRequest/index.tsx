@@ -10,7 +10,6 @@ import { QRCodeGenerator } from 'src/components/other/QRCodeGenerator';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { WebSocketContext } from 'src/contexts/WebSocketContext';
 import { useTitle } from 'src/hooks/useTitle';
-import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { getStatusBadge } from 'src/utils/getStatusBadge';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
@@ -19,6 +18,7 @@ import { isUUID } from 'src/utils/isUUID';
 import { showNotification } from 'src/utils/showNotification';
 
 import { DrinkList } from './DrinkList';
+import { DateTimeElapsed } from './DateTimeElapsed';
 
 import styles from './styles.module.scss';
 
@@ -328,18 +328,22 @@ export function ViewRequest(): JSX.Element {
               <p className={styles.warnMessage}>O pedido já foi entregado.</p>
             )}
 
-            <p>
-              Pedido realizado em{' '}
-              <span className={styles.bold}>
-                {formatDisplayDate(requestFound?.createdAt)}
-              </span>
-            </p>
-            <p>
-              Pedido atualizado em{' '}
-              <span className={styles.bold}>
-                {formatDisplayDate(requestFound?.updatedAt)}
-              </span>
-            </p>
+            {requestFound.createdAt && (
+              <DateTimeElapsed
+                start={new Date(requestFound.createdAt)}
+                initalTimeText="quase agora"
+                prefix="Pedido realizado"
+              />
+            )}
+
+            {requestFound.updatedAt && (
+              <DateTimeElapsed
+                start={new Date(requestFound.updatedAt)}
+                initalTimeText="quase agora"
+                prefix="Pedido atualizado"
+              />
+            )}
+
             <p>
               Preço estimado:{' '}
               <span className={styles.bold}>
