@@ -1,14 +1,14 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import { useEffect, useRef } from 'react';
-import LoadingBar from 'react-top-loading-bar';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
 export function LoadingIndicator(): JSX.Element {
-  const ref = useRef<any>(null);
+  const ref = useRef<LoadingBarRef>(null);
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.continuousStart();
+      ref.current.continuousStart(0, 100);
     }
   }, [ref]);
 

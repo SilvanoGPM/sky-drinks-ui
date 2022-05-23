@@ -29,6 +29,10 @@ const requestStatusChanged = {
   DELIVERED: {
     title: 'Pedido foi entregue!',
   },
+
+  STARTED: {
+    title: 'Pedido foi iniciado!',
+  },
 };
 
 export function NotificateRequestUpdates(): JSX.Element {

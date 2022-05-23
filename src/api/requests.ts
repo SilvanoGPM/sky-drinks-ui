@@ -218,6 +218,10 @@ const requestsEndpoints = {
     await api.patch(`/requests/all/cancel/${uuid}`);
   },
 
+  async startRequest(uuid: string): Promise<void> {
+    await api.patch(`/requests/staff/start/${uuid}`);
+  },
+
   async finishRequest(uuid: string): Promise<void> {
     await api.patch(`/requests/staff/finish/${uuid}`);
   },

@@ -6,7 +6,10 @@ import { Badge } from 'antd';
  */
 export function getStatusBadge(status: RequestStatusType): JSX.Element {
   const statusTexts = {
-    PROCESSING: <Badge status="processing" text="Preparando..." />,
+    PROCESSING: (
+      <Badge status="warning" text="Esperando confirmação de um Barmen..." />
+    ),
+    STARTED: <Badge status="processing" text="Preparando..." />,
     FINISHED: <Badge status="success" text="Finalizado" />,
     CANCELED: <Badge status="error" text="Cancelado" />,
   };

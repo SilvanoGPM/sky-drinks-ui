@@ -1,4 +1,4 @@
-type RequestStatusType = 'PROCESSING' | 'FINISHED' | 'CANCELED';
+type RequestStatusType = 'PROCESSING' | 'FINISHED' | 'CANCELED' | 'STARTED';
 
 interface RequestType {
   uuid: string;

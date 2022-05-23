@@ -127,6 +127,33 @@ export function ViewRequest(): JSX.Element {
     });
   }
 
+  function handleStartRequest(): void {
+    async function startRequest(): Promise<void> {
+      try {
+        await endpoints.startRequest(requestFound.uuid);
+
+        updateRequest({ status: 'STARTED' });
+
+        showNotification({
+          type: 'success',
+          message: 'Pedido foi iniciado com sucesso!',
+        });
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: 'Não foi possível iniciar o pedido',
+        });
+      }
+    }
+
+    confirm({
+      title: 'Deseja iniciar o pedido?',
+      okText: 'Sim',
+      cancelText: 'Não',
+      onOk: startRequest,
+    });
+  }
+
   function handleFinishRequest(): void {
     async function finishRequest(): Promise<void> {
       try {
@@ -190,7 +217,8 @@ export function ViewRequest(): JSX.Element {
     const isStaff = isBarmen || isWaiter;
     const isRequestOwner = userInfo.uuid === requestFound.user?.uuid;
 
-    const hasPermission = isStaff || isRequestOwner;
+    const hasPermission =
+      isStaff || (isRequestOwner && requestFound.status === 'PROCESSING');
 
     const ownerCannotCancel =
       isRequestOwner && requestFound.status === 'FINISHED' && !isStaff;
@@ -229,6 +257,17 @@ export function ViewRequest(): JSX.Element {
             )}
 
           {isStaff && requestFound.status === 'PROCESSING' && (
+            <Button
+              onClick={handleStartRequest}
+              shape="round"
+              size="large"
+              icon={<CheckOutlined style={{ color: '#2ecc71' }} />}
+            >
+              Iniciar pedido
+            </Button>
+          )}
+
+          {isStaff && requestFound.status === 'STARTED' && (
             <Button
               onClick={handleFinishRequest}
               shape="round"
