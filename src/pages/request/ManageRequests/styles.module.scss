@@ -89,3 +89,13 @@
     font-style: italic;
   }
 }
+
+.imageLink {
+  position: relative;
+
+  .infoIcon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}

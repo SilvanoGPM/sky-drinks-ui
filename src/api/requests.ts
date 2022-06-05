@@ -74,16 +74,31 @@ const requestsEndpoints = {
     return data;
   },
 
-  async getProcessingRequests(
+  async getRequestsToManage(
     page = 0,
     size = 10
   ): Promise<RequestPaginatedType> {
-    return this.searchRequests({
+    const processingRequests = await this.searchRequests({
       status: 'PROCESSING',
       sort: 'createdAt',
       page,
       size,
     });
+
+    const startedRequests = await this.searchRequests({
+      status: 'STARTED',
+      sort: 'createdAt',
+      page,
+      size,
+    });
+
+    const requests: RequestPaginatedType = {
+      content: [...processingRequests.content, ...startedRequests.content],
+      totalElements:
+        processingRequests.totalElements + processingRequests.totalElements,
+    };
+
+    return requests;
   },
 
   async getMyTopFiveDrinks(): Promise<TopDrinkType[]> {

@@ -7,6 +7,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   ReloadOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 import endpoints from 'src/api/api';
@@ -52,7 +53,7 @@ export function ManageRequest(): JSX.Element {
   useEffect(() => {
     async function loadRequests(): Promise<void> {
       try {
-        const dataFound = await endpoints.getProcessingRequests(
+        const dataFound = await endpoints.getRequestsToManage(
           pagination.page,
           pagination.size
         );
@@ -131,6 +132,35 @@ export function ManageRequest(): JSX.Element {
     setLoading(true);
   }
 
+  function handleStartRequest(uuid: string): () => void {
+    async function startRequest(): Promise<void> {
+      try {
+        await endpoints.startRequest(uuid);
+
+        removeRequestOfState(uuid);
+
+        showNotification({
+          type: 'success',
+          message: 'Pedido foi iniciado com sucesso!',
+        });
+      } catch (error: any) {
+        handleError({
+          error,
+          fallback: 'Não foi possível iniciar pedido',
+        });
+      }
+    }
+
+    return () => {
+      confirm({
+        title: 'Deseja iniciar o pedido?',
+        okText: 'Sim',
+        cancelText: 'Não',
+        onOk: startRequest,
+      });
+    };
+  }
+
   function handleFinishRequest(uuid: string): () => void {
     async function finishRequest(): Promise<void> {
       try {
@@ -152,8 +182,7 @@ export function ManageRequest(): JSX.Element {
 
     return () => {
       confirm({
-        title: 'Deseja finlizar o pedido?',
-        content: 'Depois de finalizado, o pedido não poderá ser cancelado!',
+        title: 'Deseja finalizar o pedido?',
         okText: 'Sim',
         cancelText: 'Não',
         onOk: finishRequest,
@@ -174,64 +203,92 @@ export function ManageRequest(): JSX.Element {
       {data.content.length ? (
         <>
           <ul className={styles.cardContainer}>
-            {transitions(({ opacity }, { uuid, user, totalPrice, drinks }) => {
-              const drinksSize = drinks.length;
-              const picture = endpoints.getDrinkImage(drinks[0].picture);
+            {transitions(
+              ({ opacity }, { uuid, user, totalPrice, drinks, status }) => {
+                const drinksSize = drinks.length;
+                const picture = endpoints.getDrinkImage(drinks[0].picture);
 
-              return (
-                <animated.li style={{ opacity }}>
-                  <div className={styles.card}>
-                    <div className={styles.cardContent}>
-                      <Link
-                        to={`/${routes.VIEW_REQUEST.replace(':uuid', uuid)}`}
-                      >
-                        <figure className={styles.cardFigure}>
-                          <img alt={`Request de id ${uuid}`} src={picture} />
-                        </figure>
-                      </Link>
+                return (
+                  <animated.li style={{ opacity }}>
+                    <div className={styles.card}>
+                      <div className={styles.cardContent}>
+                        <Link
+                          to={`/${routes.VIEW_REQUEST.replace(':uuid', uuid)}`}
+                          className={styles.imageLink}
+                        >
+                          <figure className={styles.cardFigure}>
+                            <img alt={`Request de id ${uuid}`} src={picture} />
+                          </figure>
 
-                      <div className={styles.cardInfo}>
-                        <h3 className={styles.cardTitle}>
-                          Preço: {formatDisplayPrice(totalPrice)}
-                        </h3>
-
-                        <p className={styles.cardText}>Usuário: {user?.name}</p>
-
-                        <p className={styles.cardText}>
-                          {`${drinksSize} ${pluralize(
-                            drinksSize,
-                            'bebida',
-                            'bebidas'
-                          )}`}
-                        </p>
-
-                        <div className={styles.cardActions}>
-                          <Tooltip title="Finalizar pedido">
-                            <Button
-                              onClick={handleFinishRequest(uuid)}
-                              shape="round"
-                              icon={
-                                <CheckOutlined style={{ color: '#2ecc71' }} />
-                              }
+                          <Tooltip
+                            title={
+                              status === 'PROCESSING'
+                                ? 'Aguardando o inicio do pedido'
+                                : 'O pedido está sendo preparado'
+                            }
+                            className={styles.infoIcon}
+                          >
+                            <InfoCircleOutlined
+                              style={{ fontSize: '1.5rem' }}
                             />
                           </Tooltip>
+                        </Link>
 
-                          <Tooltip title="Cancelar pedido">
-                            <Button
-                              onClick={handleCancelRequest(uuid)}
-                              shape="round"
-                              icon={
-                                <CloseOutlined style={{ color: '#e74c3c' }} />
+                        <div className={styles.cardInfo}>
+                          <h3 className={styles.cardTitle}>
+                            Preço: {formatDisplayPrice(totalPrice)}
+                          </h3>
+
+                          <p className={styles.cardText}>
+                            Usuário: {user?.name}
+                          </p>
+
+                          <p className={styles.cardText}>
+                            {`${drinksSize} ${pluralize(
+                              drinksSize,
+                              'bebida',
+                              'bebidas'
+                            )}`}
+                          </p>
+
+                          <div className={styles.cardActions}>
+                            <Tooltip
+                              title={
+                                status === 'PROCESSING'
+                                  ? 'Iniciar pedido'
+                                  : 'Finalizar pedido'
                               }
-                            />
-                          </Tooltip>
+                            >
+                              <Button
+                                onClick={
+                                  status === 'PROCESSING'
+                                    ? handleStartRequest(uuid)
+                                    : handleFinishRequest(uuid)
+                                }
+                                shape="round"
+                                icon={
+                                  <CheckOutlined style={{ color: '#2ecc71' }} />
+                                }
+                              />
+                            </Tooltip>
+
+                            <Tooltip title="Cancelar pedido">
+                              <Button
+                                onClick={handleCancelRequest(uuid)}
+                                shape="round"
+                                icon={
+                                  <CloseOutlined style={{ color: '#e74c3c' }} />
+                                }
+                              />
+                            </Tooltip>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </animated.li>
-              );
-            })}
+                  </animated.li>
+                );
+              }
+            )}
           </ul>
 
           <div className={styles.bottomButton}>
