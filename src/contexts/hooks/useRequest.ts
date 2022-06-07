@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import { Modal } from 'antd';
 
 import { getUserAge } from 'src/utils/getUserAge';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
@@ -10,8 +9,6 @@ import { AuthContext } from '../AuthContext';
 export const REQUEST_KEY = 'request';
 
 export const MINORITY = 18;
-
-const { confirm } = Modal;
 
 const initialRequestState = {
   drinks: [] as DrinkType[],
@@ -42,12 +39,6 @@ export function useRequest(): RequestContextType {
 
   function add(drink: DrinkType): void {
     setRequest({ ...request, drinks: [...request.drinks, drink] });
-
-    showNotification({
-      type: 'success',
-      message: 'Bebida foi adicionada ao pedido com sucesso!',
-      duration: 2,
-    });
   }
 
   function addDrink(drink: DrinkType): void {
@@ -71,19 +62,6 @@ export function useRequest(): RequestContextType {
           message: `Usuário não possuí ${MINORITY} anos!`,
           description: `É preciso ter ${MINORITY} anos ou mais para fazer o pedido de uma bebida alcoólica!`,
           duration: 2,
-        });
-
-        return;
-      }
-
-      const containsDrink = request.drinks.some(
-        ({ uuid }) => uuid === drink.uuid
-      );
-
-      if (containsDrink) {
-        confirm({
-          title: 'Essa bebida já está no pedido, adicionar mais uma?',
-          onOk: () => add(drink),
         });
 
         return;

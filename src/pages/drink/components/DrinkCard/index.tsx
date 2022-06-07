@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { Button, Card, Image, Tooltip } from 'antd';
+import { Badge, Button, Card, Image, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 
 import routes from 'src/routes';
@@ -13,6 +13,8 @@ import { animated } from 'react-spring';
 import drinkPlaceholder from 'src/assets/drink-placeholder.png';
 import drinkErrorImage from 'src/assets/image-error.png';
 import { useZoomInAnimation } from 'src/hooks/useZoomInAnimation';
+
+import styles from './styles.module.scss';
 
 interface DrinkCardProps {
   uuid: string;
@@ -43,21 +45,33 @@ export function DrinkCard({
 }: DrinkCardProps): JSX.Element {
   const [props] = useZoomInAnimation();
 
-  const { addDrink } = useContext(RequestContext);
+  const { addDrink, request } = useContext(RequestContext);
 
   function renderCover(): JSX.Element {
+    const totalOfDrinks = request.drinks.filter(
+      (drink) => uuid === drink.uuid
+    ).length;
+
     return (
-      <Image
-        loading="lazy"
-        height={imageHeight}
-        width="100%"
-        alt={`Drink - ${name}`}
-        onError={(event) => {
-          // eslint-disable-next-line
-          event.currentTarget.src = drinkErrorImage;
-        }}
-        src={picture && !picture.endsWith('null') ? picture : drinkPlaceholder}
-      />
+      <div className={styles.container}>
+        <Image
+          loading="lazy"
+          height={imageHeight}
+          width="100%"
+          alt={`Drink - ${name}`}
+          onError={(event) => {
+            // eslint-disable-next-line
+            event.currentTarget.src = drinkErrorImage;
+          }}
+          src={
+            picture && !picture.endsWith('null') ? picture : drinkPlaceholder
+          }
+        />
+
+        <div className={styles.totalOfDrinks}>
+          <Badge count={totalOfDrinks} />
+        </div>
+      </div>
     );
   }
 
@@ -94,8 +108,12 @@ export function DrinkCard({
             </Tooltip>,
             ...(showBuyAction
               ? [
-                  <Tooltip title="Adicionar ao Pedido" key="add-to-request">
-                    <Button onClick={addDrinkToRequest} type="link">
+                  <Tooltip title="Adicionar ao Pedido">
+                    <Button
+                      onClick={addDrinkToRequest}
+                      type="link"
+                      key="add-to-request"
+                    >
                       <ShoppingCartOutlined />
                     </Button>
                   </Tooltip>,

@@ -21,12 +21,7 @@ export function SearchDrinks(): JSX.Element {
       <h2 className={styles.title}>Pesquisar bebida</h2>
 
       <div className={styles.fullButton}>
-        <Button
-          type="primary"
-          // loading={loading}
-          icon={<SearchOutlined />}
-          onClick={openDrawer}
-        >
+        <Button type="primary" icon={<SearchOutlined />} onClick={openDrawer}>
           Pesquise sua bebida
         </Button>
       </div>
