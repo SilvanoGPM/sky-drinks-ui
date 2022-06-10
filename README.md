@@ -25,7 +25,7 @@
   </a>  
 </p>
 
-Você pode visualizar o site já em produção na seguinte URL: https://sky-drinks-ui.vercel.app/
+Você pode visualizar o site já em produção na seguinte URL: https://sky-drinks.vercel.app/
 
 O site pode demorar um pouco para carregar de inicio, porque o servidor deve estar iniciando. Caso as imagens das bebidas não estejam aparecendo, infelizmente o host do servidor deletou elas.
 
