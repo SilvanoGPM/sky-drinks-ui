@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import Repository from 'src/lib/Repository';
+import Repository from 'src/libs/Repository';
 
 type UseStorageReturn<T> = [
   T,
@@ -16,26 +16,18 @@ export function useStorage<T>(
   const [storedValue, setStoredValue] = useState<T>(initialValue);
 
   useEffect(() => {
-    async function loadStoredValue(): Promise<void> {
-      const valueFound = await Repository.get<T>(key);
+    const valueFound = Repository.get<T>(key);
 
-      if (valueFound !== undefined && valueFound !== null) {
-        setStoredValue(valueFound);
-      }
-
-      setLoading(false);
+    if (valueFound !== undefined && valueFound !== null) {
+      setStoredValue(valueFound);
     }
 
-    loadStoredValue();
+    setLoading(false);
   }, [key]);
 
   useEffect(() => {
-    async function storeValue(): Promise<void> {
-      await Repository.save<T>(key, storedValue);
-    }
-
     if (!loading) {
-      storeValue();
+      Repository.save<T>(key, storedValue);
     }
   }, [storedValue, loading, key]);
 

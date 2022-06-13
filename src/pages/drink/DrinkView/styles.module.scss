@@ -45,3 +45,13 @@
 .additional {
   margin-bottom: 1rem;
 }
+
+.addButtonContainer {
+  display: flex;
+}
+
+.totalOfDrinks {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid currentColor;
+}

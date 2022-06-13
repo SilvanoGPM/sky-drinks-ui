@@ -4,6 +4,7 @@ import { Skeleton, Tag, Divider, Button } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import useDraggableScroll from 'use-draggable-scroll';
 import { animated, useSpring } from 'react-spring';
+import { blue } from '@ant-design/colors';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
@@ -27,7 +28,7 @@ export function DrinkView(): JSX.Element {
   useTitle('SkyDrinks - Visualizar bebida');
 
   const { userInfo } = useContext(AuthContext);
-  const { addDrink } = useContext(RequestContext);
+  const { addDrink, request } = useContext(RequestContext);
 
   const infoRef = useRef<HTMLDivElement>(null);
 
@@ -89,6 +90,10 @@ export function DrinkView(): JSX.Element {
       : drinkPlaceholder;
 
   const permissions = getUserPermissions(userInfo.role);
+
+  const totalOfDrinks = request.drinks.filter(
+    (innerDrink) => drink.uuid === innerDrink.uuid
+  ).length;
 
   return (
     <section className={styles.container}>
@@ -170,14 +175,17 @@ export function DrinkView(): JSX.Element {
               </p>
             )}
 
-            <Button
-              onClick={addDrinkToRequest}
-              icon={<PlusOutlined />}
-              disabled={!permissions.isUser}
-              type="primary"
-            >
-              Adicionar ao Pedido
-            </Button>
+            <div className={styles.addButtonContainer}>
+              <Button
+                onClick={addDrinkToRequest}
+                icon={<PlusOutlined />}
+                disabled={!permissions.isUser}
+                type="primary"
+              >
+                Adicionar ao Pedido
+                <span className={styles.totalOfDrinks}>{totalOfDrinks}</span>
+              </Button>
+            </div>
           </animated.div>
         </>
       )}
