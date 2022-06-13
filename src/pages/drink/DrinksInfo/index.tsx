@@ -35,7 +35,7 @@ export function DrinksInfo(): JSX.Element {
 
   const [playing, setPlaying] = useStorage<boolean>(
     '@SkyDrinks/HORIZONTAL_LIST_PLAYING',
-    true
+    false
   );
 
   function mapTopDrinksToDrink(
