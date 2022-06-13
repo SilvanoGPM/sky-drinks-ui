@@ -4,7 +4,6 @@ import { Skeleton, Tag, Divider, Button } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import useDraggableScroll from 'use-draggable-scroll';
 import { animated, useSpring } from 'react-spring';
-import { blue } from '@ant-design/colors';
 
 import endpoints from 'src/api/api';
 import routes from 'src/routes';
@@ -84,10 +83,7 @@ export function DrinkView(): JSX.Element {
     addDrink(drink);
   }
 
-  const picture =
-    drink.picture && !drink.picture.endsWith('null')
-      ? drink.picture
-      : drinkPlaceholder;
+  const picture = drink.picture || drinkPlaceholder;
 
   const permissions = getUserPermissions(userInfo.role);
 

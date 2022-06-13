@@ -70,7 +70,7 @@ export function MyAccount(): JSX.Element {
 
     if (file) {
       try {
-        await endpoints.uploadUserImage(file);
+        await endpoints.uploadUserImage(file, userInfo.uuid);
 
         showNotification({
           type: 'success',
@@ -95,7 +95,7 @@ export function MyAccount(): JSX.Element {
   function removeUserImage(): void {
     async function removeImage(): Promise<void> {
       try {
-        await endpoints.deleteUserImage(`${userInfo.uuid}.png`);
+        await endpoints.deleteUserImage(userInfo.uuid);
 
         showNotification({
           type: 'success',

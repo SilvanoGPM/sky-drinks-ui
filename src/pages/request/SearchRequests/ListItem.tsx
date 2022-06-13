@@ -9,7 +9,6 @@ import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
 import { getStatusBadge } from 'src/utils/getStatusBadge';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { formatDisplayDate } from 'src/utils/formatDatabaseDate';
-import endpoints from 'src/api/api';
 
 import styles from './styles.module.scss';
 
@@ -62,8 +61,6 @@ export function ListItem({
     totalPrice,
   } = request;
 
-  const picture = endpoints.getDrinkImage(drink.picture);
-
   const imageWidth = window.innerWidth > 700 ? 200 : 100;
   const popoverTrigger = window.innerWidth > 700 ? 'hover' : 'click';
 
@@ -103,7 +100,7 @@ export function ListItem({
           <img
             width={imageWidth}
             height={imageWidth}
-            src={picture}
+            src={drink.picture}
             alt="Bebida contida no pedido"
           />
         }

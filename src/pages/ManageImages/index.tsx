@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { List, Modal } from 'antd';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -20,14 +19,9 @@ export function ManageImages(): JSX.Element {
 
   const queryClient = useQueryClient();
 
-  const [pagination, setPagination] = useState({
-    page: 0,
-    size: 10,
-  });
-
   const { data, isLoading, isError, error } = useQuery(
-    ['images', pagination.page],
-    () => endpoints.getAllImages(pagination.page, pagination.size),
+    'images',
+    () => endpoints.getAllDrinkImages(),
     { keepPreviousData: true }
   );
 
@@ -36,34 +30,16 @@ export function ManageImages(): JSX.Element {
   }
 
   const deleteImageMutation = useMutation(
-    ({ image, type }: { image: string; type: ImageType }) => {
-      return type === 'DRINK'
-        ? endpoints.deleteDrinkImage(image)
-        : endpoints.deleteUserImage(image);
+    ({ image }: { image: string }) => {
+      return endpoints.deleteDrinkImage(image);
     },
     { onSuccess }
   );
 
-  function handlePaginationChange(page: number): void {
-    setPagination((olgPagination) => {
-      return { ...olgPagination, page: page - 1 };
-    });
-  }
-
-  function deleteImage(image: string, type: ImageType): () => void {
+  function deleteImage(image: string): () => void {
     async function remove(): Promise<void> {
       try {
-        await deleteImageMutation.mutateAsync({ image, type });
-
-        const isLastElementOfPage =
-          data?.content.length === 1 && pagination.page > 0;
-
-        if (isLastElementOfPage) {
-          setPagination({
-            ...pagination,
-            page: pagination.page - 1,
-          });
-        }
+        await deleteImageMutation.mutateAsync({ image });
 
         showNotification({
           type: 'success',
@@ -108,16 +84,7 @@ export function ManageImages(): JSX.Element {
       ) : (
         <div>
           <List
-            pagination={{
-              current: pagination.page + 1,
-              pageSize: pagination.size,
-              onChange: handlePaginationChange,
-              total: data?.totalElements,
-              hideOnSinglePage: true,
-              responsive: true,
-              showSizeChanger: false,
-            }}
-            dataSource={data?.content}
+            dataSource={data}
             renderItem={(props, index) => {
               return (
                 <ImageItem

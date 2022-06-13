@@ -20,7 +20,6 @@ import { showNotification } from 'src/utils/showNotification';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { trimInput } from 'src/utils/trimInput';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
-import { normalizeImage } from 'src/utils/imageUtils';
 
 import styles from './styles.module.scss';
 import { useImages } from '../hooks/useImages';
@@ -104,7 +103,7 @@ export function CreateDrinkForm({
   }
 
   function handleSelectChange(value: string): void {
-    setImage(normalizeImage(value));
+    setImage(value);
   }
 
   function handleRadioChange(event: RadioChangeEvent): void {
@@ -148,14 +147,11 @@ export function CreateDrinkForm({
               onClear={clearImage}
               allowClear
             >
-              {images.map((innerImage) => (
-                <Option key={innerImage} value={innerImage}>
+              {images.map(({ name, url }) => (
+                <Option key={name} value={url}>
                   <div className={styles.imageItem}>
-                    <img
-                      alt={innerImage}
-                      src={endpoints.getDrinkImage(innerImage)}
-                    />
-                    <p title={innerImage}>{innerImage}</p>
+                    <img alt={name} src={url} />
+                    <p title={name}>{name}</p>
                   </div>
                 </Option>
               ))}

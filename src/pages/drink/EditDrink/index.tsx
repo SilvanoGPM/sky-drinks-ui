@@ -31,7 +31,6 @@ import { isUUID } from 'src/utils/isUUID';
 import { trimInput } from 'src/utils/trimInput';
 import { getFieldErrorsDescription, handleError } from 'src/utils/handleError';
 import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
-import { normalizeImage } from 'src/utils/imageUtils';
 
 import styles from './styles.module.scss';
 import { useImages } from '../hooks/useImages';
@@ -64,6 +63,7 @@ export function EditDrink(): JSX.Element {
   const [image, setImage] = useState<File | string>();
 
   const [useExistsImage, setUseExistsImage] = useState(false);
+  const [removeDefaultImage, setRemoveDefaultImage] = useState(false);
 
   const drinkQuery = useQuery(['drink', params.uuid], () => {
     const uuid = params.uuid || '';
@@ -88,7 +88,7 @@ export function EditDrink(): JSX.Element {
         await editDrinkMutation.mutateAsync({
           ...values,
           uuid: params.uuid || '',
-          picture: image || drinkQuery.data?.picture?.split('/').pop(),
+          picture: removeDefaultImage ? image : drinkQuery.data?.picture,
           additional: values.additional
             ? values.additional.join(';').toLowerCase()
             : '',
@@ -100,9 +100,7 @@ export function EditDrink(): JSX.Element {
         });
 
         navigate(`/${routes.MANAGE_DRINKS}`);
-      } catch (e: any) {
-        console.log(e);
-
+      } catch {
         showNotification({
           type: 'error',
           message: 'Aconteceu um erro ao tentar atualizar!',
@@ -120,6 +118,7 @@ export function EditDrink(): JSX.Element {
 
   function dummyRequest({ file, onSuccess }: any): Promise<void> {
     setImage(file);
+    setRemoveDefaultImage(true);
     return new Promise(() => onSuccess(file));
   }
 
@@ -129,10 +128,12 @@ export function EditDrink(): JSX.Element {
 
   function removePicture(): void {
     clearImage();
+    setRemoveDefaultImage(true);
   }
 
   function handleSelectChange(value: string): void {
-    setImage(normalizeImage(value));
+    setImage(value);
+    setRemoveDefaultImage(true);
   }
 
   function handleRadioChange(event: RadioChangeEvent): void {
@@ -206,14 +207,11 @@ export function EditDrink(): JSX.Element {
                   size="large"
                   allowClear
                 >
-                  {images.map((innerImage) => (
-                    <Option key={innerImage} value={innerImage}>
+                  {images.map(({ name, url }) => (
+                    <Option key={name} value={url}>
                       <div className={styles.imageItem}>
-                        <img
-                          alt={innerImage}
-                          src={endpoints.getDrinkImage(innerImage)}
-                        />
-                        <p title={innerImage}>{innerImage}</p>
+                        <img alt={name} src={url} />
+                        <p title={name}>{name}</p>
                       </div>
                     </Option>
                   ))}
@@ -233,9 +231,9 @@ export function EditDrink(): JSX.Element {
             </Form.Item>
 
             {drinkQuery.data?.picture &&
-              !drinkQuery.data?.picture?.endsWith('null') &&
               !image &&
-              !useExistsImage && (
+              !useExistsImage &&
+              !removeDefaultImage && (
                 <Form.Item
                   wrapperCol={{ xs: { offset: 0 }, sm: { offset: 4 } }}
                 >
@@ -248,7 +246,7 @@ export function EditDrink(): JSX.Element {
                         />
                       </figure>
 
-                      <p>{drinkQuery.data?.picture?.split('/').slice(-1)[0]}</p>
+                      <p>{drinkQuery.data?.picture.split('/').pop()}</p>
                     </div>
 
                     <Button type="text" onClick={removePicture}>

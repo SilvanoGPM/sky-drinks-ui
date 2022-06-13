@@ -1,7 +1,5 @@
 import qs from 'query-string';
 
-import { toFullDrinkImageURI } from 'src/utils/toFullPictureURI';
-
 import { api } from './api';
 import filesEndpoints from './files';
 
@@ -13,7 +11,7 @@ const drinksEndpoints = {
 
     if (picture && picture instanceof File) {
       const image = await filesEndpoints.uploadDrinkImage(picture);
-      return { ...drink, picture: image.data.fileName };
+      return { ...drink, picture: image };
     }
 
     return drink;
@@ -35,14 +33,14 @@ const drinksEndpoints = {
 
     return {
       totalElements: data.totalElements,
-      content: data.content.map(toFullDrinkImageURI),
+      content: data.content,
     };
   },
 
   async findDrinkByUUID(uuid: string): Promise<DrinkType> {
     const { data } = await api.get<DrinkType>(`/drinks/${uuid}`);
 
-    return toFullDrinkImageURI(data);
+    return data;
   },
 
   async getLatestDrinks(size = 5): Promise<DrinkType[]> {
@@ -50,7 +48,7 @@ const drinksEndpoints = {
       `/drinks?size=${size}&page=0&sort=createdAt,desc`
     );
 
-    return data.content.map(toFullDrinkImageURI);
+    return data.content;
   },
 
   async replaceDrink(drinkToUpdate: DrinkToUpdate): Promise<void> {

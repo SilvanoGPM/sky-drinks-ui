@@ -1,100 +1,90 @@
-import { AxiosResponse } from 'axios';
-import { normalizeImage } from 'src/utils/imageUtils';
+import { supabase } from 'src/services/supabase';
 
-import { toFullDrinkImageURI } from 'src/utils/toFullPictureURI';
+type ImageReturnedType = {
+  name: string;
+  url: string;
+  id: string;
+};
 
-import { api, baseURL } from './api';
+const drinksBucket = process.env.REACT_APP_SUPABASE_DRINKS_BUCKET_NAME!;
+const usersBucket = process.env.REACT_APP_SUPABASE_USERS_BUCKET_NAME!;
 
 const filesEndpoints = {
   getUserImage(uuid: string): string {
-    return `${baseURL}/files/users/${uuid}${
-      uuid.endsWith('.png') ? '' : '.png'
-    }`;
+    return (
+      supabase.storage.from(usersBucket).getPublicUrl(uuid).data?.publicURL ||
+      ''
+    );
   },
 
-  getDrinkImage(drink: string): string {
-    return `${baseURL}/files/drinks/${normalizeImage(drink)}`;
+  async uploadDrinkImage(picture: File): Promise<string> {
+    const buffer = await picture.arrayBuffer();
+
+    const { error } = await supabase.storage
+      .from(drinksBucket)
+      .upload(picture.name, buffer, {
+        contentType: 'image/jpeg',
+        upsert: true,
+      });
+
+    if (error) {
+      throw Error(error.message);
+    }
+
+    return (
+      supabase.storage.from(drinksBucket).getPublicUrl(picture.name).data
+        ?.publicURL || ''
+    );
   },
 
-  async uploadDrinkImage(picture: File): Promise<AxiosResponse<any, any>> {
-    const formData = new FormData();
-    formData.append('file', picture);
+  async uploadMultipleDrinksImages(pictures: File[]): Promise<string[]> {
+    const images = await Promise.all(
+      pictures.map((picture) => this.uploadDrinkImage(picture))
+    );
 
-    return api.post('/files/barmen/drinks', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    return images;
   },
 
-  async uploadMultipleDrinksImages(
-    pictures: File[]
-  ): Promise<AxiosResponse<any, any>> {
-    const formData = new FormData();
+  async uploadUserImage(picture: File, uuid: string): Promise<string> {
+    const buffer = await picture.arrayBuffer();
 
-    pictures.forEach((picture) => formData.append('files', picture));
+    const { error } = await supabase.storage
+      .from(usersBucket)
+      .upload(uuid, buffer, {
+        contentType: picture.type,
+        upsert: true,
+      });
 
-    return api.post('/files/barmen/multiple-drinks', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    if (error) {
+      throw Error(error.message);
+    }
+
+    return (
+      supabase.storage.from(drinksBucket).getPublicUrl(picture.name).data
+        ?.publicURL || ''
+    );
   },
 
-  async uploadUserImage(picture: File): Promise<AxiosResponse<any, any>> {
-    const formData = new FormData();
-    formData.append('file', picture);
+  async getAllDrinkImages(): Promise<ImageReturnedType[]> {
+    const { data } = await supabase.storage.from(drinksBucket).list();
 
-    return api.post('/files/all/users', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+    const content = (data || []).map<ImageReturnedType>((image) => ({
+      name: image.name,
+      id: image.id,
+      url:
+        supabase.storage.from(drinksBucket).getPublicUrl(image.name).data
+          ?.publicURL || '',
+    }));
 
-  async getAllImages(page = 0, size = 10): Promise<PaginationReturn> {
-    const { data } = await api.get(`/files?page=${page}&size=${size}`);
-
-    const mappedContent = data.content.map(async (picture: string) => {
-      const image = picture
-        .replace('/images/', '')
-        .replace('/users/', '')
-        .replace('/drinks/', '');
-
-      if (picture.startsWith('/users')) {
-        return {
-          image: this.getUserImage(image),
-          userUUID: image.replace('.png', ''),
-        };
-      }
-
-      const response = await api.get(`/drinks/find-by-picture/${image}`);
-
-      return {
-        image: this.getDrinkImage(image),
-        drinks: response.data.map(toFullDrinkImageURI),
-      };
-    });
-
-    const content = await Promise.all(mappedContent);
-
-    return {
-      totalElements: data.totalElements,
-      content,
-    };
-  },
-
-  async getAllImagesWithoutPagination(): Promise<string[]> {
-    const { data } = await api.get<string[]>(`/files/list?page`);
-    return data;
+    return content;
   },
 
   async deleteDrinkImage(image: string): Promise<void> {
-    await api.delete<void>(`/files/barmen/drinks/${image}`);
+    await supabase.storage.from(drinksBucket).remove([image]);
   },
 
   async deleteUserImage(image: string): Promise<void> {
-    await api.delete<void>(`/files/all/users/${image}`);
+    await supabase.storage.from(usersBucket).remove([image]);
   },
 };
 

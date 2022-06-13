@@ -30,7 +30,6 @@ export function DateTimeElapsed({
       const minutes = moment.duration(diff).asMinutes();
 
       if (minutes <= 60) {
-        console.log(minutes);
         if (!intervalId.current) {
           intervalId.current = setInterval(() => {
             changeTime();

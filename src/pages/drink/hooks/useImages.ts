@@ -3,15 +3,21 @@ import { useQuery } from 'react-query';
 import endpoints from 'src/api/api';
 import { handleError } from 'src/utils/handleError';
 
+type ImageReturnedType = {
+  name: string;
+  url: string;
+  id: string;
+};
+
 interface UseImagesReturn {
-  images: string[];
+  images: ImageReturnedType[];
   imagesLoading: boolean;
 }
 
 export function useImages(): UseImagesReturn {
   const { data, isLoading, isError, error } = useQuery(
     'uploadedImages',
-    endpoints.getAllImagesWithoutPagination
+    endpoints.getAllDrinkImages
   );
 
   if (isError) {
@@ -27,10 +33,8 @@ export function useImages(): UseImagesReturn {
     return { images: [], imagesLoading: true };
   }
 
-  const filteredData = data?.filter((str) => str.startsWith('/drinks'));
-
   return {
-    images: filteredData || [],
+    images: data || [],
     imagesLoading: isLoading,
   };
 }

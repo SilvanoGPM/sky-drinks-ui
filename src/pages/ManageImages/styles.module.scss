@@ -22,20 +22,8 @@
         white-space: pre-wrap;
         word-wrap: break-word;
       }
-
-      .badge {
-        width: 100%;
-        text-align: center;
-      }
     }
   }
-}
-
-.drinkName {
-  @extend %noWrapText;
-
-  color: #000000;
-  text-decoration: underline;
 }
 
 .uploadImages {

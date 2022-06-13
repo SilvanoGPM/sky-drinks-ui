@@ -206,7 +206,7 @@ export function ManageRequest(): JSX.Element {
             {transitions(
               ({ opacity }, { uuid, user, totalPrice, drinks, status }) => {
                 const drinksSize = drinks.length;
-                const picture = endpoints.getDrinkImage(drinks[0].picture);
+                const { picture } = drinks[0];
 
                 return (
                   <animated.li style={{ opacity }}>

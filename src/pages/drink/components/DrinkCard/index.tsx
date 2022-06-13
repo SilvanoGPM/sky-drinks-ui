@@ -63,9 +63,7 @@ export function DrinkCard({
             // eslint-disable-next-line
             event.currentTarget.src = drinkErrorImage;
           }}
-          src={
-            picture && !picture.endsWith('null') ? picture : drinkPlaceholder
-          }
+          src={picture || drinkPlaceholder}
         />
 
         <div className={styles.totalOfDrinks}>

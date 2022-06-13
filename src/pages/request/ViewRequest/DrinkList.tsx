@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import routes from 'src/routes';
 import { formatDisplayPrice } from 'src/utils/formatDisplayPrice';
 import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
-import { toFullDrinkImageURI } from 'src/utils/toFullPictureURI';
 
 import styles from './styles.module.scss';
 
@@ -24,10 +23,8 @@ export function DrinkList({ request }: DrinkListProps): JSX.Element {
 
       <div>
         {Object.keys(getDrinksGroupedByUUID(request)).map((key) => {
-          const drinksWithFullPicture = request.drinks.map(toFullDrinkImageURI);
-
           const drinksGrouped = getDrinksGroupedByUUID({
-            drinks: drinksWithFullPicture,
+            drinks: request.drinks,
           } as RequestType);
 
           const [drink] = drinksGrouped[key];
