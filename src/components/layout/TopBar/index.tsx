@@ -9,7 +9,6 @@ import { getDrinksGroupedByUUID } from 'src/utils/getDrinksGroupedByUUID';
 import { calculateDrinksPrice } from 'src/utils/calculateDrinkPrice';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { getUserPermissions } from 'src/utils/getUserPermissions';
-import endpoints from 'src/api/api';
 import { getFirstCharOfString } from 'src/utils/getFirstCharOfString';
 
 import styles from './styles.module.scss';
@@ -110,7 +109,7 @@ export function TopBar(): JSX.Element {
 
               <Tooltip title={userInfo.name} placement="left">
                 <Link to={routes.MY_ACCOUNT}>
-                  <Avatar size={50} src={endpoints.getUserImage(userInfo.uuid)}>
+                  <Avatar size={50} src={userInfo.picture}>
                     {getFirstCharOfString(userInfo.name)}
                   </Avatar>
                 </Link>

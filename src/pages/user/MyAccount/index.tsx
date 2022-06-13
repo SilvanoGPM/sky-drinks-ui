@@ -1,4 +1,4 @@
-import { useContext, useRef } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Divider, Modal, Switch, Tooltip } from 'antd';
 
@@ -30,7 +30,7 @@ const { confirm } = Modal;
 export function MyAccount(): JSX.Element {
   useTitle('SkyDrinks - Minha conta');
 
-  const { userInfo } = useContext(AuthContext);
+  const { userInfo, setUserInfo } = useContext(AuthContext);
 
   const {
     notificationPermission,
@@ -42,22 +42,10 @@ export function MyAccount(): JSX.Element {
   const uploadRef = useRef<HTMLInputElement | null>(null);
   const userImageRef = useRef<HTMLSpanElement | null>(null);
 
+  const [picture, setPicture] = useState(endpoints.getUserImage(userInfo.uuid));
+
   function handleUploadClick(): void {
     uploadRef.current?.click();
-  }
-
-  function updateUserImage(file: File): void {
-    const fileReader = new FileReader();
-
-    fileReader.addEventListener('load', () => {
-      const userImage = userImageRef.current?.querySelector('img');
-
-      if (userImage) {
-        userImage.src = fileReader.result as string;
-      }
-    });
-
-    fileReader.readAsDataURL(file);
   }
 
   async function handleFileChange(
@@ -70,14 +58,15 @@ export function MyAccount(): JSX.Element {
 
     if (file) {
       try {
-        await endpoints.uploadUserImage(file, userInfo.uuid);
+        const newPicture = await endpoints.uploadUserImage(file, userInfo.uuid);
 
         showNotification({
           type: 'success',
           message: 'Imagem atualizada com sucesso',
         });
 
-        updateUserImage(file);
+        setPicture(newPicture);
+        setUserInfo({ ...userInfo, picture: newPicture });
       } catch (error: any) {
         handleError({
           error,
@@ -125,11 +114,7 @@ export function MyAccount(): JSX.Element {
       <div>
         <div className={styles.myAccount}>
           <div className={styles.avatarWrapper}>
-            <Avatar
-              className={styles.avatar}
-              src={endpoints.getUserImage(userInfo.uuid)}
-              ref={userImageRef}
-            >
+            <Avatar className={styles.avatar} src={picture} ref={userImageRef}>
               {getFirstCharOfString(userInfo.name)}
             </Avatar>
             <div className={styles.actions}>

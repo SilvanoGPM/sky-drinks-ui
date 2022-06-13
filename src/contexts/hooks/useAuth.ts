@@ -16,7 +16,7 @@ export function useAuth(): AuthContenxtType {
       try {
         const userInfoFound = await endpoints.getUserInfo();
 
-        setUserInfo(userInfoFound);
+        setUserInfo({ ...userInfoFound });
         setAuthenticated(true);
       } catch (error: any) {
         handleError({

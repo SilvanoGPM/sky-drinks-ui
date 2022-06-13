@@ -9,6 +9,7 @@ interface UserType {
   cpf: string;
   lockRequestsTimestamp?: string;
   lockRequests?: boolean;
+  picture?: string;
 }
 
 interface UserToCreate {

@@ -2,6 +2,7 @@ import qs from 'query-string';
 
 import { LoginError } from 'src/errors/LoginError';
 
+import filesEndpoints from './files';
 import { api } from './api';
 
 interface UserWantsUpdate {
@@ -95,7 +96,7 @@ const usersEndpoints = {
 
   async getUserInfo(): Promise<UserType> {
     const { data } = await api.get<UserType>('/users/all/user-info');
-    return data;
+    return { ...data, picture: filesEndpoints.getUserImage(data.uuid) };
   },
 
   async replaceUser(
