@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import ptBR from 'antd/lib/locale/pt_BR';
 import Schema from 'async-validator';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import App from './App';
 
@@ -35,6 +36,8 @@ ReactDOM.render(
         </RequestProvider>
       </AuthProvider>
     </BrowserRouter>
+
+    <ReactQueryDevtools />
   </QueryClientProvider>,
   document.getElementById('root')
 );

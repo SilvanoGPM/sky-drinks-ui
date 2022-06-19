@@ -5,7 +5,10 @@ import { useQuery } from 'react-query';
 import qs from 'query-string';
 
 import endpoints from 'src/api/api';
-import { LoadingIndicator } from 'src/components/other/LoadingIndicator';
+import {
+  LoadingIndicator,
+  SpinLoadingIndicator,
+} from 'src/components/other/LoadingIndicator';
 import { handleError } from 'src/utils/handleError';
 import { pluralize } from 'src/utils/pluralize';
 import { useCreateParams } from 'src/hooks/useCreateParams';
@@ -43,24 +46,10 @@ export function ListDrinks({
 
   const [pagination, setPagination] = useState<PaginationType>({
     page: 0,
-    size: 6,
+    size: 9,
   });
 
   const [startFetch, setStartFetch] = useState(false);
-
-  const { data, error, isLoading, isError } = useQuery<DrinkPaginatedType>(
-    ['drinks', pagination.page],
-    () =>
-      endpoints.searchDrink({
-        ...params,
-        page: pagination.page,
-        size: pagination.size,
-      }),
-    {
-      enabled: startFetch,
-      keepPreviousData: true,
-    }
-  );
 
   useCreateParams({
     setLoading: setStartFetch,
@@ -78,6 +67,21 @@ export function ListDrinks({
       sort: String,
     },
   });
+
+  const { data, error, isLoading, isFetching, isError } =
+    useQuery<DrinkPaginatedType>(
+      ['drinks', { params, page: pagination.page }],
+      () =>
+        endpoints.searchDrink({
+          ...params,
+          page: pagination.page,
+          size: pagination.size,
+        }),
+      {
+        enabled: startFetch,
+        staleTime: 1000 * 60 * 60, // one hour
+      }
+    );
 
   useEffect(() => {
     if (startFetch) {
@@ -130,8 +134,9 @@ export function ListDrinks({
 
     setDrawerVisible(false);
 
-    setPagination({ ...pagination, page: 0 });
+    console.log('handleForm', { paramsCreated });
     setParams(paramsCreated);
+    setPagination({ ...pagination, page: 0 });
   }
 
   const cardWidth = window.innerWidth <= 400 ? 280 : 200;
@@ -154,13 +159,13 @@ export function ListDrinks({
           {data?.content.length !== 0 ? (
             <>
               <h2 className={styles.drinksFounded}>
-                {data?.totalElements || 0}{' '}
+                {data?.totalElements}{' '}
                 {pluralize(
                   data?.totalElements || 0,
-                  'Bebida encontrada',
-                  'Bebidas encontradas'
+                  'Bebida encontrada:',
+                  'Bebidas encontradas:'
                 )}
-                :
+                {!isLoading && isFetching && <SpinLoadingIndicator />}
               </h2>
               <ul className={styles.drinksList}>
                 {data?.content.map((drink) => (
@@ -169,7 +174,7 @@ export function ListDrinks({
                     key={drink.uuid}
                     width={cardWidth}
                     imageHeight={cardWidth}
-                    loading={isLoading}
+                    loading={isFetching}
                     showBuyAction={showBuyAction}
                     moreActions={renderMoreActions?.({
                       uuid: drink.uuid,

@@ -29,8 +29,10 @@ export function DrinksInfo(): JSX.Element {
 
   const { isUser } = getUserPermissions(userInfo.role);
 
-  const latestDrinksQuery = useQuery('latestDrinks', () =>
-    endpoints.getLatestDrinks(10)
+  const latestDrinksQuery = useQuery(
+    'latestDrinks',
+    () => endpoints.getLatestDrinks(10),
+    { staleTime: 1000 * 60 * 5 } // five minutes
   );
 
   const [playing, setPlaying] = useStorage<boolean>(
@@ -48,10 +50,14 @@ export function DrinksInfo(): JSX.Element {
     return Promise.all(topDrinksMapped);
   }
 
-  const topDrinksQuery = useQuery('topDrinks', async () => {
-    const topDrinksFound = await endpoints.getTopDrinks(5);
-    return mapTopDrinksToDrink(topDrinksFound);
-  });
+  const topDrinksQuery = useQuery(
+    'topDrinks',
+    async () => {
+      const topDrinksFound = await endpoints.getTopDrinks(5);
+      return mapTopDrinksToDrink(topDrinksFound);
+    },
+    { staleTime: 1000 * 60 * 5 } // five minutes
+  );
 
   const myTopDrinksQuery = useQuery(
     ['topDrinks', userInfo.uuid],
@@ -59,7 +65,10 @@ export function DrinksInfo(): JSX.Element {
       const topDrinksFound = await endpoints.getMyTopFiveDrinks();
       return mapTopDrinksToDrink(topDrinksFound);
     },
-    { enabled: isUser }
+    {
+      enabled: isUser,
+      staleTime: 1000 * 60 * 5, // five minutes
+    }
   );
 
   useFlashNotification(routes.HOME);
@@ -78,7 +87,7 @@ export function DrinksInfo(): JSX.Element {
         isError={latestDrinksQuery.isError}
         error={latestDrinksQuery.error}
         drinks={latestDrinksQuery.data}
-        loading={latestDrinksQuery.isLoading}
+        loading={latestDrinksQuery.isLoading || latestDrinksQuery.isFetching}
         playing={playing}
         setPlaying={setPlaying}
       />
@@ -95,7 +104,7 @@ export function DrinksInfo(): JSX.Element {
         isError={topDrinksQuery.isError}
         error={topDrinksQuery.error}
         drinks={topDrinksQuery.data}
-        loading={topDrinksQuery.isLoading}
+        loading={topDrinksQuery.isLoading || topDrinksQuery.isFetching}
         playing={playing}
         setPlaying={setPlaying}
       />
@@ -113,7 +122,7 @@ export function DrinksInfo(): JSX.Element {
           isError={myTopDrinksQuery.isError}
           error={myTopDrinksQuery.error}
           drinks={myTopDrinksQuery.data}
-          loading={myTopDrinksQuery.isLoading}
+          loading={myTopDrinksQuery.isLoading || myTopDrinksQuery.isFetching}
           playing={playing}
           setPlaying={setPlaying}
         />
